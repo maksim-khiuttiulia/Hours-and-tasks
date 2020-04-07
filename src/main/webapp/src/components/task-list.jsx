@@ -33,28 +33,36 @@ export default class TaskList extends Component {
                 }
             ]
         }
-        console.log(this.state.tasks)
     }
 
     onChangeStatus = (id) => {
         this.setState(prevState => ({
-            tasks : prevState.tasks.map(task => task.id === id ? {...task, isDone: !task.isDone} : task)
+
+            tasks : prevState.tasks.map(
+                task => task.id === parseInt(id, 10) ? {...task, isDone : !task.isDone} : task)
+        }))
+    }
+
+    onDelete = (id) => {
+        this.setState(prevState => ({
+
+            tasks : prevState.tasks.filter((task) => task.id !== parseInt(id))
         }))
     }
 
 
     render() {
         const doneTasks = this.state.tasks.filter((task) => task.isDone).map((task) => {
-            return <Task task={task} key={task.id} onChangeStatus={this.onChangeStatus}/>;
+            return <Task task={task} key={task.id} onChangeStatus={this.onChangeStatus} onDelete={this.onDelete}/>;
         });
         const todoTasks = this.state.tasks.filter((task) => !task.isDone).map((task) => {
-            return <Task task={task} key={task.id} onChangeStatus={this.onChangeStatus}/>;
+            return <Task task={task} key={task.id} onChangeStatus={this.onChangeStatus} onDelete={this.onDelete}/>;
         });
         return (
             <ListGroup>
-                <ListGroupItem color="info">In progress:</ListGroupItem>
+                <ListGroupItem color="danger">In progress:</ListGroupItem>
                 {todoTasks}
-                <ListGroupItem color="info">Done:</ListGroupItem>
+                <ListGroupItem color="success">Done:</ListGroupItem>
                 {doneTasks}
             </ListGroup>
         );

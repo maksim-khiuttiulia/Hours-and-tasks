@@ -15,7 +15,7 @@ export default class Task extends Component {
     }
 
     onDelete = (e) =>{
-        console.warn("Delete " + this.state.id);
+        this.props.onDelete(e.target.value)
     }
 
     onDone = (e) =>{
@@ -37,10 +37,10 @@ export default class Task extends Component {
         } else {
             buttonState = <Button color="success" onClick={this.onDone} value={this.state.id}>Done</Button>
         }
-        let buttonDelete = <Button color="danger" onClick={this.onDelete} >Delete</Button>
+        let buttonDelete = <Button color="danger" onClick={this.onDelete} value={this.state.id}>Delete</Button>
 
         return (
-            <ListGroupItem color="success" className="d-flex justify-content-between align-items-center" key={this.state.id}>
+            <ListGroupItem color={this.state.isDone ? "success" : "danger"} className="d-flex justify-content-between align-items-center" key={this.state.id}>
                 <ListGroupItemHeading>{this.state.name}</ListGroupItemHeading>
                 <div className="pull-right d-flex align-items-center">
                     <div className="mr-2">
