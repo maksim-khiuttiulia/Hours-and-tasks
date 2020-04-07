@@ -181,7 +181,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <activatedProperties>production</activatedProperties>
+                <activatedProperties>heroku</activatedProperties>
             </properties>
             <dependencies>
                 <dependency>
