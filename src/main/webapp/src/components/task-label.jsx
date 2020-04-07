@@ -13,7 +13,7 @@ export default class TaskLabel extends Component {
 
     render(){
         return (
-            <Badge pill style={{backgroundColor: this.state.color }}>{this.state.name}</Badge>
+            <Badge pill style={{backgroundColor: this.state.color }} className="mr-1">{this.state.name} </Badge>
         );
     }
 }
