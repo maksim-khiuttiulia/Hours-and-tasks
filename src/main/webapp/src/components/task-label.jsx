@@ -11,6 +11,12 @@ export default class TaskLabel extends Component {
         }
     }
 
+    onClick = (e) => {
+        if (this.props.onClick !== null){
+            this.props.onClick(this.state.id)
+        }
+    }
+
     render(){
         return (
             <Badge pill style={{backgroundColor: this.state.color }} className="mr-1">{this.state.name} </Badge>

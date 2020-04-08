@@ -5,10 +5,19 @@ import { ListGroup, ListGroupItem } from 'reactstrap';
 
 export default class TaskList extends Component {
 
+    lastID = 5;
+    labels = [
+        { id: 1, name: "do later", color: "red" },
+        { id: 2, name: "dont do it", color: "red" },
+        { id: 3, name: "unpossible todo", color: "red" },
+        { id: 4, name: "dont do it", color: "red" }
+    ]
+
     constructor(props) {
         super(props);
         this.state = {
-            lastID : 5,
+            
+
             tasks: [
                 {
                     id: 1, name: "Todo", priority: "HIGH", isDone: false, labels: [
@@ -41,7 +50,6 @@ export default class TaskList extends Component {
 
     onChangeStatus = (id) => {
         this.setState(prevState => ({
-
             tasks : prevState.tasks.map(
                 task => task.id === parseInt(id, 10) ? {...task, isDone : !task.isDone} : task)
         }))
@@ -49,29 +57,25 @@ export default class TaskList extends Component {
 
     onDelete = (id) => {
         this.setState(prevState => ({
-
             tasks : prevState.tasks.filter((task) => task.id !== parseInt(id))
         }))
     }
 
-    onSaveNewTask = ({name}) =>{
-        console.log(name);
+    onSaveNewTask = ({name, labels}) =>{
         const newTask = {
-            id : this.state.lastID,
+            id : this.lastID++,
             name : name,
             priority: "MIDDLE",
             isDone : false,
-            labels : []
+            labels : labels
         }
         this.setState(prevState => ({
             tasks : [...prevState.tasks, newTask],
-            lastID : prevState.lastID++
         }))
     }
 
 
     render() {
-        console.log(this.state)
         const doneTasks = this.state.tasks.filter((task) => task.isDone).map((task) => {
             return <Task task={task} key={task.id} onChangeStatus={this.onChangeStatus} onDelete={this.onDelete}/>;
         });
@@ -80,7 +84,7 @@ export default class TaskList extends Component {
         });
         return (
             <ListGroup>
-                <TaskAddForm onSaveNewTask={this.onSaveNewTask}/>
+                <TaskAddForm onSaveNewTask={this.onSaveNewTask} labels={this.labels}/>
                 <ListGroupItem color="danger">In progress:</ListGroupItem>
                 {todoTasks}
                 <ListGroupItem color="success">Done:</ListGroupItem>
