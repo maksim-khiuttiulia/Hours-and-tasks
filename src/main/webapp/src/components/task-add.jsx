@@ -17,17 +17,20 @@ export default class TaskAddForm extends Component {
         }
     }
 
-    onChange = (e) => {
+    isLabelAdded = (label) => {
+        return this.state.labels.filter(el => el.id === label.id).length > 0 ? true : false;
+    }
+
+    onNameChange = (e) => {
         this.setState({
             name: e.target.value
         })
     }
 
     onAddLabel = (e) => {
-        
         e.preventDefault();
         const newLabel =this.possibleLabels.find(label => label.id === parseInt(e.target.value))
-        this.possibleLabels = this.possibleLabels.filter(label => label.id !== newLabel.id)
+        
         this.setState((prevState) => ({
             labels : [...prevState.labels, newLabel]
         }))
@@ -39,18 +42,26 @@ export default class TaskAddForm extends Component {
             alert("Task name is empty");
         } else {
             this.props.onSaveNewTask(this.state)
+            this.setState({
+                name: "",
+                labels : []
+            })
         }
-        this.setState({
-            name: ""
-        })
+        
+    }
+
+    onDeleteLabel = (id) => {
+        this.setState(prevState => ({
+            labels : prevState.labels.filter(label => label.id !== parseInt(id))
+        }))
     }
 
     render() {
-        const labelsToChoose = this.possibleLabels.map((label) => {
+        const labelsToChoose = this.possibleLabels.filter(label => !this.isLabelAdded(label)).map((label) => {
             return <DropdownItem key={label.id} value={label.id} onClick={this.onAddLabel}>{label.name}</DropdownItem>
         })
         const choosedLabels = this.state.labels.map((label) => {
-            return <TaskLabel label={label} key={label.id} />;
+            return <TaskLabel label={label} key={label.id} onClick={this.onDeleteLabel}/>;
         })
 
         return (
@@ -59,7 +70,7 @@ export default class TaskAddForm extends Component {
                     <Col xs="6" md="6">
                         <Row>
                             <Col xs="12">
-                                <Input type="text" onChange={this.onChange} placeholder="New task" value={this.state.name}></Input>
+                                <Input type="text" onChange={this.onNameChange} placeholder="New task" value={this.state.name}></Input>
                             </Col>
                             <Col xs="12">
                                 {choosedLabels}

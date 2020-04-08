@@ -7,10 +7,10 @@ export default class TaskList extends Component {
 
     lastID = 5;
     labels = [
-        { id: 1, name: "do later", color: "red" },
-        { id: 2, name: "dont do it", color: "red" },
+        { id: 1, name: "do later", color: "blue" },
+        { id: 2, name: "dont do it", color: "tomato" },
         { id: 3, name: "unpossible todo", color: "red" },
-        { id: 4, name: "dont do it", color: "red" }
+        { id: 4, name: "dont want to do", color: "green" }
     ]
 
     constructor(props) {
