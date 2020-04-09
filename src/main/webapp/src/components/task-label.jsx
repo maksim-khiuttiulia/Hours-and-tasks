@@ -11,9 +11,19 @@ export default class TaskLabel extends Component {
         }
     }
 
+    onClick = (e) => {
+        e.preventDefault();
+        if (typeof this.props.onClick === "function"){
+            this.props.onClick(this.state.id)
+        } else {
+            console.warn("onClick is not function or not implemented")
+            alert("Haha you found a bug");
+        }
+    }
+
     render(){
         return (
-            <Badge pill style={{backgroundColor: this.state.color }} className="mr-1">{this.state.name} </Badge>
+            <Badge href="#" pill style={{backgroundColor: this.state.color }} className="mr-1" onClick={this.onClick}>{this.state.name} </Badge>
         );
     }
 }
