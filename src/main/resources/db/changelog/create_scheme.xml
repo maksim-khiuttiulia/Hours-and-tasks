@@ -10,7 +10,7 @@
 
     <changeSet id="1" author="Maks">
         <createTable tableName="HT_TASK_LABEL_COLOR">
-            <column name="COLOR_ID" type="number" autoIncrement="true">
+            <column name="COLOR_ID" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="HEX" type="varchar">
@@ -22,16 +22,16 @@
         </createIndex>
 
         <createTable tableName="HT_TASK_LABEL">
-            <column name="LABEL_ID" type="number" autoIncrement="true">
+            <column name="LABEL_ID" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="NAME" type="varchar">
                 <constraints nullable="false" unique="true"/>
             </column>
-            <column name="COLOR_ID" type="number">
+            <column name="COLOR_ID" type="bigint">
                 <constraints nullable="false" unique="false"/>
             </column>
-            <column name="PROJECT_ID" type="number">
+            <column name="PROJECT_ID" type="bigint">
                 <constraints nullable="true" unique="false"/>
             </column>
         </createTable>
