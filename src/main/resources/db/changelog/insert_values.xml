@@ -6,5 +6,51 @@
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
    http://www.liquibase.org/xml/ns/dbchangelog
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+<changeSet id="1" author="Maks">
+    <insert tableName="HT_TASK_LABEL_COLOR">
+        <column name="COLOR_ID" value="1"/>
+        <column name="HEX" value="#FF0000"/>
+    </insert>
+    <insert tableName="HT_TASK_LABEL_COLOR">
+        <column name="COLOR_ID" value="2"/>
+        <column name="HEX" value="#00FF00"/>
+    </insert>
+    <insert tableName="HT_TASK_LABEL_COLOR">
+        <column name="COLOR_ID" value="3"/>
+        <column name="HEX" value="#0000FF"/>
+    </insert>
+    <insert tableName="HT_TASK_LABEL_COLOR">
+        <column name="COLOR_ID" value="4"/>
+        <column name="HEX" value="#FFFF00"/>
+    </insert>
+    <insert tableName="HT_TASK_LABEL_COLOR">
+        <column name="COLOR_ID" value="5"/>
+        <column name="HEX" value="#FF00FF"/>
+    </insert>
+    <insert tableName="HT_TASK_LABEL_COLOR">
+        <column name="COLOR_ID" value="6"/>
+        <column name="HEX" value="#00FFFF"/>
+    </insert>
 
+    <insert tableName="HT_TASK_LABEL">
+        <column name="LABEL_ID" value="1"/>
+        <column name="NAME" value="ASAP"/>
+        <column name="COLOR_ID" value="1"/>
+    </insert>
+    <insert tableName="HT_TASK_LABEL">
+        <column name="LABEL_ID" value="2"/>
+        <column name="NAME" value="Dont do it"/>
+        <column name="COLOR_ID" value="2"/>
+    </insert>
+    <insert tableName="HT_TASK_LABEL">
+        <column name="LABEL_ID" value="3"/>
+        <column name="NAME" value="Do it"/>
+        <column name="COLOR_ID" value="3"/>
+    </insert>
+    <insert tableName="HT_TASK_LABEL">
+        <column name="LABEL_ID" value="4"/>
+        <column name="NAME" value="Need test"/>
+        <column name="COLOR_ID" value="4"/>
+    </insert>
+</changeSet>
 </databaseChangeLog>
