@@ -3,6 +3,8 @@ package com.mk.hoursandtasks.controller;
 import com.mk.hoursandtasks.dto.TaskDto;
 import com.mk.hoursandtasks.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,5 +26,10 @@ public class TaskController {
         return taskService.getTask(taskId);
     }
 
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public ResponseEntity<TaskDto> addNewTask(@RequestBody TaskDto taskDto){
+        TaskDto newTask =  taskService.createNewTask(taskDto);
+        return new ResponseEntity<>(newTask, HttpStatus.OK);
+    }
 
 }

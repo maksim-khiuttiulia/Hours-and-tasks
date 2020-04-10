@@ -48,14 +48,13 @@ public class TaskService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public TaskDto saveTask(TaskDto taskDto){
+    public TaskDto createNewTask(TaskDto taskDto){
         Date currentDate = DateUtils.getCurrentDate();
         if (taskDto == null){
             throw new ValidationException("Task is null");
         }
 
         Task task = new Task();
-        task.setTaskId(taskDto.getTaskId());
 
         if (StringUtils.isEmpty(taskDto.getName())){
             throw new ValidationException("Task name is empty");
@@ -77,6 +76,11 @@ public class TaskService {
             throw new ValidationException("Project id is null");
         }
 
+        if (taskDto.getPriority() == null){
+            throw new ValidationException("Priority is null");
+        }
+        task.setPriority(taskDto.getPriority());
+
         Project project = projectRepository.getOne(taskDto.getProjectId());
         if (project == null){
             throw new ValidationException("Project with id " + taskDto.getProjectId() + " doesnt exist");
@@ -93,8 +97,7 @@ public class TaskService {
         }
 
         task = taskRepository.save(task);
-        taskDto.setTaskId(task.getTaskId());
-        return taskDto;
+        return task.toTaskDto();
     }
 
     @Transactional(rollbackFor = Exception.class)

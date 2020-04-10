@@ -53,7 +53,10 @@ public class Task {
     private List<TaskLabel> labels;
 
     public List<TaskLabel> getLabels() {
-        return labels == null ? new ArrayList<>() : labels;
+        if (labels == null){
+            labels = new ArrayList<>();
+        }
+        return labels;
     }
 
     public TaskDto toTaskDto(){
