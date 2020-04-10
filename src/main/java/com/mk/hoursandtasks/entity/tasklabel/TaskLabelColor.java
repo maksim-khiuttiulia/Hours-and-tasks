@@ -1,6 +1,7 @@
 package com.mk.hoursandtasks.entity.tasklabel;
 
-import com.mk.hoursandtasks.entity.task.Task;
+
+import com.mk.hoursandtasks.dto.TaskLabelColorDto;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -21,4 +22,11 @@ public class TaskLabelColor {
 
     @OneToMany(mappedBy = "color")
     private List<TaskLabel> labels;
+
+    public TaskLabelColorDto taskLabelColorDto(){
+        TaskLabelColorDto colorDto = new TaskLabelColorDto();
+        colorDto.setColorId(this.getColorId());
+        colorDto.setHex(this.getHex());
+        return colorDto;
+    }
 }

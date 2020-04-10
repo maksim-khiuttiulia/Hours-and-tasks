@@ -1,17 +1,23 @@
 package com.mk.hoursandtasks.entity.task;
 
+import com.mk.hoursandtasks.dto.TaskDto;
+import com.mk.hoursandtasks.dto.TaskLabelDto;
 import com.mk.hoursandtasks.entity.Project;
 import com.mk.hoursandtasks.entity.tasklabel.TaskLabel;
+import liquibase.util.BooleanUtils;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @Entity
 @Table(name = "HT_TASK")
 public class Task {
+
     @Id
     @Column(name = "TASK_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,24 +31,49 @@ public class Task {
     @Enumerated(EnumType.STRING)
     private PRIORITY priority;
 
-    @Column(name = "CREATED")
+    @Column(name = "CREATED", nullable = false)
     private Date created;
 
     @Column(name = "DEADLINE")
     private Date deadline;
 
-    @Column(name = "IS_DONE")
+    @Column(name = "IS_DONE", nullable = false)
     private Boolean isDone;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "FK_PROJECT")
+    @JoinColumn(name = "PROJECT_ID")
     private Project project;
 
     @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(
-            name = "HT_TASK_LABEL",
+            name = "HT_REL_TASK_LABEL",
             joinColumns = {@JoinColumn(name = "TASK_ID")},
             inverseJoinColumns =  {@JoinColumn(name = "LABEL_ID")}
     )
     private List<TaskLabel> labels;
+
+    public List<TaskLabel> getLabels() {
+        return labels == null ? new ArrayList<>() : labels;
+    }
+
+    public TaskDto toTaskDto(){
+        TaskDto taskDto = new TaskDto();
+        taskDto.setTaskId(this.getTaskId());
+        taskDto.setName(this.getName());
+        taskDto.setText(this.getText());
+        taskDto.setPriority(this.getPriority());
+        taskDto.setCreated(this.getCreated());
+        taskDto.setDeadline(this.getDeadline());
+        taskDto.setDone(BooleanUtils.isTrue(this.getIsDone()));
+
+        if (this.getProject() != null){
+            taskDto.setProjectId(this.getProject().getProjectId());
+        }
+
+        List<TaskLabelDto> labelDtos = this.getLabels().stream().map(TaskLabel::taskLabelDto).collect(Collectors.toList());
+
+        taskDto.setLabels(labelDtos);
+
+        return taskDto;
+    }
 }

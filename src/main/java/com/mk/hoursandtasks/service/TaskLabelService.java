@@ -9,8 +9,8 @@ import com.mk.hoursandtasks.repository.TaskLabelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskLabelService {
@@ -22,27 +22,18 @@ public class TaskLabelService {
 
     public List<TaskLabelDto> getAll(){
         List<TaskLabel> taskLabels = taskLabelRepository.findAll();
-        List<TaskLabelDto> dtos = new ArrayList<>();
-        for (TaskLabel taskLabel : taskLabels){
-            TaskLabelDto labelDto = new TaskLabelDto();
-            labelDto.setLabelId(taskLabel.getLabelId());
-            labelDto.setName(taskLabel.getName());
-            labelDto.setColor(taskLabel.getColor().getHex());
-            dtos.add(labelDto);
-        }
-        return dtos;
+        return taskLabels.stream().map(TaskLabel::taskLabelDto).collect(Collectors.toList());
     }
 
-    public List<TaskLabelColorDto> getColors(){
+
+
+    public List<TaskLabelColorDto> getAllColors(){
         List<TaskLabelColor> taskLabelColors = labelColorRepository.findAll();
-        List<TaskLabelColorDto> dtos = new ArrayList<>();
-        for (TaskLabelColor color : taskLabelColors){
-            TaskLabelColorDto colorDto = new TaskLabelColorDto();
-            colorDto.setHex(color.getHex());
-            dtos.add(colorDto);
-        }
-        return dtos;
+        return taskLabelColors.stream().map(TaskLabelColor::taskLabelColorDto).collect(Collectors.toList());
     }
+
+
+
 
 
 }

@@ -1,56 +1,113 @@
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
-   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
-   http://www.liquibase.org/xml/ns/dbchangelog
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
-<changeSet id="1" author="Maks">
-    <insert tableName="HT_TASK_LABEL_COLOR">
-        <column name="COLOR_ID" value="1"/>
-        <column name="HEX" value="#FF0000"/>
-    </insert>
-    <insert tableName="HT_TASK_LABEL_COLOR">
-        <column name="COLOR_ID" value="2"/>
-        <column name="HEX" value="#00FF00"/>
-    </insert>
-    <insert tableName="HT_TASK_LABEL_COLOR">
-        <column name="COLOR_ID" value="3"/>
-        <column name="HEX" value="#0000FF"/>
-    </insert>
-    <insert tableName="HT_TASK_LABEL_COLOR">
-        <column name="COLOR_ID" value="4"/>
-        <column name="HEX" value="#FFFF00"/>
-    </insert>
-    <insert tableName="HT_TASK_LABEL_COLOR">
-        <column name="COLOR_ID" value="5"/>
-        <column name="HEX" value="#FF00FF"/>
-    </insert>
-    <insert tableName="HT_TASK_LABEL_COLOR">
-        <column name="COLOR_ID" value="6"/>
-        <column name="HEX" value="#00FFFF"/>
-    </insert>
+    <changeSet id="1" author="Maks">
+        <insert tableName="HT_TASK_LABEL_COLOR">
+            <column name="COLOR_ID" value="1"/>
+            <column name="HEX" value="#FF0000"/>
+        </insert>
+        <insert tableName="HT_TASK_LABEL_COLOR">
+            <column name="COLOR_ID" value="2"/>
+            <column name="HEX" value="#00FF00"/>
+        </insert>
+        <insert tableName="HT_TASK_LABEL_COLOR">
+            <column name="COLOR_ID" value="3"/>
+            <column name="HEX" value="#0000FF"/>
+        </insert>
+        <insert tableName="HT_TASK_LABEL_COLOR">
+            <column name="COLOR_ID" value="4"/>
+            <column name="HEX" value="#FFFF00"/>
+        </insert>
+        <insert tableName="HT_TASK_LABEL_COLOR">
+            <column name="COLOR_ID" value="5"/>
+            <column name="HEX" value="#FF00FF"/>
+        </insert>
+        <insert tableName="HT_TASK_LABEL_COLOR">
+            <column name="COLOR_ID" value="6"/>
+            <column name="HEX" value="#00FFFF"/>
+        </insert>
 
-    <insert tableName="HT_TASK_LABEL">
-        <column name="LABEL_ID" value="1"/>
-        <column name="NAME" value="ASAP"/>
-        <column name="COLOR_ID" value="1"/>
-    </insert>
-    <insert tableName="HT_TASK_LABEL">
-        <column name="LABEL_ID" value="2"/>
-        <column name="NAME" value="Dont do it"/>
-        <column name="COLOR_ID" value="2"/>
-    </insert>
-    <insert tableName="HT_TASK_LABEL">
-        <column name="LABEL_ID" value="3"/>
-        <column name="NAME" value="Do it"/>
-        <column name="COLOR_ID" value="3"/>
-    </insert>
-    <insert tableName="HT_TASK_LABEL">
-        <column name="LABEL_ID" value="4"/>
-        <column name="NAME" value="Need test"/>
-        <column name="COLOR_ID" value="4"/>
-    </insert>
-</changeSet>
+        <insert tableName="HT_TASK_LABEL">
+            <column name="LABEL_ID" value="1"/>
+            <column name="NAME" value="ASAP"/>
+            <column name="COLOR_ID" value="1"/>
+        </insert>
+        <insert tableName="HT_TASK_LABEL">
+            <column name="LABEL_ID" value="2"/>
+            <column name="NAME" value="Dont do it"/>
+            <column name="COLOR_ID" value="2"/>
+        </insert>
+        <insert tableName="HT_TASK_LABEL">
+            <column name="LABEL_ID" value="3"/>
+            <column name="NAME" value="Do it"/>
+            <column name="COLOR_ID" value="3"/>
+        </insert>
+        <insert tableName="HT_TASK_LABEL">
+            <column name="LABEL_ID" value="4"/>
+            <column name="NAME" value="Need test"/>
+            <column name="COLOR_ID" value="4"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="2" author="Maks">
+        <insert tableName="HT_PROJECT">
+            <column name="PROJECT_ID" value="1"/>
+            <column name="NAME" value="Test project 1"/>
+        </insert>
+        <insert tableName="HT_PROJECT">
+            <column name="PROJECT_ID" value="2"/>
+            <column name="NAME" value="Test project 2"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="3" author="Maks">
+        <insert tableName="HT_TASK">
+            <column name="TASK_ID" value="1"/>
+            <column name="NAME" value="TASK 1"/>
+            <column name="TEXT" value="TASK TEXT 1"/>
+            <column name="CREATED" value="2020-01-01 01:00:00"/>
+            <column name="PRIORITY" value="HIGH"/>
+            <column name="IS_DONE" value="FALSE"/>
+            <column name="PROJECT_ID" value="1"/>
+        </insert>
+        <insert tableName="HT_TASK">
+            <column name="TASK_ID" value="2"/>
+            <column name="NAME" value="TASK 2"/>
+            <column name="TEXT" value="TASK TEXT 2"/>
+            <column name="CREATED" value="2020-01-02 02:00:00"/>
+            <column name="PRIORITY" value="MIDDLE"/>
+            <column name="IS_DONE" value="FALSE"/>
+            <column name="PROJECT_ID" value="1"/>
+        </insert>
+        <insert tableName="HT_TASK">
+            <column name="TASK_ID" value="3"/>
+            <column name="NAME" value="TASK 3"/>
+            <column name="TEXT" value="TASK TEXT 3"/>
+            <column name="CREATED" value="2020-01-03 03:00:00"/>
+            <column name="PRIORITY" value="LOW"/>
+            <column name="IS_DONE" value="FALSE"/>
+            <column name="PROJECT_ID" value="1"/>
+        </insert>
+    </changeSet>
+    
+    <changeSet id="4" author="Maks">
+        <insert tableName="HT_REL_TASK_LABEL">
+            <column name="TASK_ID" value="1"/>
+            <column name="LABEL_ID" value="1"/>
+        </insert>
+        <insert tableName="HT_REL_TASK_LABEL">
+            <column name="TASK_ID" value="1"/>
+            <column name="LABEL_ID" value="2"/>
+        </insert>
+        <insert tableName="HT_REL_TASK_LABEL">
+            <column name="TASK_ID" value="1"/>
+            <column name="LABEL_ID" value="3"/>
+        </insert>
+        <insert tableName="HT_REL_TASK_LABEL">
+            <column name="TASK_ID" value="2"/>
+            <column name="LABEL_ID" value="4"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

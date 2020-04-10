@@ -8,5 +8,5 @@ import lombok.Data;
 public class TaskLabelDto {
     private Long labelId;
     private String name;
-    private String color;
+    private String colorHex;
 }

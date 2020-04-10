@@ -1,5 +1,6 @@
 package com.mk.hoursandtasks.entity.tasklabel;
 
+import com.mk.hoursandtasks.dto.TaskLabelDto;
 import com.mk.hoursandtasks.entity.Project;
 import com.mk.hoursandtasks.entity.task.Task;
 import lombok.Data;
@@ -21,7 +22,7 @@ public class TaskLabel {
     private String name;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "COLOR_ID")
+    @JoinColumn(name = "COLOR_ID", nullable = false)
     private TaskLabelColor color;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,5 +32,12 @@ public class TaskLabel {
     @ManyToMany(mappedBy = "labels")
     private List<Task> tasks;
 
+    public TaskLabelDto taskLabelDto(){
+        TaskLabelDto labelDto = new TaskLabelDto();
+        labelDto.setLabelId(this.getLabelId());
+        labelDto.setName(this.getName());
+        labelDto.setColorHex(this.getColor().getHex());
+        return labelDto;
+    }
 
 }
