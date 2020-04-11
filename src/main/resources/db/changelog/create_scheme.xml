@@ -57,7 +57,7 @@
             <column name="DEADLINE" type="datetime">
                 <constraints nullable="true" unique="false"/>
             </column>
-            <column name="IS_DONE" type="BIT">
+            <column name="IS_DONE" type="boolean">
                 <constraints nullable="true" unique="false"/>
             </column>
             <column name="PROJECT_ID" type="bigint">
