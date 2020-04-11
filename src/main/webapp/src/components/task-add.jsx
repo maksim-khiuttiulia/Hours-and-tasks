@@ -3,36 +3,51 @@ import TaskLabel from './task-label'
 import { ListGroupItem, Button, Input, Row, Col, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
 
 
-export default class TaskAddForm extends Component {
 
-    possibleLabels = []
+export default class TaskAddForm extends Component {
 
     constructor(props) {
         super(props);
-        this.possibleLabels = this.props.labels;
 
         this.state = {
-            name: "",
-            labels: []
+            newTask :{
+                name: "",
+                labels: [],
+            },
+            
+            labelsToChoose: []
         }
+
     }
 
+    componentDidUpdate(prevProps) {
+        if(prevProps.labelsToChoose !== this.props.labelsToChoose) {
+          this.setState({
+            labelsToChoose : this.props.labelsToChoose
+          })
+        }
+      }
+
     isLabelAdded = (label) => {
-        return this.state.labels.filter(el => el.id === label.id).length > 0 ? true : false;
+        return this.state.newTask.labels.filter(el => el.id === label.id).length > 0 ? true : false;
     }
 
     onNameChange = (e) => {
         this.setState({
-            name: e.target.value
+            newTask : {
+                name : e.target.value
+            }
         })
     }
 
     onAddLabel = (e) => {
         e.preventDefault();
-        const newLabel =this.possibleLabels.find(label => label.id === parseInt(e.target.value))
-        
+        const newLabel = this.state.labelsToChoose.find(label => label.id === parseInt(e.target.value))
+
         this.setState((prevState) => ({
-            labels : [...prevState.labels, newLabel]
+            newTask : {
+                labels : [...prevState.newTask.labels, newLabel]
+            }
         }))
     }
 
@@ -41,27 +56,28 @@ export default class TaskAddForm extends Component {
         if (this.state.name === "") {
             alert("Task name is empty");
         } else {
+            console.log(this.state)
             this.props.onSaveNewTask(this.state)
             this.setState({
                 name: "",
-                labels : []
+                labels: []
             })
         }
-        
+
     }
 
     onDeleteLabel = (id) => {
         this.setState(prevState => ({
-            labels : prevState.labels.filter(label => label.id !== parseInt(id))
+            labels: prevState.labels.filter(label => label.id !== parseInt(id))
         }))
     }
 
     render() {
-        const labelsToChoose = this.possibleLabels.filter(label => !this.isLabelAdded(label)).map((label) => {
+        const labelsToChoose = this.state.labelsToChoose.filter(label => !this.isLabelAdded(label)).map((label) => {
             return <DropdownItem key={label.id} value={label.id} onClick={this.onAddLabel}>{label.name}</DropdownItem>
         })
-        const choosedLabels = this.state.labels.map((label) => {
-            return <TaskLabel label={label} key={label.id} onClick={this.onDeleteLabel}/>;
+        const choosedLabels = this.state.newTask.labels.map((label) => {
+            return <TaskLabel label={label} key={label.id} onClick={this.onDeleteLabel} />;
         })
 
         return (

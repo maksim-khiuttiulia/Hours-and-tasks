@@ -2,21 +2,18 @@ import React, { Component } from 'react'
 import Task from './task'
 import TaskAddForm from './task-add'
 import { ListGroup, ListGroupItem } from 'reactstrap';
+import API from '../service/API'
+
 
 export default class TaskList extends Component {
 
     lastID = 5;
-    labels = [
-        { id: 1, name: "do later", color: "blue" },
-        { id: 2, name: "dont do it", color: "tomato" },
-        { id: 3, name: "unpossible todo", color: "red" },
-        { id: 4, name: "dont want to do", color: "green" }
-    ]
+    
 
     constructor(props) {
         super(props);
         this.state = {
-            
+            labels : [],
 
             tasks: [
                 {
@@ -47,6 +44,19 @@ export default class TaskList extends Component {
             ]
         }
     }
+
+    async componentDidMount() {
+        try {
+            let response = await API.get("/task-labels");
+            let labels = response.data;
+            this.setState({
+                labels: labels
+            })
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
 
     onChangeStatus = (id) => {
         this.setState(prevState => ({
@@ -84,7 +94,7 @@ export default class TaskList extends Component {
         });
         return (
             <ListGroup>
-                <TaskAddForm onSaveNewTask={this.onSaveNewTask} labels={this.labels}/>
+                <TaskAddForm onSaveNewTask={this.onSaveNewTask} labelsToChoose={this.state.labels}/>
                 <ListGroupItem color="danger">In progress:</ListGroupItem>
                 {todoTasks}
                 <ListGroupItem color="success">Done:</ListGroupItem>

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/tasks")
+@RequestMapping(value = "/api/tasks")
 public class TaskController {
 
     @Autowired
