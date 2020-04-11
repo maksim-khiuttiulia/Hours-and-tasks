@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TaskLabelDto {
-    private Long labelId;
+    private Long id;
     private String name;
-    private String colorHex;
+    private String color;
 }

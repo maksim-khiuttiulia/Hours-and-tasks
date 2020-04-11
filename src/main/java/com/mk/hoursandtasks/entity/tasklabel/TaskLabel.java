@@ -34,9 +34,9 @@ public class TaskLabel {
 
     public TaskLabelDto taskLabelDto(){
         TaskLabelDto labelDto = new TaskLabelDto();
-        labelDto.setLabelId(this.getLabelId());
+        labelDto.setId(this.getLabelId());
         labelDto.setName(this.getName());
-        labelDto.setColorHex(this.getColor().getHex());
+        labelDto.setColor(this.getColor().getHex());
         return labelDto;
     }
 

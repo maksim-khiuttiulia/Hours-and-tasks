@@ -6,27 +6,27 @@
     <changeSet id="1" author="Maks">
         <insert tableName="HT_TASK_LABEL_COLOR">
             <column name="COLOR_ID" value="1"/>
-            <column name="HEX" value="#FF0000"/>
+            <column name="HEX" value="#39CCCC"/>
         </insert>
         <insert tableName="HT_TASK_LABEL_COLOR">
             <column name="COLOR_ID" value="2"/>
-            <column name="HEX" value="#00FF00"/>
+            <column name="HEX" value="#FF4136"/>
         </insert>
         <insert tableName="HT_TASK_LABEL_COLOR">
             <column name="COLOR_ID" value="3"/>
-            <column name="HEX" value="#0000FF"/>
+            <column name="HEX" value="#F012BE"/>
         </insert>
         <insert tableName="HT_TASK_LABEL_COLOR">
             <column name="COLOR_ID" value="4"/>
-            <column name="HEX" value="#FFFF00"/>
+            <column name="HEX" value="#111111"/>
         </insert>
         <insert tableName="HT_TASK_LABEL_COLOR">
             <column name="COLOR_ID" value="5"/>
-            <column name="HEX" value="#FF00FF"/>
+            <column name="HEX" value="#2ECC40"/>
         </insert>
         <insert tableName="HT_TASK_LABEL_COLOR">
             <column name="COLOR_ID" value="6"/>
-            <column name="HEX" value="#00FFFF"/>
+            <column name="HEX" value="#FF851B"/>
         </insert>
 
         <insert tableName="HT_TASK_LABEL">

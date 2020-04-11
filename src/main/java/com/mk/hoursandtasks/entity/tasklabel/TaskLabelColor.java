@@ -25,7 +25,7 @@ public class TaskLabelColor {
 
     public TaskLabelColorDto taskLabelColorDto(){
         TaskLabelColorDto colorDto = new TaskLabelColorDto();
-        colorDto.setColorId(this.getColorId());
+        colorDto.setId(this.getColorId());
         colorDto.setHex(this.getHex());
         return colorDto;
     }

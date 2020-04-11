@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TaskLabelColorDto {
-    private Long colorId;
+    private Long id;
     private String hex;
 }

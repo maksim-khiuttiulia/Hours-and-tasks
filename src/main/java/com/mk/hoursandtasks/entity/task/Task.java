@@ -61,7 +61,7 @@ public class Task {
 
     public TaskDto toTaskDto(){
         TaskDto taskDto = new TaskDto();
-        taskDto.setTaskId(this.getTaskId());
+        taskDto.setId(this.getTaskId());
         taskDto.setName(this.getName());
         taskDto.setText(this.getText());
         taskDto.setPriority(this.getPriority());

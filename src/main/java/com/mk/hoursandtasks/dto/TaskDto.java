@@ -12,7 +12,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TaskDto {
 
-    private Long taskId;
+    private Long id;
 
     private String name;
 

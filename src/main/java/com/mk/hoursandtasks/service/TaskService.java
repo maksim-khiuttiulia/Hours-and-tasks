@@ -89,9 +89,9 @@ public class TaskService {
 
         task.getLabels().clear();
         for (TaskLabelDto taskLabelDto : taskDto.getLabels()){
-            TaskLabel taskLabel = taskLabelRepository.getOne(taskLabelDto.getLabelId());
+            TaskLabel taskLabel = taskLabelRepository.getOne(taskLabelDto.getId());
             if (taskLabel == null){
-                throw new ValidationException("Task label " + taskLabelDto.getLabelId() + " not exists");
+                throw new ValidationException("Task label " + taskLabelDto.getId() + " not exists");
             }
             task.getLabels().add(taskLabel);
         }
@@ -130,26 +130,20 @@ public class TaskService {
 
         task.getLabels().clear();
         for (TaskLabelDto taskLabelDto : taskDto.getLabels()){
-            TaskLabel taskLabel = taskLabelRepository.getOne(taskLabelDto.getLabelId());
+            TaskLabel taskLabel = taskLabelRepository.getOne(taskLabelDto.getId());
             if (taskLabel == null){
-                throw new ValidationException("Task label " + taskLabelDto.getLabelId() + " not exists");
+                throw new ValidationException("Task label " + taskLabelDto.getId() + " not exists");
             }
             task.getLabels().add(taskLabel);
         }
 
         task = taskRepository.save(task);
-        taskDto.setTaskId(task.getTaskId());
+        taskDto.setId(task.getTaskId());
         return taskDto;
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void deleteTask(TaskDto taskDto){
-        if (taskDto == null){
-            throw new ValidationException("Task is null");
-        }
-        if (taskDto.getTaskId() == null){
-            throw new ValidationException("Task id is null");
-        }
-        taskRepository.deleteById(taskDto.getTaskId());
+    public void deleteTask(Long taskId){
+        taskRepository.deleteById(taskId);
     }
 }

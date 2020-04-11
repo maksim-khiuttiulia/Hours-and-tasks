@@ -38,4 +38,10 @@ public class TaskController {
         return new ResponseEntity<>(newTask, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/{taskId}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> updateTask(@PathVariable(name = "taskId") Long taskId){
+        taskService.deleteTask(taskId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }
