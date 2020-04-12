@@ -41,7 +41,7 @@ public class Task {
     @JoinColumn(name = "PROJECT_ID")
     private Project project;
 
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(
             name = "HT_REL_TASK_LABEL",
             joinColumns = {@JoinColumn(name = "TASK_ID")},

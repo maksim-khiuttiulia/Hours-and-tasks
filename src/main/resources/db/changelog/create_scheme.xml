@@ -7,7 +7,7 @@
 
     <changeSet id="1" author="Maks">
         <createTable tableName="HT_TASK_LABEL_COLOR">
-            <column name="COLOR_ID" type="bigint" autoIncrement="true">
+            <column name="COLOR_ID" type="bigint" autoIncrement="true" startWith="100">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="HEX" type="varchar">

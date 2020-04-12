@@ -29,7 +29,12 @@ public class TaskLabel {
     @JoinColumn(name = "PROJECT_ID")
     private Project project;
 
-    @ManyToMany(mappedBy = "labels")
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(
+            name = "HT_REL_TASK_LABEL",
+            joinColumns = {@JoinColumn(name = "LABEL_ID")},
+            inverseJoinColumns =  {@JoinColumn(name = "TASK_ID")}
+    )
     private List<Task> tasks;
 
     public TaskLabelDto taskLabelDto(){
