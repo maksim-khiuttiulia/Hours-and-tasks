@@ -10,34 +10,64 @@ export default class TaskAddForm extends Component {
         super(props);
 
         this.state = {
-            newTask :{
+            task: {
+                taskId : null,
                 name: "",
-                labels: [],
+                text: "",
+                created : null,
+                deadline : null,
+                done : false,
+                projectId : 1,
+                labels: []
             },
-            
             labelsToChoose: []
         }
-
     }
 
     componentDidUpdate(prevProps) {
-        if(prevProps.labelsToChoose !== this.props.labelsToChoose) {
-          this.setState({
-            labelsToChoose : this.props.labelsToChoose
-          })
+        if (prevProps.labelsToChoose !== this.props.labelsToChoose) {
+            this.setState(prevState => ({
+                task : prevState.task,
+                labelsToChoose: this.props.labelsToChoose
+            }))
         }
-      }
-
-    isLabelAdded = (label) => {
-        return this.state.newTask.labels.filter(el => el.id === label.id).length > 0 ? true : false;
     }
 
     onNameChange = (e) => {
-        this.setState({
-            newTask : {
-                name : e.target.value
+        let name = e.target.value
+        this.setState(prevState => ({
+            task: {
+                ...prevState.task,
+                name: name
             }
-        })
+        }))
+    }
+
+    onSubmit = (e) => {
+        e.preventDefault();
+        if (this.state.task.name === "") {
+            alert("Task name is empty");
+            return;
+        }
+        if (typeof this.props.onAddTask !== "function") {
+            console.error("onAddTask is not function or not implemented");
+            return;
+        }
+
+        this.props.onAddTask(this.state.task)
+        this.setState((prevState) => ({
+            task: {
+                id : null,
+                name: "",
+                text: "",
+                created : null,
+                deadline : null,
+                done : false,
+                projectId : 1,
+                labels: []
+            },
+            labelsToChoose: prevState.labelsToChoose
+        }))
     }
 
     onAddLabel = (e) => {
@@ -45,38 +75,33 @@ export default class TaskAddForm extends Component {
         const newLabel = this.state.labelsToChoose.find(label => label.id === parseInt(e.target.value))
 
         this.setState((prevState) => ({
-            newTask : {
-                labels : [...prevState.newTask.labels, newLabel]
-            }
+            task: {
+                ...prevState.task,
+                labels: [...prevState.task.labels, newLabel]
+            },
+            labelsToChoose: prevState.labelsToChoose
         }))
-    }
-
-    onSubmit = (e) => {
-        e.preventDefault();
-        if (this.state.name === "") {
-            alert("Task name is empty");
-        } else {
-            console.log(this.state)
-            this.props.onSaveNewTask(this.state)
-            this.setState({
-                name: "",
-                labels: []
-            })
-        }
-
     }
 
     onDeleteLabel = (id) => {
         this.setState(prevState => ({
-            labels: prevState.labels.filter(label => label.id !== parseInt(id))
+            task: {
+                ...prevState.task,
+                labels: prevState.task.labels.filter(label => label.id !== parseInt(id))
+            },
+            labelsToChoose: prevState.labelsToChoose
         }))
+    }
+
+    isLabelAdded = (label) => {
+        return this.state.task.labels.filter(el => el.id === label.id).length > 0 ? true : false;
     }
 
     render() {
         const labelsToChoose = this.state.labelsToChoose.filter(label => !this.isLabelAdded(label)).map((label) => {
             return <DropdownItem key={label.id} value={label.id} onClick={this.onAddLabel}>{label.name}</DropdownItem>
         })
-        const choosedLabels = this.state.newTask.labels.map((label) => {
+        const choosedLabels = this.state.task.labels.map((label) => {
             return <TaskLabel label={label} key={label.id} onClick={this.onDeleteLabel} />;
         })
 
@@ -86,7 +111,7 @@ export default class TaskAddForm extends Component {
                     <Col xs="6" md="6">
                         <Row>
                             <Col xs="12">
-                                <Input type="text" onChange={this.onNameChange} placeholder="New task" value={this.state.name}></Input>
+                                <Input type="text" onChange={this.onNameChange} placeholder="New task" value={this.state.task.name}></Input>
                             </Col>
                             <Col xs="12">
                                 {choosedLabels}

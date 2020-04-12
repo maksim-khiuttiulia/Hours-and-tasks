@@ -68,7 +68,6 @@
             <column name="NAME" value="TASK 1"/>
             <column name="TEXT" value="TASK TEXT 1"/>
             <column name="CREATED" value="2020-01-01 01:00:00"/>
-            <column name="PRIORITY" value="HIGH"/>
             <column name="IS_DONE" value="FALSE"/>
             <column name="PROJECT_ID" value="1"/>
         </insert>
@@ -77,7 +76,6 @@
             <column name="NAME" value="TASK 2"/>
             <column name="TEXT" value="TASK TEXT 2"/>
             <column name="CREATED" value="2020-01-02 02:00:00"/>
-            <column name="PRIORITY" value="MIDDLE"/>
             <column name="IS_DONE" value="FALSE"/>
             <column name="PROJECT_ID" value="1"/>
         </insert>
@@ -86,8 +84,8 @@
             <column name="NAME" value="TASK 3"/>
             <column name="TEXT" value="TASK TEXT 3"/>
             <column name="CREATED" value="2020-01-03 03:00:00"/>
-            <column name="PRIORITY" value="LOW"/>
-            <column name="IS_DONE" value="FALSE"/>
+            <column name="DEADLINE" value="2020-04-03 03:00:00"/>
+            <column name="IS_DONE" value="TRUE"/>
             <column name="PROJECT_ID" value="1"/>
         </insert>
     </changeSet>

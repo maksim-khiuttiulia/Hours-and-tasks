@@ -2,99 +2,82 @@ import React, { Component } from 'react'
 import Task from './task'
 import TaskAddForm from './task-add'
 import { ListGroup, ListGroupItem } from 'reactstrap';
-import API from '../service/API'
+import API from '../utils/API'
 
 
 export default class TaskList extends Component {
-
-    lastID = 5;
-    
 
     constructor(props) {
         super(props);
         this.state = {
             labels : [],
-
-            tasks: [
-                {
-                    id: 1, name: "Todo", priority: "HIGH", isDone: false, labels: [
-                        { id: 1, name: "do later", color: "tomato" },
-                        { id: 2, name: "dont do it", color: "red" }]
-                },
-
-                {
-                    id: 2, name: "Todotodo", priority: "MIDDLE", isDone: false, labels: [
-                        { id: 1, name: "do later", color: "blue" },
-                        { id: 2, name: "dont do it", color: "red" }]
-                },
-
-                {
-                    id: 3, name: "Tododododo", priority: "LOW", isDone: false, labels: [
-                        { id: 1, name: "do later", color: "red" },
-                        { id: 2, name: "dont do it", color: "tomato" }]
-                },
-
-                {
-                    id: 4, name: "Go sleep", priority: "HIGH", isDone: true, labels: [
-                        { id: 1, name: "do later", color: "red" },
-                        { id: 2, name: "dont do it", color: "red" },
-                        { id: 3, name: "unpossible todo", color: "red" },
-                        { id: 4, name: "dont do it", color: "red" }]
-                }
-            ]
+            tasks: []
         }
     }
 
     async componentDidMount() {
+        this.readLabels();
+        this.readTasks();
+    }
+
+    async readLabels(){
         try {
             let response = await API.get("/task-labels");
             let labels = response.data;
-            this.setState({
-                labels: labels
-            })
+            this.setState(prevState => ({
+                ...prevState, 
+                labels : labels
+            }))
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
+    async readTasks(){
+        try {
+            let response = await API.get("/tasks")
+            let tasks = response.data;
+            this.setState(prevState => ({
+                ...prevState, 
+                tasks : tasks
+            }))
         } catch (e) {
             console.error(e)
         }
     }
 
 
-    onChangeStatus = (id) => {
-        this.setState(prevState => ({
-            tasks : prevState.tasks.map(
-                task => task.id === parseInt(id, 10) ? {...task, isDone : !task.isDone} : task)
-        }))
+    onChangeTaskStatus = (task) => {
+        API.put(`/tasks/${task.id}/done`, task).then(res => {
+            this.readTasks();
+        })
+        
     }
 
-    onDelete = (id) => {
-        this.setState(prevState => ({
-            tasks : prevState.tasks.filter((task) => task.id !== parseInt(id))
-        }))
+    onDeleteTask = (task) => {
+        API.delete(`/tasks/${task.id}`).then(res => {
+            this.readTasks();
+        })
     }
 
-    onSaveNewTask = ({name, labels}) =>{
-        const newTask = {
-            id : this.lastID++,
-            name : name,
-            priority: "MIDDLE",
-            isDone : false,
-            labels : labels
-        }
-        this.setState(prevState => ({
-            tasks : [...prevState.tasks, newTask],
-        }))
+    onAddTask = (task) =>{
+        API.post(`/tasks`, task).then(res => {
+            this.readTasks();
+        })
     }
 
 
     render() {
-        const doneTasks = this.state.tasks.filter((task) => task.isDone).map((task) => {
-            return <Task task={task} key={task.id} onChangeStatus={this.onChangeStatus} onDelete={this.onDelete}/>;
+        const doneTasks = this.state.tasks.filter((task) => task.done).map((task) => {
+            return <Task task={task} key={task.id} onChangeTaskStatus={this.onChangeTaskStatus} onDeleteTask={this.onDeleteTask}/>;
         });
-        const todoTasks = this.state.tasks.filter((task) => !task.isDone).map((task) => {
-            return <Task task={task} key={task.id} onChangeStatus={this.onChangeStatus} onDelete={this.onDelete}/>;
+        const todoTasks = this.state.tasks.filter((task) => !task.done).map((task) => {
+            return <Task task={task} key={task.id} onChangeTaskStatus={this.onChangeTaskStatus} onDeleteTask={this.onDeleteTask}/>;
         });
+
         return (
             <ListGroup>
-                <TaskAddForm onSaveNewTask={this.onSaveNewTask} labelsToChoose={this.state.labels}/>
+                <TaskAddForm onAddTask={this.onAddTask} labelsToChoose={this.state.labels}/>
                 <ListGroupItem color="danger">In progress:</ListGroupItem>
                 {todoTasks}
                 <ListGroupItem color="success">Done:</ListGroupItem>

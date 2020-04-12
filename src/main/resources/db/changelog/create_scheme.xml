@@ -48,9 +48,6 @@
             <column name="TEXT" type="varchar">
                 <constraints nullable="true" unique="false"/>
             </column>
-            <column name="PRIORITY" type="varchar">
-                <constraints nullable="false" unique="false"/>
-            </column>
             <column name="CREATED" type="datetime">
                 <constraints nullable="false" unique="false"/>
             </column>

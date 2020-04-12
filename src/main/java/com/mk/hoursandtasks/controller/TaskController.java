@@ -38,8 +38,14 @@ public class TaskController {
         return new ResponseEntity<>(newTask, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/{taskId}/done", method = RequestMethod.PUT)
+    public ResponseEntity<TaskDto> doneTask(@PathVariable(name = "taskId") Long taskId, @RequestBody TaskDto taskDto){
+        TaskDto newTask =  taskService.doneTask(taskId, taskDto);
+        return new ResponseEntity<>(newTask, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/{taskId}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> updateTask(@PathVariable(name = "taskId") Long taskId){
+    public ResponseEntity<?> deleteTask(@PathVariable(name = "taskId") Long taskId){
         taskService.deleteTask(taskId);
         return new ResponseEntity<>(HttpStatus.OK);
     }

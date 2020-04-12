@@ -28,9 +28,6 @@ public class Task {
 
     private String text;
 
-    @Enumerated(EnumType.STRING)
-    private PRIORITY priority;
-
     @Column(name = "CREATED", nullable = false)
     private Date created;
 
@@ -64,7 +61,6 @@ public class Task {
         taskDto.setId(this.getTaskId());
         taskDto.setName(this.getName());
         taskDto.setText(this.getText());
-        taskDto.setPriority(this.getPriority());
         taskDto.setCreated(this.getCreated());
         taskDto.setDeadline(this.getDeadline());
         taskDto.setDone(BooleanUtils.isTrue(this.getIsDone()));

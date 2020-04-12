@@ -76,11 +76,6 @@ public class TaskService {
             throw new ValidationException("Project id is null");
         }
 
-        if (taskDto.getPriority() == null){
-            throw new ValidationException("Priority is null");
-        }
-        task.setPriority(taskDto.getPriority());
-
         Project project = projectRepository.getOne(taskDto.getProjectId());
         if (project == null){
             throw new ValidationException("Project with id " + taskDto.getProjectId() + " doesnt exist");
@@ -136,6 +131,28 @@ public class TaskService {
             }
             task.getLabels().add(taskLabel);
         }
+
+        task = taskRepository.save(task);
+        taskDto.setId(task.getTaskId());
+        return taskDto;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public TaskDto doneTask(Long taskId, TaskDto taskDto){
+        Date currentDate = DateUtils.getCurrentDate();
+        if (taskId == null){
+            throw new ValidationException("Task id is null");
+        }
+        if (taskDto == null){
+            throw new ValidationException("Task is null");
+        }
+
+        Task task = taskRepository.getOne(taskId);
+        if (task == null){
+            throw new ValidationException("Task with id " + taskId + " doesnt exist");
+        }
+
+        task.setIsDone(BooleanUtils.isTrue(taskDto.isDone()));
 
         task = taskRepository.save(task);
         taskDto.setId(task.getTaskId());

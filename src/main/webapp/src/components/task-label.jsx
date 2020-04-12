@@ -22,8 +22,13 @@ export default class TaskLabel extends Component {
     }
 
     render(){
+        let clickable = typeof this.props.onClick === "function";
+        let taskLabel = <Badge pill style={{backgroundColor: this.state.color }} className="mr-1" >{this.state.name} </Badge>;
+        if (clickable){
+            taskLabel = <Badge pill href="#" style={{backgroundColor: this.state.color }} className="mr-1" onClick={this.onClick} >{this.state.name} </Badge>;
+        }
         return (
-            <Badge href="#" pill style={{backgroundColor: this.state.color }} className="mr-1" onClick={this.onClick}>{this.state.name} </Badge>
+            taskLabel
         );
     }
 }
