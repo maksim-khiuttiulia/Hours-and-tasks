@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Task from './task'
 import TaskAddForm from './task-add'
 import TaskDeleteDialog from './task-delete-dialog'
+import TaskAddDialog from './task-add-dialog'
 import { ListGroup, ListGroupItem, Spinner } from 'reactstrap';
 import API from '../utils/API'
 
@@ -122,6 +123,7 @@ export default class TaskList extends Component {
 
         return (
             <ListGroup>
+                <TaskAddDialog labelsToChoose={this.state.labels}></TaskAddDialog>
                 <TaskDeleteDialog isOpen={this.state.deleteDialog.isOpen} task={this.state.deleteDialog.task} deleteDialogCallback={this.deleteDialogCallback}/>
                 <TaskAddForm onAddTask={this.onAddTask} labelsToChoose={this.state.labels} />
                 <ListGroupItem color="danger">In progress:</ListGroupItem>

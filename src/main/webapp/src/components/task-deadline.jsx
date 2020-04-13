@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { Badge } from 'reactstrap';
-import {formatedDateTime} from '../utils/date-time'
+import {formatedDate} from '../utils/date-time'
 
 export default class TaskDeadLineLabel extends Component {
     constructor(props) {
@@ -14,7 +14,7 @@ export default class TaskDeadLineLabel extends Component {
 
         let deadlineBadge = <Badge color="success" className="mr-1" >No deadline</Badge>;
         if (this.state.deadline){
-            deadlineBadge = <Badge color="danger" className="mr-1" >{formatedDateTime(this.state.deadline)}</Badge>;
+            deadlineBadge = <Badge color="danger" className="mr-1" >{formatedDate(this.state.deadline)}</Badge>;
         }
         return (
             deadlineBadge

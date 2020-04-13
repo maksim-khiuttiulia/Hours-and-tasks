@@ -1,5 +1,9 @@
 
-    export let formatedDateTime = (dateTime) => {
-        var options = { year: 'numeric', month: 'numeric', day: 'numeric', hour : 'numeric', minute : 'numeric' };
-         return new Date(dateTime).toLocaleDateString("ru-RU",options);
+    export let formatedDate = (date) => {
+        var options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+         return new Date(date).toLocaleDateString("ru-RU",options);
+    }
+
+    export let getCurrentDateJSON = () => {
+        return new Date().toJSON();
     }

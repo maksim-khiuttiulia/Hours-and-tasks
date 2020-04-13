@@ -8,7 +8,8 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
-    "reactstrap": "^8.4.1"
+    "reactstrap": "^8.4.1",
+    "reactstrap-date-picker": "0.0.7"
   },
   "scripts": {
     "start": "react-scripts start",

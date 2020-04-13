@@ -11,13 +11,13 @@ export default class TaskAddForm extends Component {
 
         this.state = {
             task: {
-                taskId : null,
+                taskId: null,
                 name: "",
                 text: "",
-                created : null,
-                deadline : null,
-                done : false,
-                projectId : 1,
+                created: null,
+                deadline: null,
+                done: false,
+                projectId: 1,
                 labels: []
             },
             labelsToChoose: []
@@ -27,7 +27,7 @@ export default class TaskAddForm extends Component {
     componentDidUpdate(prevProps) {
         if (prevProps.labelsToChoose !== this.props.labelsToChoose) {
             this.setState(prevState => ({
-                task : prevState.task,
+                task: prevState.task,
                 labelsToChoose: this.props.labelsToChoose
             }))
         }
@@ -57,13 +57,13 @@ export default class TaskAddForm extends Component {
         this.props.onAddTask(this.state.task)
         this.setState((prevState) => ({
             task: {
-                id : null,
+                id: null,
                 name: "",
                 text: "",
-                created : null,
-                deadline : null,
-                done : false,
-                projectId : 1,
+                created: null,
+                deadline: null,
+                done: false,
+                projectId: 1,
                 labels: []
             },
             labelsToChoose: prevState.labelsToChoose
@@ -107,16 +107,9 @@ export default class TaskAddForm extends Component {
 
         return (
             <ListGroupItem color="info">
-                <Row className="d-flex align-items-center">
+                <Row>
                     <Col xs="6" md="6">
-                        <Row>
-                            <Col xs="12">
-                                <Input type="text" onChange={this.onNameChange} placeholder="New task" value={this.state.task.name}></Input>
-                            </Col>
-                            <Col xs="12">
-                                {choosedLabels}
-                            </Col>
-                        </Row>
+                        <Input type="text" onChange={this.onNameChange} placeholder="New task" value={this.state.task.name}></Input>
                     </Col>
                     <Col xs="6" md="6" className="d-flex justify-content-end">
                         <UncontrolledDropdown >
@@ -126,6 +119,11 @@ export default class TaskAddForm extends Component {
                             </DropdownMenu>
                         </UncontrolledDropdown>
                         <Button color="success" onClick={this.onSubmit} style={{ minWidth: 100 }}>Save</Button>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xs="12" md="12">
+                        {choosedLabels}
                     </Col>
                 </Row>
             </ListGroupItem>

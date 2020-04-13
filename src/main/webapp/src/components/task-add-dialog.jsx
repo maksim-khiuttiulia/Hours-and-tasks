@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import TaskLabel from './task-label'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, DropdownItem, Input, UncontrolledDropdown, DropdownMenu, DropdownToggle} from 'reactstrap';
-
+import DatePicker from 'reactstrap-date-picker'
+import {getCurrentDateJSON} from '../utils/date-time'
 
 
 export default class TaskAddDialog extends Component {
@@ -12,17 +13,17 @@ export default class TaskAddDialog extends Component {
 
         this.state = {
             task: {
-                taskId : null,
+                taskId: null,
                 name: "",
                 text: "",
-                created : null,
-                deadline : null,
-                done : false,
-                projectId : 1,
+                created: null,
+                deadline: null,
+                done: false,
+                projectId: 1,
                 labels: []
             },
             labelsToChoose: [],
-            isOpen : false
+            isOpen: false
         }
     }
 
@@ -31,7 +32,7 @@ export default class TaskAddDialog extends Component {
 
         if (prevProps.labelsToChoose !== this.props.labelsToChoose) {
             this.setState(prevState => ({
-                task : prevState.task,
+                task: prevState.task,
                 labelsToChoose: this.props.labelsToChoose
             }))
         }
@@ -44,12 +45,7 @@ export default class TaskAddDialog extends Component {
     }
 
     onSubmit = (e) => {
-        e.preventDefault();
-        this.props.onSubmitDeleteTask(this.state.task)
-        this.setState({
-            isOpen: false,
-            task: undefined
-        })
+        console.log(this.state)
     }
 
     onCancel = (e) => {
@@ -89,6 +85,38 @@ export default class TaskAddDialog extends Component {
         return this.state.task.labels.filter(el => el.id === label.id).length > 0 ? true : false;
     }
 
+    onTaskNameChange = (e) => {
+        let name = e.target.value
+        this.setState(prevState =>({
+            ...prevState,
+            task : {
+                ...prevState.task,
+                name : name
+            }
+        }))
+    }
+
+    onTaskTextChange = (e) => {
+        let text = e.target.value
+        this.setState(prevState =>({
+            ...prevState,
+            task : {
+                ...prevState.task,
+                text : text
+            }
+        }))
+    }
+
+    onDateChange = (deadline) =>{
+        this.setState(prevState =>({
+            ...prevState,
+            task : {
+                ...prevState.task,
+                deadline : deadline
+            }
+        }))
+    }
+
 
     render() {
         const labelsToChoose = this.state.labelsToChoose.filter(label => !this.isLabelAdded(label)).map((label) => {
@@ -102,33 +130,38 @@ export default class TaskAddDialog extends Component {
             <Modal isOpen={this.state.isOpen} size="lg">
                 <ModalHeader >Add new task</ModalHeader>
                 <ModalBody>
-                <Row className="d-flex align-items-center">
-                    <Col xs="6" md="6">
-                        <Row>
-                            <Col xs="12">
-                                <Input type="text" onChange={this.onNameChange} placeholder="New task" value={this.state.task.name}></Input>
-                            </Col>
-                            <Col xs="12">
-                                {choosedLabels}
-                            </Col>
-                        </Row>
-                    </Col>
-                    <Col xs="6" md="6" className="d-flex justify-content-end">
-                        <UncontrolledDropdown >
-                            <DropdownToggle caret style={{ minWidth: 100 }}>Labels</DropdownToggle>
-                            <DropdownMenu>
-                                {labelsToChoose}
-                            </DropdownMenu>
-                        </UncontrolledDropdown>
-                        <Button color="success" onClick={this.onSubmit} style={{ minWidth: 100 }}>Save</Button>
-                    </Col>
-                </Row>
                     <Row>
-                        Desc
+                        <Col xs="9" md="9">
+                            <Input type="text" onChange={this.onTaskNameChange} placeholder="New task"></Input>
+                        </Col>
+                        <Col xs="3" md="3" className="d-flex justify-content-end">
+                            <UncontrolledDropdown className="w-100">
+                                <DropdownToggle caret className="w-100">Labels</DropdownToggle>
+                                <DropdownMenu>
+                                    {labelsToChoose}
+                                </DropdownMenu>
+                            </UncontrolledDropdown>
+                        </Col>
                     </Row>
-                    <Row>
 
+                    <Row>
+                        <Col xs="12" md="12">
+                            {choosedLabels}
+                        </Col>
                     </Row>
+                    <br />
+                    <Row>
+                        <Col xs="12">
+                            <Input type="textarea" name="text" onChange={this.onTaskTextChange} />
+                        </Col>
+                    </Row>
+                    <br />
+                    <Row>
+                        <Col xs="6">
+                            <DatePicker id="datepicker" value={this.state.task.deadline} minDate={getCurrentDateJSON()} onChange={this.onDateChange}/>
+                        </Col>
+                    </Row>
+
                 </ModalBody>
                 <ModalFooter>
                     <Button color="danger" onClick={this.onSubmit}>Save</Button>
