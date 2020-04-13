@@ -12,7 +12,7 @@ export default class Task extends Component {
     }
 
     onDelete = (e) => {
-        e.preventDefault();
+       e.preventDefault();
         let task = {
             ...this.state.task,
         }
