@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import TaskLabel from './task-label'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, DropdownItem, Input, UncontrolledDropdown, DropdownMenu, DropdownToggle} from 'reactstrap';
 import DatePicker from 'reactstrap-date-picker'
+import TimePicker from './timepicker'
 import {getCurrentDateJSON} from '../utils/date-time'
 
 
@@ -23,7 +24,7 @@ export default class TaskAddDialog extends Component {
                 labels: []
             },
             labelsToChoose: [],
-            isOpen: false
+            isOpen: true
         }
     }
 
@@ -159,6 +160,9 @@ export default class TaskAddDialog extends Component {
                     <Row>
                         <Col xs="6">
                             <DatePicker id="datepicker" value={this.state.task.deadline} minDate={getCurrentDateJSON()} onChange={this.onDateChange}/>
+                        </Col>
+                        <Col xs="6">
+                            <TimePicker/>
                         </Col>
                     </Row>
 
