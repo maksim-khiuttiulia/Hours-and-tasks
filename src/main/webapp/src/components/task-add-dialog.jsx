@@ -24,6 +24,8 @@ export default class TaskAddDialog extends Component {
                 labels: []
             },
             labelsToChoose: [],
+            deadlineDate : null,
+            deadlineTime : null,
             isOpen: true
         }
     }
@@ -33,7 +35,7 @@ export default class TaskAddDialog extends Component {
 
         if (prevProps.labelsToChoose !== this.props.labelsToChoose) {
             this.setState(prevState => ({
-                task: prevState.task,
+                ...prevState,
                 labelsToChoose: this.props.labelsToChoose
             }))
         }
@@ -118,6 +120,10 @@ export default class TaskAddDialog extends Component {
         }))
     }
 
+    onTimeChange = (deadline) => {
+        console.log(deadline)
+    }
+
 
     render() {
         const labelsToChoose = this.state.labelsToChoose.filter(label => !this.isLabelAdded(label)).map((label) => {
@@ -159,10 +165,13 @@ export default class TaskAddDialog extends Component {
                     <br />
                     <Row>
                         <Col xs="6">
-                            <DatePicker id="datepicker" value={this.state.task.deadline} minDate={getCurrentDateJSON()} onChange={this.onDateChange}/>
+                            <DatePicker id="datepicker" value={this.state.deadlineDate} minDate={getCurrentDateJSON()} onChange={this.onDateChange} showClearButton={false}/>
                         </Col>
-                        <Col xs="6">
-                            <TimePicker/>
+                        <Col xs="3">
+                            <TimePicker className="w-100" onChange={this.onTimeChange} nullValue="No deadline"/>
+                        </Col>
+                        <Col xs="3">
+                            <Button color="danger" className="w-100" >Clear</Button>
                         </Col>
                     </Row>
 

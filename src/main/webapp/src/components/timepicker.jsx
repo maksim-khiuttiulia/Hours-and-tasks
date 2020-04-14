@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { DropdownItem, UncontrolledDropdown, DropdownMenu, DropdownToggle } from 'reactstrap';
+import './timepicker-style.css'
 
 
 export default class TimePicker extends Component {
@@ -7,77 +8,68 @@ export default class TimePicker extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            items : [],
-            isEmpty: false,
-            hours: 0,
-            minutes: 0
+            isEmpty: this.props.isEmpty || true,
+            time: "00:00",
+            nullValue: this.props.nullValue || "--:--",
+            disabled: this.props.disabled || false
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+
+        if (prevProps !== this.props) {
+            this.setState(prevState => ({
+                isEmpty: this.props.isEmpty || true,
+                time: "00:00",
+                nullValue: this.props.nullValue || "--:--",
+                disabled: this.props.disabled || false
+            }))
         }
     }
 
     onChange = (e) => {
-        const values = e.target.value.split(":")
-        let hours = values[0];
-        let minutes = values[1];
+        const value = e.target.value;
+
+        if (this.props.onChange) {
+            const returnValue = value === this.state.nullValue ? null : value
+            this.props.onChange(returnValue)
+        }
         this.setState(prevState => ({
             ...prevState,
-            isEmpty: false,
-            hours: hours,
-            minutes: minutes
+            isEmpty: value === this.state.nullValue,
+            time: value
         }))
+
     }
 
-    onEmpty = (e) => {
-        this.setState(prevState => ({
-            ...prevState,
-            isEmpty: true,
-            hours: null,
-            minutes: null
-        }))
-    }
-
+    // Prepare dropdown items for render
     prepareItems = () => {
         let items = [];
-        items.push(<DropdownItem onClick={this.onEmpty}>No deadline</DropdownItem>)
+        items.push(<DropdownItem value={this.state.nullValue} onClick={this.onChange}>{this.state.nullValue}</DropdownItem>)
         for (let i = 0; i < 24; i++) {
-            items.push(<DropdownItem value={i + ":00"} onClick={this.onChange}>{i + ":00"}</DropdownItem>)
-            items.push(<DropdownItem value={i + ":30"} onClick={this.onChange}>{i + ":30"}</DropdownItem>)
+            const fullHour = this.getFormatedTime(i, 0)
+            const halfHour = this.getFormatedTime(i, 30)
+            items.push(<DropdownItem value={fullHour} onClick={this.onChange}>{fullHour}</DropdownItem>)
+            items.push(<DropdownItem value={halfHour} onClick={this.onChange}>{halfHour}</DropdownItem>)
         }
         return items;
     }
 
-    prepareDropDownMenu = () => {
-        const menu = (<DropdownMenu className="dropdown-thin"
-            modifiers={{
-                setMaxHeight: {
-                    enabled: true,
-                    order: 890,
-                    fn: (data) => {
-                        return {
-                            ...data,
-                            styles: {
-                                ...data.styles,
-                                overflow: 'auto',
-                                maxHeight: '200px',
-                            },
-                        };
-                    },
-                },
-            }}>
-            {this.prepareItems()}
-        </DropdownMenu>)
-        console.warn("redt")
-        return menu
+    getFormatedTime = (hours, minutes) => {
+        return ('0' + hours).slice(-2) + ":" + ('0' + minutes).slice(-2)
     }
 
 
     render() {
-        const currentValue = this.state.isEmpty ? "No deadline" : this.state.hours + ":" + this.state.minutes
+        const currentValue = this.state.isEmpty ? this.state.nullValue : this.state.time
         return (
-            <UncontrolledDropdown>
-                <DropdownToggle caret>
+            <UncontrolledDropdown disabled={this.state.disabled}>
+                <DropdownToggle caret className={this.props.className} disabled={this.state.disabled}>
                     {currentValue}
                 </DropdownToggle>
-                {this.prepareDropDownMenu()}
+                <DropdownMenu className="scrollable-menu">
+                    {this.prepareItems()}
+                </DropdownMenu>
             </UncontrolledDropdown>
         );
     }
