@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { DropdownItem, UncontrolledDropdown, DropdownMenu, DropdownToggle } from 'reactstrap';
 import './timepicker-style.css'
+import {getFormatedHoursMinutes} from '../utils/date-time'
 
 
 export default class TimePicker extends Component {
@@ -9,7 +10,7 @@ export default class TimePicker extends Component {
         super(props);
         this.state = {
             isEmpty: this.props.isEmpty || true,
-            time: "00:00",
+            time: null,
             nullValue: this.props.nullValue || "--:--",
             disabled: this.props.disabled || false
         }
@@ -19,17 +20,14 @@ export default class TimePicker extends Component {
 
         if (prevProps !== this.props) {
             this.setState(prevState => ({
-                isEmpty: this.props.isEmpty || true,
-                time: "00:00",
-                nullValue: this.props.nullValue || "--:--",
-                disabled: this.props.disabled || false
+                isEmpty: this.props.isEmpty || prevState.isEmpty,
+                disabled: this.props.disabled,
             }))
         }
     }
 
     onChange = (e) => {
         const value = e.target.value;
-
         if (this.props.onChange) {
             const returnValue = value === this.state.nullValue ? null : value
             this.props.onChange(returnValue)
@@ -45,19 +43,17 @@ export default class TimePicker extends Component {
     // Prepare dropdown items for render
     prepareItems = () => {
         let items = [];
-        items.push(<DropdownItem value={this.state.nullValue} onClick={this.onChange}>{this.state.nullValue}</DropdownItem>)
+        items.push(<DropdownItem key="1" value={this.state.nullValue} onClick={this.onChange}>{this.state.nullValue}</DropdownItem>)
         for (let i = 0; i < 24; i++) {
-            const fullHour = this.getFormatedTime(i, 0)
-            const halfHour = this.getFormatedTime(i, 30)
-            items.push(<DropdownItem value={fullHour} onClick={this.onChange}>{fullHour}</DropdownItem>)
-            items.push(<DropdownItem value={halfHour} onClick={this.onChange}>{halfHour}</DropdownItem>)
+            for(let j = 1; j <= 2; j++){
+                const time = getFormatedHoursMinutes(i, 60/j)
+                items.push(<DropdownItem key={time} value={time} onClick={this.onChange}>{time}</DropdownItem>)
+            }
         }
         return items;
     }
 
-    getFormatedTime = (hours, minutes) => {
-        return ('0' + hours).slice(-2) + ":" + ('0' + minutes).slice(-2)
-    }
+
 
 
     render() {
