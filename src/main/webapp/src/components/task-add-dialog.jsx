@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import TaskLabel from './task-label'
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, DropdownItem, Input, UncontrolledDropdown, DropdownMenu, DropdownToggle } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, DropdownItem, Input, UncontrolledDropdown, DropdownMenu, DropdownToggle, Alert} from 'reactstrap';
 import DatePicker from 'reactstrap-date-picker'
 import TimePicker from './timepicker'
 import { getCurrentDateJSON } from '../utils/date-time'
+import {getLabels} from '../utils/label-service'
 
 
 export default class TaskAddDialog extends Component {
@@ -17,41 +18,43 @@ export default class TaskAddDialog extends Component {
             text : "",
             deadlineDate: null,
             deadlineTime: null,
-            project : this.props.project,
             labels : [],
 
-
             labelsToChoose: [],
+            errorMessage : "",
             isOpen: true
         }
     }
 
-
-    componentDidUpdate(prevProps) {
-
-        if (prevProps.labelsToChoose !== this.props.labelsToChoose) {
-            this.setState(prevState => ({
-                ...prevState,
-                project : this.props.project,
-                labelsToChoose: this.props.labelsToChoose
-            }))
-        }
-        /*if (prevProps !== this.props) {
-            this.setState(prevState => ({
-                isOpen: this.props.isOpen,
-                task: this.props.task
-            }))
-        }*/
+    componentDidMount() {
+        getLabels(1).then((data) => {
+            this.setState({
+                labelsToChoose : data
+            })
+        }) 
+        
     }
 
     onSubmit = (e) => {
-        let deadline = null;
-        if (this.state.deadlineDate || this.state.deadlineTime){
-            if (!this.state.deadlineDate){
-                
-            } 
+        const name = this.state.name;
+        if (!name){
+            this.showError("Name is empty")
         }
-        console.log(this.state)
+
+        const text = this.state.text;
+        
+        let deadline = null;
+        this.setState({
+            errorMessage : "Alert"
+        })
+        let data = {
+            name : this.state.name,
+            text : this.state.text,
+            deadlineDate: this.state.deadlineDate,
+            deadlineTime: this.state.deadlineTime,
+            labels : this.state.labels,
+        }
+        console.log(data)
     }
 
     onCancel = (e) => {
@@ -62,22 +65,26 @@ export default class TaskAddDialog extends Component {
         })
     }
 
+    showError = (error) => {
+        this.setState({
+            errorMessage : error
+        })
+    }
+
 
     onAddLabel = (e) => {
         e.preventDefault();
         const newLabel = this.state.labelsToChoose.find(label => label.id === parseInt(e.target.value))
 
         this.setState((prevState) => ({
-            ...prevState,
-            labels: [...prevState.task.labels, newLabel],
+            labels: [...prevState.labels, newLabel],
             labelsToChoose: prevState.labelsToChoose
         }))
     }
 
     onDeleteLabel = (id) => {
         this.setState(prevState => ({
-            ...prevState,
-            labels: prevState.task.labels.filter(label => label.id !== parseInt(id)),
+            labels: prevState.labels.filter(label => label.id !== parseInt(id)),
         }))
     }
 
@@ -88,7 +95,6 @@ export default class TaskAddDialog extends Component {
     onTaskNameChange = (e) => {
         let name = e.target.value
         this.setState(prevState => ({
-            ...prevState,
             name : name
         }))
     }
@@ -96,7 +102,6 @@ export default class TaskAddDialog extends Component {
     onTaskTextChange = (e) => {
         let text = e.target.value
         this.setState(prevState => ({
-            ...prevState,
             text : text
         }))
     }
@@ -104,7 +109,6 @@ export default class TaskAddDialog extends Component {
     onDateChange = (deadline) => {
         console.log(deadline)
         this.setState(prevState => ({
-            ...prevState,
             deadlineDate: deadline
         }))
     }
@@ -112,7 +116,6 @@ export default class TaskAddDialog extends Component {
     onTimeChange = (deadline) => {
         console.log(deadline)
         this.setState(prevState => ({
-            ...prevState,
             deadlineTime: deadline
         }))
     }
@@ -120,21 +123,10 @@ export default class TaskAddDialog extends Component {
     onDeadlineClear = (e) => {
         e.preventDefault();
         this.setState(prevState => ({
-            ...prevState,
             deadlineDate: null,
             deadlineTime: null
         }))
     }
-
-    onProjectChange = (e) => {
-        e.preventDefault();
-        const projectId = parseInt(e.target.value);
-        this.setState(prevState => ({
-            ...prevState,
-            projectId : projectId
-        }))
-    }
-
 
     render() {
         const labelsToChoose = this.state.labelsToChoose.filter(label => !this.isLabelAdded(label)).map((label) => {
@@ -143,10 +135,16 @@ export default class TaskAddDialog extends Component {
         const choosedLabels = this.state.labels.map((label) => {
             return <TaskLabel label={label} key={label.id} onClick={this.onDeleteLabel} />;
         })
+        
+        let alert = null;
+        if (this.state.errorMessage){
+            alert = <Alert color="danger">{this.state.errorMessage}</Alert>
+        }
         return (
             <Modal isOpen={this.state.isOpen} size="lg">
-                <ModalHeader >Add new task to {this.state.project.name}</ModalHeader>
+                <ModalHeader >Add new task</ModalHeader>
                 <ModalBody>
+                    {alert}
                     <Row>
                         <Col xs="9" md="9">
                             <Input type="text" onChange={this.onTaskNameChange} placeholder="New task"></Input>
