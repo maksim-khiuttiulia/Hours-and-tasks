@@ -25,8 +25,6 @@ public class TaskLabelService {
         return taskLabels.stream().map(TaskLabel::taskLabelDto).collect(Collectors.toList());
     }
 
-
-
     public List<TaskLabelColorDto> getAllColors(){
         List<TaskLabelColor> taskLabelColors = labelColorRepository.findAll();
         return taskLabelColors.stream().map(TaskLabelColor::taskLabelColorDto).collect(Collectors.toList());
