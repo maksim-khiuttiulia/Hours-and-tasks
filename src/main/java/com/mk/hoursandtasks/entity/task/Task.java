@@ -26,7 +26,7 @@ public class Task {
     @Column(nullable = false)
     private String name;
 
-    private String text;
+    private String description;
 
     @Column(name = "CREATED", nullable = false)
     private Date created;
@@ -60,7 +60,7 @@ public class Task {
         TaskDto taskDto = new TaskDto();
         taskDto.setId(this.getTaskId());
         taskDto.setName(this.getName());
-        taskDto.setText(this.getText());
+        taskDto.setDescription(this.getDescription());
         taskDto.setCreated(this.getCreated());
         taskDto.setDeadline(this.getDeadline());
         taskDto.setDone(BooleanUtils.isTrue(this.getIsDone()));

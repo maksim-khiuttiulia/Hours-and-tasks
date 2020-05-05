@@ -66,7 +66,7 @@
         <insert tableName="HT_TASK">
             <column name="TASK_ID" value="1"/>
             <column name="NAME" value="TASK 1"/>
-            <column name="TEXT" value="TASK TEXT 1"/>
+            <column name="DESCRIPTION" value="TASK TEXT 1"/>
             <column name="CREATED" value="2020-01-01 01:00:00"/>
             <column name="IS_DONE" value="FALSE"/>
             <column name="PROJECT_ID" value="1"/>
@@ -74,7 +74,7 @@
         <insert tableName="HT_TASK">
             <column name="TASK_ID" value="2"/>
             <column name="NAME" value="TASK 2"/>
-            <column name="TEXT" value="TASK TEXT 2"/>
+            <column name="DESCRIPTION" value="TASK TEXT 2"/>
             <column name="CREATED" value="2020-01-02 02:00:00"/>
             <column name="IS_DONE" value="FALSE"/>
             <column name="PROJECT_ID" value="1"/>
@@ -82,7 +82,7 @@
         <insert tableName="HT_TASK">
             <column name="TASK_ID" value="3"/>
             <column name="NAME" value="TASK 3"/>
-            <column name="TEXT" value="TASK TEXT 3"/>
+            <column name="DESCRIPTION" value="TASK TEXT 3"/>
             <column name="CREATED" value="2020-01-03 03:00:00"/>
             <column name="DEADLINE" value="2020-04-03 03:00:00"/>
             <column name="IS_DONE" value="TRUE"/>

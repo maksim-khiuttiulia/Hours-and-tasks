@@ -15,7 +15,7 @@ public class TaskDto {
 
     private String name;
 
-    private String text;
+    private String description;
 
     private Date created;
 

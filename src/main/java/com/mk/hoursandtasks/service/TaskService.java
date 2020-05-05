@@ -60,7 +60,7 @@ public class TaskService {
             throw new ValidationException("Task name is empty");
         }
         task.setName(taskDto.getName());
-        task.setText(taskDto.getText());
+        task.setDescription(taskDto.getDescription());
         task.setCreated(currentDate);
 
         if (taskDto.getDeadline() != null){
@@ -110,8 +110,8 @@ public class TaskService {
             throw new ValidationException("Task with id " + taskId + " doesnt exist");
         }
 
-        if (taskDto.getText() != null){
-            task.setText(taskDto.getText());
+        if (taskDto.getDescription() != null){
+            task.setDescription(taskDto.getDescription());
         }
 
         if (taskDto.getDeadline() != null){

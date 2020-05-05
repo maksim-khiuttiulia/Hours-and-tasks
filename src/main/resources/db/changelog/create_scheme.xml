@@ -33,7 +33,8 @@
             </column>
         </createTable>
 
-        <addForeignKeyConstraint baseTableName="HT_TASK_LABEL" baseColumnNames="COLOR_ID" constraintName="FK_COLOR" referencedTableName="HT_TASK_LABEL_COLOR"
+        <addForeignKeyConstraint baseTableName="HT_TASK_LABEL" baseColumnNames="COLOR_ID" constraintName="FK_COLOR"
+                                 referencedTableName="HT_TASK_LABEL_COLOR"
                                  referencedColumnNames="COLOR_ID"/>
     </changeSet>
 
@@ -73,9 +74,11 @@
             </column>
         </createTable>
 
-        <addForeignKeyConstraint baseTableName="HT_REL_TASK_LABEL" baseColumnNames="LABEL_ID" constraintName="FK_LABEL_ID" referencedTableName="HT_TASK_LABEL"
+        <addForeignKeyConstraint baseTableName="HT_REL_TASK_LABEL" baseColumnNames="LABEL_ID"
+                                 constraintName="FK_LABEL_ID" referencedTableName="HT_TASK_LABEL"
                                  referencedColumnNames="LABEL_ID"/>
-        <addForeignKeyConstraint baseTableName="HT_REL_TASK_LABEL" baseColumnNames="TASK_ID" constraintName="FK_TASK_ID" referencedTableName="HT_TASK"
+        <addForeignKeyConstraint baseTableName="HT_REL_TASK_LABEL" baseColumnNames="TASK_ID" constraintName="FK_TASK_ID"
+                                 referencedTableName="HT_TASK"
                                  referencedColumnNames="TASK_ID"/>
     </changeSet>
 
@@ -89,4 +92,15 @@
             </column>
         </createTable>
     </changeSet>
+
+
+    <changeSet id="5" author="Maks">
+        <renameColumn columnDataType="varchar"
+                      newColumnName="DESCRIPTION"
+                      oldColumnName="TEXT"
+                      schemaName="public"
+                      tableName="HT_TASK"/>
+    </changeSet>
+
+
 </databaseChangeLog>
