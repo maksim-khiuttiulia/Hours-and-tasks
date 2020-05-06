@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import TaskLabel from './task-label'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, DropdownItem, Input, UncontrolledDropdown, DropdownMenu, DropdownToggle} from 'reactstrap';
 import DatePicker from 'reactstrap-date-picker'
-import {getCurrentDateJSON} from '../utils/date-time'
+import TimePicker from './timepicker'
+import { getCurrentDateJSON, concatDateAndTime, toJsonDate } from '../utils/date-time'
+import {getAllLabels} from '../services/label-service'
 
 
 export default class TaskAddDialog extends Component {
@@ -12,40 +14,57 @@ export default class TaskAddDialog extends Component {
         super(props);
 
         this.state = {
-            task: {
-                taskId: null,
-                name: "",
-                text: "",
-                created: null,
-                deadline: null,
-                done: false,
-                projectId: 1,
-                labels: []
-            },
+            name : "",
+            description : "",
+            deadlineDate: null,
+            deadlineTime: null,
+            labels : [],
+
             labelsToChoose: [],
+            errorMessage : "",
             isOpen: false
         }
     }
 
-
-    componentDidUpdate(prevProps) {
-
-        if (prevProps.labelsToChoose !== this.props.labelsToChoose) {
-            this.setState(prevState => ({
-                task: prevState.task,
-                labelsToChoose: this.props.labelsToChoose
-            }))
-        }
-        /*if (prevProps !== this.props) {
-            this.setState(prevState => ({
-                isOpen: this.props.isOpen,
-                task: this.props.task
-            }))
-        }*/
+    componentDidMount() {
+        getAllLabels(1).then((data) => {
+            this.setState({
+                labelsToChoose : data
+            })
+        }) 
+        
     }
 
     onSubmit = (e) => {
-        console.log(this.state)
+        const name = this.state.name;
+        const description = this.state.description;
+        const labels = this.state.labels;
+
+        if (!name){
+            this.showError("Name is empty")
+            return;
+        }
+
+        let deadline = null;
+        const deadlineDate = this.state.deadlineDate;
+        const deadlineTime = this.state.deadlineTime;
+
+        if (deadlineDate) {
+            if (!deadlineTime) {
+                this.showError("Deadline time is empty")
+                return;
+            }
+
+            deadline = concatDateAndTime(deadlineDate, deadlineTime);
+            deadline = toJsonDate(deadline)
+        }
+        
+        let data = {
+            name : name,
+            description : description,
+            deadline : deadline,
+            labels : labels,
+        }
     }
 
     onCancel = (e) => {
@@ -107,16 +126,25 @@ export default class TaskAddDialog extends Component {
         }))
     }
 
-    onDateChange = (deadline) =>{
-        this.setState(prevState =>({
-            ...prevState,
-            task : {
-                ...prevState.task,
-                deadline : deadline
-            }
+    onDateChange = (deadline) => {
+        this.setState(prevState => ({
+            deadlineDate: deadline
         }))
     }
 
+    onTimeChange = (deadline) => {
+        this.setState(prevState => ({
+            deadlineTime: deadline
+        }))
+    }
+
+    onDeadlineClear = (e) => {
+        e.preventDefault();
+        this.setState(prevState => ({
+            deadlineDate: null,
+            deadlineTime: null
+        }))
+    }
 
     render() {
         const labelsToChoose = this.state.labelsToChoose.filter(label => !this.isLabelAdded(label)).map((label) => {
@@ -158,7 +186,13 @@ export default class TaskAddDialog extends Component {
                     <br />
                     <Row>
                         <Col xs="6">
-                            <DatePicker id="datepicker" value={this.state.task.deadline} minDate={getCurrentDateJSON()} onChange={this.onDateChange}/>
+                            <DatePicker id="datepicker" value={this.state.deadlineDate} dateFormat="DD.MM.YYYY" minDate={getCurrentDateJSON()} onChange={this.onDateChange} showClearButton={false} />
+                        </Col>
+                        <Col xs="3">
+                            <TimePicker className="w-100" onChange={this.onTimeChange} nullValue="No deadline" disabled={this.state.deadlineDate == null} />
+                        </Col>
+                        <Col xs="3">
+                            <Button color="danger" className="w-100" onClick={this.onDeadlineClear} >Clear</Button>
                         </Col>
                     </Row>
 

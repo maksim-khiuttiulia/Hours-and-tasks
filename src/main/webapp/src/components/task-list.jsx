@@ -4,7 +4,7 @@ import TaskAddForm from './task-add'
 import TaskDeleteDialog from './task-delete-dialog'
 import TaskAddDialog from './task-add-dialog'
 import { ListGroup, ListGroupItem, Spinner } from 'reactstrap';
-import API from '../utils/API'
+import {getAllTasks, saveNewTask, changeTaskStatus, deleteTask} from '../services/task-service'
 
 
 export default class TaskList extends Component {
@@ -23,42 +23,22 @@ export default class TaskList extends Component {
         }
     }
 
-    async componentDidMount() {
+    componentDidMount() {
         this.readTasks();
-        this.readLabels();
     }
 
-    async readLabels() {
-        try {
-            let response = await API.get("/task-labels");
-            let labels = response.data;
-            this.setState(prevState => ({
-                ...prevState,
-                labels: labels,
-            }))
-        } catch (e) {
-            console.error(e)
-        }
-    }
 
-    async readTasks() {
-        try {
+    readTasks() {
             this.setState(prevState => ({
-                ...prevState,
                 loading : true
             }))
 
-            let response = await API.get("/tasks")
-            let tasks = response.data;
-
-            this.setState(prevState => ({
-                ...prevState,
-                tasks: tasks,
-                loading : false
-            }))
-        } catch (e) {
-            console.error(e)
-        }
+            getAllTasks(1).then((tasks) => {
+                this.setState(prevState => ({
+                    tasks: tasks,
+                    loading : false
+                }))
+            })
     }
 
     openDeleteDialog = (task) => {
@@ -88,20 +68,20 @@ export default class TaskList extends Component {
 
 
     onAddTask = (task) => {
-        API.post(`/tasks`, task).then(res => {
-            this.readTasks();
+        saveNewTask(1, task).then((data) => {
+            this.readTasks()
         })
     }
 
     onDeleteTask = (task) => {
-        API.delete(`/tasks/${task.id}`).then(res => {
-            this.readTasks();
+        deleteTask(1, task).then((data) => {
+            this.readTasks()
         })
     }
 
     onChangeTaskStatus = (task) => {
-        API.put(`/tasks/${task.id}/done`, task).then(res => {
-            this.readTasks();
+        changeTaskStatus(1, task).then((data) => {
+            this.readTasks()
         })
     }
 
