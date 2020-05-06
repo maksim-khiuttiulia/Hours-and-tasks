@@ -103,7 +103,7 @@ export default class TaskList extends Component {
 
         return (
             <ListGroup>
-                <TaskAddDialog labelsToChoose={this.state.labels}></TaskAddDialog>
+                <TaskAddDialog labelsToChoose={this.state.labels} project={{id : 1, name : "testProject"}}></TaskAddDialog>
                 <TaskDeleteDialog isOpen={this.state.deleteDialog.isOpen} task={this.state.deleteDialog.task} deleteDialogCallback={this.deleteDialogCallback}/>
                 <TaskAddForm onAddTask={this.onAddTask} labelsToChoose={this.state.labels} />
                 <ListGroupItem color="danger">In progress:</ListGroupItem>

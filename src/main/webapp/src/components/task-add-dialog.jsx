@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import TaskLabel from './task-label'
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, DropdownItem, Input, UncontrolledDropdown, DropdownMenu, DropdownToggle} from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, DropdownItem, Input, UncontrolledDropdown, DropdownMenu, DropdownToggle, Alert} from 'reactstrap';
 import DatePicker from 'reactstrap-date-picker'
 import TimePicker from './timepicker'
 import { getCurrentDateJSON, concatDateAndTime, toJsonDate } from '../utils/date-time'
@@ -72,7 +72,12 @@ export default class TaskAddDialog extends Component {
         this.props.onCancelDeleteTask(this.state.task)
         this.setState({
             isOpen: false,
-            task: undefined
+        })
+    }
+
+    showError = (error) => {
+        this.setState({
+            errorMessage : error
         })
     }
 
@@ -82,47 +87,32 @@ export default class TaskAddDialog extends Component {
         const newLabel = this.state.labelsToChoose.find(label => label.id === parseInt(e.target.value))
 
         this.setState((prevState) => ({
-            task: {
-                ...prevState.task,
-                labels: [...prevState.task.labels, newLabel]
-            },
+            labels: [...prevState.labels, newLabel],
             labelsToChoose: prevState.labelsToChoose
         }))
     }
 
     onDeleteLabel = (id) => {
         this.setState(prevState => ({
-            task: {
-                ...prevState.task,
-                labels: prevState.task.labels.filter(label => label.id !== parseInt(id))
-            },
-            labelsToChoose: prevState.labelsToChoose
+            labels: prevState.labels.filter(label => label.id !== parseInt(id)),
         }))
     }
 
     isLabelAdded = (label) => {
-        return this.state.task.labels.filter(el => el.id === label.id).length > 0 ? true : false;
+        return this.state.labels.filter(el => el.id === label.id).length > 0 ? true : false;
     }
 
     onTaskNameChange = (e) => {
         let name = e.target.value
-        this.setState(prevState =>({
-            ...prevState,
-            task : {
-                ...prevState.task,
-                name : name
-            }
+        this.setState(prevState => ({
+            name : name
         }))
     }
 
     onTaskTextChange = (e) => {
         let text = e.target.value
-        this.setState(prevState =>({
-            ...prevState,
-            task : {
-                ...prevState.task,
-                text : text
-            }
+        this.setState(prevState => ({
+            text : text
         }))
     }
 
@@ -150,14 +140,19 @@ export default class TaskAddDialog extends Component {
         const labelsToChoose = this.state.labelsToChoose.filter(label => !this.isLabelAdded(label)).map((label) => {
             return <DropdownItem key={label.id} value={label.id} onClick={this.onAddLabel}>{label.name}</DropdownItem>
         })
-        const choosedLabels = this.state.task.labels.map((label) => {
+        const choosedLabels = this.state.labels.map((label) => {
             return <TaskLabel label={label} key={label.id} onClick={this.onDeleteLabel} />;
         })
-
+        
+        let alert = null;
+        if (this.state.errorMessage){
+            alert = <Alert color="danger">{this.state.errorMessage}</Alert>
+        }
         return (
             <Modal isOpen={this.state.isOpen} size="lg">
                 <ModalHeader >Add new task</ModalHeader>
                 <ModalBody>
+                    {alert}
                     <Row>
                         <Col xs="9" md="9">
                             <Input type="text" onChange={this.onTaskNameChange} placeholder="New task"></Input>
@@ -180,7 +175,7 @@ export default class TaskAddDialog extends Component {
                     <br />
                     <Row>
                         <Col xs="12">
-                            <Input type="textarea" name="text" onChange={this.onTaskTextChange} />
+                            <Input type="textarea" name="text" onChange={this.onTaskTextChange} placeholder="Task description" />
                         </Col>
                     </Row>
                     <br />
