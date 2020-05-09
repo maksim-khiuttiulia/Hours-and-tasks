@@ -29,7 +29,7 @@
                 <constraints nullable="false" unique="false"/>
             </column>
             <column name="PROJECT_ID" type="bigint">
-                <constraints nullable="true" unique="false"/>
+                <constraints nullable="false" unique="false"/>
             </column>
         </createTable>
 
@@ -90,6 +90,10 @@
             <column name="NAME" type="varchar">
                 <constraints nullable="false" unique="false"/>
             </column>
+            <column name="DESCRIPTION" type="varchar">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="OWNER" type="bigint"/>
         </createTable>
     </changeSet>
 
@@ -102,5 +106,31 @@
                       tableName="HT_TASK"/>
     </changeSet>
 
+
+    <changeSet id="6" author="Maks">
+        <createTable tableName="HT_USER">
+            <column name="USER_ID" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="USERNAME" type="varchar">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="EMAIL" type="varchar">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="PASSWORD" type="varchar">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="FIRST_NAME" type="varchar">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="LAST_NAME" type="varchar">
+                <constraints nullable="false" unique="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="HT_PROJECT" baseColumnNames="OWNER" constraintName="FK_PROJECT_OWNER"
+                                 referencedTableName="HT_USER"
+                                 referencedColumnNames="USER_ID"/>
+    </changeSet>
 
 </databaseChangeLog>
