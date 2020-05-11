@@ -121,6 +121,9 @@
             <column name="PASSWORD" type="varchar">
                 <constraints nullable="false" unique="false"/>
             </column>
+            <column name="LAST_PASSWORD_RESET" type="datetime">
+                <constraints nullable="true" unique="false"/>
+            </column>
             <column name="FIRST_NAME" type="varchar">
                 <constraints nullable="false" unique="false"/>
             </column>

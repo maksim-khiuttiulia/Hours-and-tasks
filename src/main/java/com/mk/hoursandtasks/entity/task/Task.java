@@ -69,7 +69,7 @@ public class Task {
             taskDto.setProjectId(this.getProject().getProjectId());
         }
 
-        List<TaskLabelDto> labelDtos = this.getLabels().stream().map(TaskLabel::taskLabelDto).collect(Collectors.toList());
+        List<TaskLabelDto> labelDtos = this.getLabels().stream().map(TaskLabel::toTaskLabelDto).collect(Collectors.toList());
 
         taskDto.setLabels(labelDtos);
 

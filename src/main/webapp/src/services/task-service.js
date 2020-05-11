@@ -20,5 +20,10 @@ export async function deleteTask(userId, task) {
 }
 
 export async function changeTaskStatus(userId, task) {
-    await API.put(`/tasks/${task.id}/done`, task)
+    if (task.done){
+        await API.put(`/tasks/${task.id}/done`, task)
+    } else {
+        await API.put(`/tasks/${task.id}/notDone`, task)
+    }
+
 }

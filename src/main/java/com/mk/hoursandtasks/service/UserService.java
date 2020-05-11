@@ -4,17 +4,27 @@ import com.mk.hoursandtasks.entity.user.User;
 import com.mk.hoursandtasks.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+
+@Service
 public class UserService {
 
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    @PostConstruct
+    public void init(){
+        passwordEncoder = new BCryptPasswordEncoder();
+    }
+
     public User createNewUser(User user){
-        return null;
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User newUser = userRepository.save(user);
+        return newUser;
     }
 
     public User findByUsername(String username){
@@ -25,7 +35,7 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
 
-    public User update(Long userId, User userDto){
+    public User update(Long userId, User user){
         return null;
     }
 

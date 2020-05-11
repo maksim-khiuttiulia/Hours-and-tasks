@@ -7,6 +7,7 @@ import lombok.Data;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -28,13 +29,16 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = true, name = "LAST_PASSWORD_RESET")
+    private Date lastPasswordReset;
+
     @Column(nullable = false, name = "FIRST_NAME")
     private String firstName;
 
     @Column(nullable = false, name = "LAST_NAME")
     private String lastName;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "STATUS")
     private UserStatus status;
 

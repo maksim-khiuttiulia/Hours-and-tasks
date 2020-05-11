@@ -37,7 +37,7 @@ public class TaskLabel {
     )
     private List<Task> tasks;
 
-    public TaskLabelDto taskLabelDto(){
+    public TaskLabelDto toTaskLabelDto(){
         TaskLabelDto labelDto = new TaskLabelDto();
         labelDto.setId(this.getLabelId());
         labelDto.setName(this.getName());
