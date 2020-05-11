@@ -1,5 +1,6 @@
 package com.mk.hoursandtasks.entity.user;
 
+import com.mk.hoursandtasks.dto.UserDto;
 import com.mk.hoursandtasks.entity.Project;
 import lombok.Data;
 
@@ -33,6 +34,10 @@ public class User {
     @Column(nullable = false, name = "LAST_NAME")
     private String lastName;
 
+    @Enumerated
+    @Column(nullable = false, name = "STATUS")
+    private UserStatus status;
+
     @OneToMany(mappedBy = "owner")
     private List<Project> projects;
 
@@ -42,4 +47,15 @@ public class User {
         }
         return projects;
     }
+
+    public UserDto toUserDto(){
+        UserDto userDto = new UserDto();
+        userDto.setUserId(this.userId);
+        userDto.setUsername(this.username);
+        userDto.setFirstName(this.firstName);
+        userDto.setLastName(this.lastName);
+
+        return userDto;
+    }
+
 }

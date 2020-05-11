@@ -127,6 +127,9 @@
             <column name="LAST_NAME" type="varchar">
                 <constraints nullable="false" unique="false"/>
             </column>
+            <column name="STATUS" type="varchar">
+                <constraints nullable="false" unique="false"/>
+            </column>
         </createTable>
         <addForeignKeyConstraint baseTableName="HT_PROJECT" baseColumnNames="OWNER" constraintName="FK_PROJECT_OWNER"
                                  referencedTableName="HT_USER"
