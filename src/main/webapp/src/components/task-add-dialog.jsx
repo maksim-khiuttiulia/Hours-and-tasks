@@ -5,6 +5,7 @@ import DatePicker from 'reactstrap-date-picker'
 import TimePicker from './timepicker'
 import { getCurrentDateJSON, concatDateAndTime, toJsonDate } from '../utils/date-time'
 import {getAllLabels} from '../services/label-service'
+import {saveNewTask} from '../services/task-service'
 
 
 export default class TaskAddDialog extends Component {
@@ -19,10 +20,11 @@ export default class TaskAddDialog extends Component {
             deadlineDate: null,
             deadlineTime: null,
             labels : [],
+            projectId : this.props.projectId,
 
             labelsToChoose: [],
             errorMessage : "",
-            isOpen: false
+            isOpen: this.props.isOpen
         }
     }
 
@@ -34,6 +36,14 @@ export default class TaskAddDialog extends Component {
         }) 
         
     }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps !== this.props) {
+          this.setState(prevState => ({
+            isOpen: this.props.isOpen,
+          }))
+        }
+      }
 
     onSubmit = (e) => {
         const name = this.state.name;
@@ -63,13 +73,19 @@ export default class TaskAddDialog extends Component {
             name : name,
             description : description,
             deadline : deadline,
+            isDone : false,
+            projectId : 1,
             labels : labels,
         }
+        saveNewTask(1, data).then(data => {
+            this.setState({
+                isOpen: false
+            })
+        });
     }
 
     onCancel = (e) => {
         e.preventDefault();
-        this.props.onCancelDeleteTask(this.state.task)
         this.setState({
             isOpen: false,
         })

@@ -12,6 +12,7 @@ export async function getAllTasks(userId) {
 }
 
 export async function saveNewTask(userId, task) {
+    console.log(task)
     await API.post(`/tasks`, task)
 }
 

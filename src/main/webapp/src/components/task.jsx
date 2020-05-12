@@ -2,6 +2,8 @@ import React, {Component} from 'react'
 import TaskLabel from './task-label'
 import TaskDeadLineLabel from './task-deadline'
 import {Button, ButtonGroup, Col, ListGroupItem, Row} from 'reactstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {faCheck, faTrash, faTimesCircle  } from '@fortawesome/free-solid-svg-icons'
 
 export default class Task extends Component {
     constructor(props) {
@@ -45,11 +47,11 @@ export default class Task extends Component {
 
         let buttonState;
         if (this.state.task.done) {
-            buttonState = <Button color="info" onClick={this.onNotDone} style={{ minWidth: 100 }}>Not done</Button>
+            buttonState = <Button color="info" onClick={this.onNotDone} style={{ minWidth: 100 }}><FontAwesomeIcon icon={faTimesCircle}/></Button>
         } else {
-            buttonState = <Button color="success" onClick={this.onDone} style={{ minWidth: 100 }}>Done</Button>
+            buttonState = <Button color="success" onClick={this.onDone} style={{ minWidth: 100 }}><FontAwesomeIcon icon={faCheck}/></Button>
         }
-        let buttonDelete = <Button color="danger" onClick={this.onDelete}  style={{ minWidth: 100 }}>Delete</Button>
+        let buttonDelete = <Button color="danger" onClick={this.onDelete}  style={{ minWidth: 100 }}><FontAwesomeIcon icon={faTrash}/></Button>
 
         return (
             <ListGroupItem color={this.state.task.done ? "success" : "danger"} className="justify-content-between" key={this.state.task.id}>

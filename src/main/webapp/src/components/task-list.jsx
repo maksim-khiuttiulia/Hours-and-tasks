@@ -3,8 +3,10 @@ import Task from './task'
 import TaskAddForm from './task-add'
 import TaskDeleteDialog from './task-delete-dialog'
 import TaskAddDialog from './task-add-dialog'
-import { ListGroup, ListGroupItem, Spinner } from 'reactstrap';
-import {getAllTasks, saveNewTask, changeTaskStatus, deleteTask} from '../services/task-service'
+import { ListGroup, ListGroupItem, Spinner, Button, Icon } from 'reactstrap';
+import { getAllTasks, saveNewTask, changeTaskStatus, deleteTask } from '../services/task-service'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPlusSquare } from '@fortawesome/free-solid-svg-icons'
 
 
 export default class TaskList extends Component {
@@ -12,14 +14,17 @@ export default class TaskList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            loading : false,
+            loading: false,
             labels: [],
             tasks: [],
-            deleteDialog : {
-                task : null,
-                isOpen : false
+            deleteDialog: {
+                task: null,
+                isOpen: false
+            },
+            newTaskDialog: {
+                isOpen: true
             }
-            
+
         }
     }
 
@@ -29,36 +34,43 @@ export default class TaskList extends Component {
 
 
     readTasks() {
-            this.setState(prevState => ({
-                loading : true
-            }))
+        this.setState(prevState => ({
+            loading: true
+        }))
 
-            getAllTasks(1).then((tasks) => {
-                this.setState(prevState => ({
-                    tasks: tasks,
-                    loading : false
-                }))
-            })
+        getAllTasks(1).then((tasks) => {
+            this.setState(prevState => ({
+                tasks: tasks,
+                loading: false
+            }))
+        })
     }
 
     openDeleteDialog = (task) => {
-        this.setState(prevState => ({
-            ...prevState,
-            deleteDialog : {
-                isOpen : true,
-                task : task
+        this.setState({
+            deleteDialog: {
+                isOpen: true,
+                task: task
             }
-        }))
+        })
+
+    }
+
+    openAddTaskDialog = () => {
+        this.setState({
+            newTaskDialog: {
+                isOpen: true,
+            }
+        })
 
     }
 
     deleteDialogCallback = (task, isDeleted) => {
-        this.setState(prevState => ({
-            ...prevState,
-            deleteDialog : {
-                isOpen : false
+        this.setState({
+            deleteDialog: {
+                isOpen: false
             }
-        }))
+        })
 
         if (isDeleted && task) {
             this.onDeleteTask(task);
@@ -92,7 +104,7 @@ export default class TaskList extends Component {
 
         let todoTasks = <ListGroupItem color="danger"><Spinner animation="border" /></ListGroupItem>
         let doneTasks = <ListGroupItem color="success"><Spinner animation="border" /></ListGroupItem>
-        if (!this.state.loading){
+        if (!this.state.loading) {
             todoTasks = this.state.tasks.filter((task) => !task.done).map((task) => {
                 return <Task task={task} key={task.id} onChangeTaskStatus={this.onChangeTaskStatus} onDeleteTask={this.openDeleteDialog} />;
             });
@@ -102,15 +114,20 @@ export default class TaskList extends Component {
         }
 
         return (
-            <ListGroup>
-                <TaskAddDialog labelsToChoose={this.state.labels} project={{id : 1, name : "testProject"}}></TaskAddDialog>
-                <TaskDeleteDialog isOpen={this.state.deleteDialog.isOpen} task={this.state.deleteDialog.task} deleteDialogCallback={this.deleteDialogCallback}/>
-                <TaskAddForm onAddTask={this.onAddTask} labelsToChoose={this.state.labels} />
-                <ListGroupItem color="danger">In progress:</ListGroupItem>
-                {todoTasks}
-                <ListGroupItem color="success">Done:</ListGroupItem>
-                {doneTasks}
-            </ListGroup>
+            <div>
+                <TaskAddDialog projectId={1} isOpen={this.state.newTaskDialog.isOpen}></TaskAddDialog>
+                <TaskDeleteDialog isOpen={this.state.deleteDialog.isOpen} task={this.state.deleteDialog.task} deleteDialogCallback={this.deleteDialogCallback} />
+                <ListGroup>
+                    <ListGroupItem className="d-flex justify-content-end">
+                        <Button color="info" onClick={this.openAddTaskDialog} style={{ minWidth: 100 }}><FontAwesomeIcon icon={faPlusSquare}/></Button>
+                    </ListGroupItem>
+                    <ListGroupItem color="danger">In progress:</ListGroupItem>
+                    {todoTasks}
+                    <ListGroupItem color="success">Done:</ListGroupItem>
+                    {doneTasks}
+                </ListGroup>
+            </div>
+
 
         );
     }
