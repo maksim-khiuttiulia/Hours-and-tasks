@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(ValidationException.class)
+    @ExceptionHandler(Throwable.class)
     public ResponseEntity<ErrorResponse> validationExceptionHandler(Exception ex, WebRequest request) {
 
         ErrorResponse errors = new ErrorResponse();
