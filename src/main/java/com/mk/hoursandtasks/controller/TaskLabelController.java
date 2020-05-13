@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/task-labels")
-public class TaskLabelController {
+public class TaskLabelController extends ControllerAncestor {
 
     @Autowired
     private TaskLabelService taskLabelService;

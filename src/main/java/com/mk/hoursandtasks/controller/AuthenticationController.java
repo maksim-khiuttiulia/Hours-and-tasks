@@ -2,7 +2,7 @@ package com.mk.hoursandtasks.controller;
 
 import com.mk.hoursandtasks.dto.UserDto;
 import com.mk.hoursandtasks.entity.user.User;
-import com.mk.hoursandtasks.security.JwtAuthenticationException;
+import com.mk.hoursandtasks.exceptions.JwtAuthenticationException;
 import com.mk.hoursandtasks.security.JwtTokenProvider;
 import com.mk.hoursandtasks.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/api/auth")
-public class AuthenticationController  {
+public class AuthenticationController extends ControllerAncestor  {
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -32,7 +32,6 @@ public class AuthenticationController  {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<UserDto> login(@RequestBody UserDto userDto){
-        System.out.println(userDto.getUsername());
         try {
             String username = userDto.getUsername();
             String password = userDto.getPassword();
@@ -43,8 +42,10 @@ public class AuthenticationController  {
                 throw new UsernameNotFoundException("User not found");
             }
             String token = jwtTokenProvider.createToken(username);
-            userDto.setToken(token);
-            return new ResponseEntity<>(userDto, HttpStatus.OK);
+            UserDto response = new UserDto();
+            response.setToken(token);
+            response.setUsername(username);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (JwtAuthenticationException e){
             throw new BadCredentialsException("Invalid username or password");
         }

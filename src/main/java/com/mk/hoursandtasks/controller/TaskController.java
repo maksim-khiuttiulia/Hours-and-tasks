@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/tasks")
-public class TaskController {
+public class TaskController extends ControllerAncestor {
 
     @Autowired
     private TaskService taskService;

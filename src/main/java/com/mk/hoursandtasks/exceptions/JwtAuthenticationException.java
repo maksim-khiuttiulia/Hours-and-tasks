@@ -1,4 +1,4 @@
-package com.mk.hoursandtasks.security;
+package com.mk.hoursandtasks.exceptions;
 
 import org.springframework.security.core.AuthenticationException;
 

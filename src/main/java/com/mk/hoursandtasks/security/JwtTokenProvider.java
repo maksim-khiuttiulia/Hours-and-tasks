@@ -1,5 +1,6 @@
 package com.mk.hoursandtasks.security;
 
+import com.mk.hoursandtasks.exceptions.JwtAuthenticationException;
 import com.mk.hoursandtasks.utils.DateUtils;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,11 +61,7 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest request){
-        String bearer = request.getHeader("Authorization");
-        if (bearer != null && bearer.startsWith("Bearer_")){
-            return bearer.substring(7, bearer.length());
-        }
-        return null;
+        return request.getHeader("Authorization");
     }
 
     public boolean validateToken(String token){
