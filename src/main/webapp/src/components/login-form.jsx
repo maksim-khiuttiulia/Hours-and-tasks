@@ -23,7 +23,7 @@ export default  class LoginForm extends Component {
         let username = this.state.username
         let password = this.state.password
         login(username, password).then(data => {
-            location.reload()
+            console.warn(data)
         })
   }  
   render() {
