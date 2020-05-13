@@ -7,7 +7,7 @@ Hours and tasks is open-source project.
 Demo version of projects: hours-and-tasks.herokuapp.com/
 
 User: test
-Password: test
+Password: password
 
 **Dont use your private data on demo version**
 

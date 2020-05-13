@@ -1,6 +1,6 @@
 import axios from "axios";
 
 export default axios.create({
-  baseURL: "http://hours-and-tasks.herokuapp.com/api",
+  baseURL: "http://localhost:8080/api",
   responseType: "json"
 });
