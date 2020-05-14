@@ -58,7 +58,7 @@
     <changeSet id="2" author="Maks">
         <insert tableName="HT_USER">
             <column name="USER_ID" value="1"/>
-            <column name="USERNAME" value="test1"/>
+            <column name="USERNAME" value="test"/>
             <column name="EMAIL" value="test1@email.test"/>
             <column name="PASSWORD" value="$2a$10$ITjRTdRw4E4n3aa2z0EWteNOavKfBZBl0dS4EkYtZiIKmcL2U9rbC"/>
             <column name="FIRST_NAME" value="TestFirstname"/>

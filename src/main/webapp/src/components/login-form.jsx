@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {useHistory } from "react-router-dom";
 import { Container, Alert, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import { login } from '../services/user-service'
 
@@ -41,7 +42,7 @@ export default class LoginForm extends Component {
       return;
     }
     login(username, password).then(data => {
-      console.warn(data)
+      this.props.history.push("/")
     })
   }
 
