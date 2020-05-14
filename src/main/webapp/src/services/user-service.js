@@ -9,7 +9,7 @@ export async function login(username, password) {
         let response = await API.post("/auth/login", request);
         let data = await response.data
         if (data.token){
-            localStorage.setItem('token', data.token)
+            sessionStorage.setItem('token', data.token)
         }
         return true
     } catch (error) {
@@ -19,6 +19,9 @@ export async function login(username, password) {
 }
 
 export function isLogged(){
+    if (sessionStorage.getItem('token')){
+        return true;
+    }
     if (localStorage.getItem('token')){
         return true;
     }

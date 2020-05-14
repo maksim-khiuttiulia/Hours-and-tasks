@@ -1,57 +1,85 @@
 import React, { Component } from 'react';
-import { Container, Col, Form, FormGroup, Label, Input, Button } from 'reactstrap';
-import {login} from '../services/user-service'
+import { Container, Alert, Form, FormGroup, Label, Input, Button } from 'reactstrap';
+import { login } from '../services/user-service'
 
-export default  class LoginForm extends Component {
+export default class LoginForm extends Component {
 
+  constructor(props){
+    super(props);
+    this.state = {
+      
+    }
+  }
 
-  onUsernameChanged= (e) =>{
+  onUsernameChanged = (e) => {
     let username = e.target.value
     this.setState({
-        username : username
+      errorMessage : "",
+      username: username
     })
   }
 
-  onPasswordChanged= (e) =>{
+  onPasswordChanged = (e) => {
     let password = e.target.value
     this.setState({
-        password : password
+      errorMessage : "",
+      password: password
     })
   }
 
   onSubmit = (e) => {
-        let username = this.state.username
-        let password = this.state.password
-        login(username, password).then(data => {
-            console.warn(data)
-        })
-  }  
+    let username = this.state.username
+    if (!username){
+      this.showError("Username is empty");
+      return;
+    }
+
+    let password = this.state.password
+
+    if (!password){
+      this.showError("Password is empty");
+      return;
+    }
+    login(username, password).then(data => {
+      console.warn(data)
+    })
+  }
+
+  showError = (error) => {
+    this.setState({
+        errorMessage : error
+    })
+  }
+
   render() {
+
+    let alert = null;
+    if (this.state.errorMessage){
+        alert = <Alert color="danger">{this.state.errorMessage}</Alert>
+    }
+
     return (
-      <Container className="App">
-        <h2>Sign In</h2>
-        <Form className="form">
-          <Col>
-            <FormGroup>
-              <Label>Email</Label>
-              <Input
-                type="email"
-                name="email"
-                placeholder="myemail@email.com"
-                onChange={this.onUsernameChanged}/>
-            </FormGroup>
-          </Col>
-          <Col>
-            <FormGroup>
-              <Label for="examplePassword">Password</Label>
-              <Input
-                type="password"
-                name="password"
-                placeholder="********"
-              onChange={this.onPasswordChanged}/>
-            </FormGroup>
-          </Col>
-          <Button onClick={this.onSubmit}>Submit</Button>
+      <Container className="d-flex h-100">
+        
+        <Form className="m-auto">
+        
+
+          <h2>Sign In</h2>
+
+          <FormGroup>
+            <Label>Username</Label>
+            <Input type="text" placeholder="username" onChange={this.onUsernameChanged} />
+          </FormGroup>
+
+          <FormGroup>
+            <Label>Password</Label>
+            <Input type="password" placeholder="********" onChange={this.onPasswordChanged} />
+          </FormGroup>
+
+          <FormGroup> 
+            <Button onClick={this.onSubmit} color="success" block>Login</Button>
+            {alert}
+          </FormGroup>
         </Form>
       </Container>
     );
