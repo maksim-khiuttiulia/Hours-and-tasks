@@ -1,5 +1,6 @@
 package com.mk.hoursandtasks.service;
 
+import com.mk.hoursandtasks.entity.Project;
 import com.mk.hoursandtasks.entity.tasklabel.TaskLabel;
 import com.mk.hoursandtasks.entity.tasklabel.TaskLabelColor;
 import com.mk.hoursandtasks.repository.TaskLabelColorRepository;
@@ -17,8 +18,8 @@ public class TaskLabelService {
     @Autowired
     private TaskLabelColorRepository labelColorRepository;
 
-    public List<TaskLabel> getAll(){
-        List<TaskLabel> taskLabels = taskLabelRepository.findAll();
+    public List<TaskLabel> getAllOnProject(Project project){
+        List<TaskLabel> taskLabels = taskLabelRepository.findAllByProject_ProjectId(project.getProjectId());
         return taskLabels;
     }
 

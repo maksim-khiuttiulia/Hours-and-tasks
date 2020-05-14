@@ -5,6 +5,7 @@ import com.mk.hoursandtasks.dto.TaskLabelDto;
 import com.mk.hoursandtasks.entity.Project;
 import com.mk.hoursandtasks.entity.task.Task;
 import com.mk.hoursandtasks.entity.tasklabel.TaskLabel;
+import com.mk.hoursandtasks.entity.user.User;
 import com.mk.hoursandtasks.exceptions.ValidationException;
 import com.mk.hoursandtasks.repository.ProjectRepository;
 import com.mk.hoursandtasks.repository.TaskLabelRepository;
@@ -15,8 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class TaskService {
@@ -31,17 +31,23 @@ public class TaskService {
     private ProjectRepository projectRepository;
 
 
-    public List<Task> getAll(){
-        List<Task> tasks = taskRepository.findAll();
+    public List<Task> getAll(User user){
+        Objects.requireNonNull(user);
+        List<Task> tasks = new LinkedList<>();
+        List<Project> projects = projectRepository.findAllByOwner_Username(user.getUsername());
+        for (Project project : projects){
+            tasks.addAll(taskRepository.findAllByProject_ProjectId(project.getProjectId()));
+        }
         return tasks;
     }
 
+    public List<Task> getAllInProject(Project project){
+        Objects.requireNonNull(project);
+        return taskRepository.findAllByProject_ProjectId(project.getProjectId());
+    }
+
     public Task getTask(Long taskId){
-        Task task = taskRepository.findById(taskId).orElse(null);
-        if (task == null){
-            throw new ValidationException("Task " + taskId + " doesnt exist");
-        }
-        return task;
+        return taskRepository.findById(taskId).orElse(null);
     }
 
     @Transactional(rollbackFor = Exception.class)

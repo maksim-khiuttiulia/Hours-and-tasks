@@ -2,12 +2,14 @@ package com.mk.hoursandtasks.controller;
 
 import com.mk.hoursandtasks.dto.TaskDto;
 import com.mk.hoursandtasks.entity.task.Task;
+import com.mk.hoursandtasks.entity.user.User;
 import com.mk.hoursandtasks.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,8 +21,9 @@ public class TaskController extends ControllerAncestor {
     private TaskService taskService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public List<TaskDto> getAllTasks(){
-        return taskService.getAll().stream().map(Task::toTaskDto).collect(Collectors.toList());
+    public List<TaskDto> getAllTasks(HttpServletRequest request){
+        User user = getCurrentUser(request);
+        return taskService.getAll(user).stream().map(Task::toTaskDto).collect(Collectors.toList());
     }
 
     @RequestMapping(value = "/{taskId}", method = RequestMethod.GET)

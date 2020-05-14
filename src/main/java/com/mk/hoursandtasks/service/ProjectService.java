@@ -17,6 +17,12 @@ public class ProjectService {
 
     public List<Project> getAllProjects(User user){
         Objects.requireNonNull(user);
-        return projectRepository.findByOwner_Username(user.getUsername());
+        return projectRepository.findAllByOwner_Username(user.getUsername());
+    }
+
+    public Project getProject(Long id, User user){
+        Objects.requireNonNull(id);
+        Objects.requireNonNull(user);
+        return projectRepository.findByProjectIdAndOwner_Username(id, user.getUsername());
     }
 }
