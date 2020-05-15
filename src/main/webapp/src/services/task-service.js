@@ -12,7 +12,9 @@ export async function getAllTasks() {
 }
 
 export async function saveNewTask(task) {
-    await API.post(`/tasks`, task)
+    let response = await API.post(`/tasks`, task)
+    let data = await response.data
+    return data;
 }
 
 export async function deleteTask(task) {

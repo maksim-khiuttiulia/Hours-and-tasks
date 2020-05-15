@@ -93,7 +93,14 @@ class TaskList extends Component {
 
     onChangeTaskStatus = (task) => {
         changeTaskStatus(task).then((data) => {
-            this.readTasks()
+            this.setState(prevState => {
+                return prevState.tasks.map(t => {
+                    if (task.id === t.id){
+                       return t.done = task.done;
+                    } 
+                    return t;
+                })
+            })
         })
     }
 
