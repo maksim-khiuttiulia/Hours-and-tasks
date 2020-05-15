@@ -27,4 +27,6 @@ public class TaskLabelController extends ControllerAncestor {
         getCurrentUser(request);
         return taskLabelService.getAllColors().stream().map(TaskLabelColor::taskLabelColorDto).collect(Collectors.toList());
     }
+
+
 }

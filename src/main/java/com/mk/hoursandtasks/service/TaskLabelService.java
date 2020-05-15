@@ -18,6 +18,10 @@ public class TaskLabelService {
     @Autowired
     private TaskLabelColorRepository labelColorRepository;
 
+    public TaskLabel getTaskLabel(Long labelId, Project project){
+        return taskLabelRepository.findByLabelIdAndProject_ProjectId(labelId, project.getProjectId());
+    }
+
     public List<TaskLabel> getAllOnProject(Project project){
         List<TaskLabel> taskLabels = taskLabelRepository.findAllByProject_ProjectId(project.getProjectId());
         return taskLabels;

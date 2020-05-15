@@ -25,16 +25,16 @@ public class TaskService {
     private TaskRepository taskRepository;
 
     @Autowired
-    private TaskLabelRepository taskLabelRepository;
+    private TaskLabelService taskLabelService;
 
     @Autowired
-    private ProjectRepository projectRepository;
+    private ProjectService projectService;
 
 
     public List<Task> getAll(User user){
         Objects.requireNonNull(user);
         List<Task> tasks = new LinkedList<>();
-        List<Project> projects = projectRepository.findAllByOwner_Username(user.getUsername());
+        List<Project> projects = projectService.getAllProjects(user);
         for (Project project : projects){
             tasks.addAll(taskRepository.findAllByProject_ProjectId(project.getProjectId()));
         }
@@ -46,12 +46,19 @@ public class TaskService {
         return taskRepository.findAllByProject_ProjectId(project.getProjectId());
     }
 
-    public Task getTask(Long taskId){
-        return taskRepository.findById(taskId).orElse(null);
+    public Task getTask(Long taskId, User user){
+        Objects.requireNonNull(taskId);
+        Objects.requireNonNull(user);
+        Task task = taskRepository.findById(taskId).orElse(null);
+        if (task == null){
+            return null;
+        }
+        checkTaskAccess(task,user);
+        return task;
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Task createNewTask(Task task){
+    public Task createNewTask(Task task, User user){
         Date currentDate = DateUtils.getCurrentDate();
         if (task == null){
             throw new ValidationException("Task is null");
@@ -76,14 +83,17 @@ public class TaskService {
             throw new ValidationException("Project id is null");
         }
 
-        Project project = projectRepository.getOne(task.getProject().getProjectId());
+        Project project = projectService.getProject(task.getProject().getProjectId(), user);
         if (project == null){
             throw new ValidationException("Project with id " + task.getProject().getProjectId() + " doesnt exist");
+        }
+        if (!project.getOwner().equals(user)){
+            throw new ValidationException("User hasnt access to this project");
         }
         task.setProject(project);
 
         for (TaskLabel taskLabel : task.getLabels()){
-            TaskLabel taskLabelDB = taskLabelRepository.getOne(taskLabel.getLabelId());
+            TaskLabel taskLabelDB = taskLabelService.getTaskLabel(taskLabel.getLabelId(), project);
             if (taskLabelDB == null){
                 throw new ValidationException("Task label " + taskLabel.getLabelId() + " not exists");
             }
@@ -95,7 +105,7 @@ public class TaskService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Task updateTask(Long taskId, Task task){
+    public Task updateTask(Long taskId, Task task, User user){
         Date currentDate = DateUtils.getCurrentDate();
         if (taskId == null){
             throw new ValidationException("Task id is null");
@@ -107,6 +117,9 @@ public class TaskService {
         Task taskFromDB = taskRepository.getOne(taskId);
         if (taskFromDB == null){
             throw new ValidationException("Task with id " + taskId + " doesnt exist");
+        }
+        if (!taskFromDB.getProject().getOwner().equals(user)){
+            throw new ValidationException("User hasnt access to this project");
         }
 
         taskFromDB.setDescription(task.getDescription());
@@ -122,7 +135,7 @@ public class TaskService {
 
         taskFromDB.getLabels().clear();
         for (TaskLabel taskLabel : task.getLabels()){
-            TaskLabel taskLabelDB = taskLabelRepository.getOne(taskLabel.getLabelId());
+            TaskLabel taskLabelDB = taskLabelService.getTaskLabel(taskLabel.getLabelId(), taskFromDB.getProject());
             if (taskLabelDB == null){
                 throw new ValidationException("Task label " + taskLabel.getLabelId() + " not exists");
             }
@@ -134,7 +147,7 @@ public class TaskService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Task doneTask(Long taskId, boolean done){
+    public Task doneTask(Long taskId, boolean done, User user){
         if (taskId == null){
             throw new ValidationException("Task id is null");
         }
@@ -143,6 +156,7 @@ public class TaskService {
         if (task == null){
             throw new ValidationException("Task with id " + taskId + " doesnt exist");
         }
+        checkTaskAccess(task, user);
 
         task.setIsDone(done);
 
@@ -151,8 +165,12 @@ public class TaskService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void deleteTask(Long taskId){
-        taskRepository.deleteById(taskId);
+    public void deleteTask(Long taskId, User user){
+        Task task = taskRepository.findById(taskId).orElse(null);
+        if (task != null){
+            checkTaskAccess(task, user);
+            taskRepository.deleteById(taskId);
+        }
     }
 
     public Task convertToTask(TaskDto taskDto){
@@ -166,7 +184,7 @@ public class TaskService {
         task.setCreated(taskDto.getCreated());
         task.setDeadline(taskDto.getDeadline());
         task.setIsDone(taskDto.isDone());
-        Project project = projectRepository.getOne(taskDto.getProjectId());
+        Project project = projectService.getProject(taskDto.getProjectId());
         if (project == null){
             throw new ValidationException("Project with id " + taskDto.getProjectId() + " doesnt exist");
         }
@@ -174,12 +192,24 @@ public class TaskService {
 
         task.getLabels().clear();
         for (TaskLabelDto taskLabelDto : taskDto.getLabels()){
-            TaskLabel taskLabelDB = taskLabelRepository.getOne(taskLabelDto.getId());
+            TaskLabel taskLabelDB = taskLabelService.getTaskLabel(taskLabelDto.getId(), project);
             if (taskLabelDB == null){
                 throw new ValidationException("Task label " + taskLabelDto.getId() + " not exists");
             }
             task.getLabels().add(taskLabelDB);
         }
         return task;
+    }
+
+    private void checkTaskAccess(Task task, User user){
+        if (!task.getProject().getOwner().equals(user)){
+            throw new ValidationException("User hasnt access to this project");
+        }
+    }
+
+    private void checkProjectAccess(Task task, User user){
+        if (!task.getProject().getOwner().equals(user)){
+            throw new ValidationException("User hasnt access to this project");
+        }
     }
 }

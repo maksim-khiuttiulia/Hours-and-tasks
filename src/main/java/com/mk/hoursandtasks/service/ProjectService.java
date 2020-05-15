@@ -20,9 +20,16 @@ public class ProjectService {
         return projectRepository.findAllByOwner_Username(user.getUsername());
     }
 
+    public Project getProject(Long id){
+        Objects.requireNonNull(id);
+        return projectRepository.findById(id).orElse(null);
+    }
+
     public Project getProject(Long id, User user){
         Objects.requireNonNull(id);
         Objects.requireNonNull(user);
         return projectRepository.findByProjectIdAndOwner_Username(id, user.getUsername());
     }
+
+
 }

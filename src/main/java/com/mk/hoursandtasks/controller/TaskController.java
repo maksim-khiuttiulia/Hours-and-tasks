@@ -27,8 +27,9 @@ public class TaskController extends ControllerAncestor {
     }
 
     @RequestMapping(value = "/{taskId}", method = RequestMethod.GET)
-    public @ResponseBody TaskDto getAllTasks(@PathVariable(name = "taskId") Long taskId){
-        Task task = taskService.getTask(taskId);
+    public @ResponseBody TaskDto getTask(@PathVariable(name = "taskId") Long taskId, HttpServletRequest request){
+        User user = getCurrentUser(request);
+        Task task = taskService.getTask(taskId, user);
         if (task == null){
             return null;
         }
@@ -36,34 +37,39 @@ public class TaskController extends ControllerAncestor {
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity<TaskDto> addNewTask(@RequestBody TaskDto taskDto){
+    public ResponseEntity<TaskDto> addNewTask(@RequestBody TaskDto taskDto, HttpServletRequest request){
+        User user = getCurrentUser(request);
         Task newTask = taskService.convertToTask(taskDto);
-        newTask =  taskService.createNewTask(newTask);
+        newTask =  taskService.createNewTask(newTask, user);
         return new ResponseEntity<>(newTask.toTaskDto(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{taskId}", method = RequestMethod.PUT)
-    public ResponseEntity<TaskDto> updateTask(@PathVariable(name = "taskId") Long taskId, @RequestBody TaskDto taskDto){
+    public ResponseEntity<TaskDto> updateTask(@PathVariable(name = "taskId") Long taskId, @RequestBody TaskDto taskDto, HttpServletRequest request){
+        User user = getCurrentUser(request);
         Task task = taskService.convertToTask(taskDto);
-        taskService.updateTask(taskId, task);
+        taskService.updateTask(taskId, task, user);
         return new ResponseEntity<>(task.toTaskDto(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{taskId}/done", method = RequestMethod.PUT)
-    public ResponseEntity<TaskDto> doneTask(@PathVariable(name = "taskId") Long taskId){
-        Task task =  taskService.doneTask(taskId, true);
+    public ResponseEntity<TaskDto> doneTask(@PathVariable(name = "taskId") Long taskId, HttpServletRequest request){
+        User user = getCurrentUser(request);
+        Task task =  taskService.doneTask(taskId, true, user);
         return new ResponseEntity<>(task.toTaskDto(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{taskId}/notDone", method = RequestMethod.PUT)
-    public ResponseEntity<TaskDto> notDoneTask(@PathVariable(name = "taskId") Long taskId){
-        Task task =  taskService.doneTask(taskId, false);
+    public ResponseEntity<TaskDto> notDoneTask(@PathVariable(name = "taskId") Long taskId, HttpServletRequest request){
+        User user = getCurrentUser(request);
+        Task task =  taskService.doneTask(taskId, false, user);
         return new ResponseEntity<>(task.toTaskDto(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{taskId}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteTask(@PathVariable(name = "taskId") Long taskId){
-        taskService.deleteTask(taskId);
+    public ResponseEntity<?> deleteTask(@PathVariable(name = "taskId") Long taskId, HttpServletRequest request){
+        User user = getCurrentUser(request);
+        taskService.deleteTask(taskId, user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

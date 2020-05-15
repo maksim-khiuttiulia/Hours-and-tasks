@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface TaskLabelRepository extends JpaRepository<TaskLabel, Long> {
     List<TaskLabel> findAllByProject_ProjectId(Long projectId);
+    TaskLabel findByLabelIdAndProject_ProjectId(Long labelId, Long projectId);
 }

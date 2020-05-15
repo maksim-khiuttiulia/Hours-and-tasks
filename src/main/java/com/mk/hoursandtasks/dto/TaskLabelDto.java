@@ -9,4 +9,5 @@ public class TaskLabelDto {
     private Long id;
     private String name;
     private String color;
+    private ProjectDto projectDto;
 }
