@@ -29,7 +29,7 @@ export default class TaskAddDialog extends Component {
     }
 
     componentDidMount() {
-        getAllLabels(1).then((data) => {
+        getAllLabels().then((data) => {
             this.setState({
                 labelsToChoose : data
             })

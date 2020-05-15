@@ -7,9 +7,10 @@ import { ListGroup, ListGroupItem, Spinner, Button, Icon } from 'reactstrap';
 import { getAllTasks, saveNewTask, changeTaskStatus, deleteTask } from '../services/task-service'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlusSquare } from '@fortawesome/free-solid-svg-icons'
+import { withRouter } from 'react-router-dom'
 
 
-export default class TaskList extends Component {
+class TaskList extends Component {
 
     constructor(props) {
         super(props);
@@ -34,15 +35,15 @@ export default class TaskList extends Component {
 
 
     readTasks() {
-        this.setState(prevState => ({
+        this.setState({
             loading: true
-        }))
+        })
 
-        getAllTasks(1).then((tasks) => {
-            this.setState(prevState => ({
+        getAllTasks().then((tasks) => {
+            this.setState({
                 tasks: tasks,
                 loading: false
-            }))
+            })
         })
     }
 
@@ -80,19 +81,19 @@ export default class TaskList extends Component {
 
 
     onAddTask = (task) => {
-        saveNewTask(1, task).then((data) => {
+        saveNewTask(task).then((data) => {
             this.readTasks()
         })
     }
 
     onDeleteTask = (task) => {
-        deleteTask(1, task).then((data) => {
+        deleteTask(task).then((data) => {
             this.readTasks()
         })
     }
 
     onChangeTaskStatus = (task) => {
-        changeTaskStatus(1, task).then((data) => {
+        changeTaskStatus(task).then((data) => {
             this.readTasks()
         })
     }
@@ -132,3 +133,5 @@ export default class TaskList extends Component {
         );
     }
 }
+
+export default withRouter(TaskList)

@@ -1,6 +1,6 @@
 import API from './API'
 
-export async function getAllLabels(userId) {
+export async function getAllLabels() {
     try {
         let response = await API.get("/task-labels");
         let data = await response.data

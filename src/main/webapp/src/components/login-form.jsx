@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import {useHistory } from "react-router-dom";
+import {Redirect, withRouter } from "react-router-dom";
 import { Container, Alert, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import { login } from '../services/user-service'
 
-export default class LoginForm extends Component {
+class LoginForm extends Component {
 
   constructor(props){
     super(props);
     this.state = {
-      
+      isLoggedIn : props.isLoggedIn
     }
   }
 
@@ -42,7 +42,9 @@ export default class LoginForm extends Component {
       return;
     }
     login(username, password).then(data => {
-      this.props.history.push("/")
+      this.setState({
+        isLoggedIn : true
+      })
     })
   }
 
@@ -58,7 +60,10 @@ export default class LoginForm extends Component {
     if (this.state.errorMessage){
         alert = <Alert color="danger">{this.state.errorMessage}</Alert>
     }
-
+    
+    if (this.state.isLoggedIn === true){
+        return (<Redirect to="/"/>)
+    }
     return (
       <Container className="d-flex h-100">
         
@@ -86,3 +91,5 @@ export default class LoginForm extends Component {
     );
   }
 }
+
+export default withRouter(LoginForm)

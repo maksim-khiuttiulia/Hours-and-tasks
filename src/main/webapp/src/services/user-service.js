@@ -3,12 +3,12 @@ import API from './API'
 export async function login(username, password) {
     try {
         let request = {
-            username : username,
-            password : password
+            username: username,
+            password: password
         }
         let response = await API.post("/auth/login", request);
         let data = await response.data
-        if (data.token){
+        if (data.token) {
             sessionStorage.setItem('token', data.token)
         }
         return true
@@ -18,12 +18,15 @@ export async function login(username, password) {
     return false;
 }
 
-export function isLogged(){
-    if (sessionStorage.getItem('token')){
-        return true;
+export async function isLogged() {
+    let token = sessionStorage.getItem('token');
+    if (!token) {
+        token = localStorage.getItem('token');
     }
-    if (localStorage.getItem('token')){
-        return true;
+    if (!token) {
+        return false;
     }
-    return false;
+    let response = await API.get("/auth/authValid")
+    let data = await response.data;
+    return data.validAuth === true;
 }

@@ -1,28 +1,46 @@
-import React from 'react';
-import {BrowserRouter, Redirect, Switch, Route,Link } from "react-router-dom";
-import {isLogged} from './services/user-service'
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Redirect, Switch, Route, Link, withRouter } from "react-router-dom";
+import { isLogged } from './services/user-service'
 import TaskList from './components/task-list'
 import LoginForm from './components/login-form'
-import { Container} from 'reactstrap';
+import { Container } from 'reactstrap';
 
 
-const PrivateRoute = ({ component: Component, ...rest }) => (
-  <Route {...rest} render={(props) => (isLogged() === true ? <Component {...props}/> : <Redirect to='/login' />)} />
-)
+const PrivateRoute = withRouter((props) => {
+  const { component: Component, ...rest } = props;
+  const [logged, setLogged] = useState(false);
 
-const PublicRoute = ({ component: Component, ...rest }) => (
-  <Route {...rest} render={(props) => (isLogged() === true ?  <Redirect to="/"/> : <Component {...props} />)} />
-)
+  useEffect(() => {
+    isLogged().then(result => {
+      setLogged(result)
+    })
+  })
+
+  return (<Route {...rest} render={(props) => logged === true ? <Component {...props} /> : <Redirect to='/login' />} />)
+})
+
+const PublicRoute = withRouter((props) => {
+  const { component: Component, ...rest } = props;
+  const [logged, setLogged] = useState(false);
+
+  useEffect(() => {
+    isLogged().then(result => {
+      setLogged(result)
+    })
+  })
+
+  return (<Route {...rest} render={(props) => logged === true ? <Redirect to="/" /> : <Component {...props} />} />)
+})
+
 
 function App() {
-    let content = isLogged() ? <TaskList/> : <LoginForm/>
-    return (
-      <BrowserRouter>
-        <PrivateRoute path="/" component={TaskList}/>
-        <PublicRoute path="/login" component={LoginForm}/>
+  return (
+    <BrowserRouter>
+      <PrivateRoute path="/" component={TaskList} />
+      <PublicRoute path="/login" component={LoginForm} />
     </BrowserRouter>
 
-    );
+  );
 }
 
 export default App;
