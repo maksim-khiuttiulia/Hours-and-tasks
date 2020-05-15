@@ -2,6 +2,7 @@ package com.mk.hoursandtasks.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mk.hoursandtasks.HoursAndTasksApplication;
+import com.mk.hoursandtasks.dto.AuthDto;
 import com.mk.hoursandtasks.dto.UserDto;
 import com.mk.hoursandtasks.entity.user.User;
 import com.mk.hoursandtasks.entity.user.UserStatus;
@@ -29,6 +30,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -101,4 +103,30 @@ class AuthenticationControllerTest {
                 .andExpect(status().is4xxClientError()).andReturn();
     }
 
+
+    @Test
+    public void authValidSuccess() throws Exception {
+        AuthDto request = new AuthDto();
+        request.setUsername(USER_USERNAME_1);
+        request.setPassword(USER_PASSWORD_1);
+        String content = objectMapper.writeValueAsString(request);
+        MvcResult mvcResult = mvc.perform(post("/api/auth/login")
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        content = mvcResult.getResponse().getContentAsString();
+        AuthDto response = objectMapper.readValue(content, AuthDto.class);
+        String token = response.getToken();
+
+        mvcResult = mvc.perform(get("/api/auth/authValid")
+                .header("Authorization", token))
+                .andExpect(status().isOk())
+                .andReturn();
+        content = mvcResult.getResponse().getContentAsString();
+        response = objectMapper.readValue(content, AuthDto.class);
+
+        assertTrue(response.getValidAuth());
+    }
 }
