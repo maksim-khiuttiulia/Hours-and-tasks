@@ -28,7 +28,8 @@ export default class TaskAddDialog extends Component {
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        
         getAllLabels().then((data) => {
             this.setState({
                 labelsToChoose : data
@@ -77,7 +78,7 @@ export default class TaskAddDialog extends Component {
             projectId : 1,
             labels : labels,
         }
-        saveNewTask(1, data).then(data => {
+        saveNewTask(data).then(data => {
             this.setState({
                 isOpen: false
             })

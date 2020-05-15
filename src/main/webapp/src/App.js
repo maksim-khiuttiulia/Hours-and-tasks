@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Redirect, Switch, Route, Link, withRouter } from "react-router-dom";
+import { BrowserRouter, Redirect, Route, withRouter } from "react-router-dom";
 import { isLogged } from './services/user-service'
 import TaskList from './components/task-list'
 import LoginForm from './components/login-form'
-import { Container } from 'reactstrap';
 
 
 const PrivateRoute = withRouter((props) => {
