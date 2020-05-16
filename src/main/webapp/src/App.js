@@ -1,42 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter, Redirect, Route, withRouter } from "react-router-dom";
-import { isLogged } from './services/user-service'
-import TaskList from './components/task-list'
-import LoginForm from './components/login-form'
+import { isLoggedIn } from './services/user-service'
+import TaskList from './components/tasks/task-list'
+import LoginForm from './components/forms/login-form'
+import ContainerPage from './components/container-page/container-page'
 
 
-const PrivateRoute = withRouter((props) => {
-  const { component: Component, ...rest } = props;
-  const [logged, setLogged] = useState(false);
 
-  useEffect(() => {
-    isLogged().then(result => {
-      setLogged(result)
-    })
-  })
-
-  return (<Route {...rest} render={(props) => logged === true ? <Component {...props} /> : <Redirect to='/login' />} />)
+const PrivateRoute = withRouter(({ component: Component, ...rest }) => {
+  return (<Route {...rest} render={(props) => isLoggedIn() === false ? <Redirect to={{pathname : '/login', state : {from: props.location.pathname} }} /> : <ContainerPage><Component {...props} /></ContainerPage>} />)
 })
 
-const PublicRoute = withRouter((props) => {
-  const { component: Component, ...rest } = props;
-  const [logged, setLogged] = useState(false);
-
-  useEffect(() => {
-    isLogged().then(result => {
-      setLogged(result)
-    })
-  })
-
-  return (<Route {...rest} render={(props) => logged === true ? <Redirect to="/" /> : <Component {...props} />} />)
+const PublicRoute = withRouter(({ component: Component, ...rest }) => {
+  return (<Route {...rest} render={(props) => isLoggedIn() === false ? <Component {...props}/> : <Redirect to={{pathname : '/login', state : {from: props.location.pathname} }} />} />)
 })
 
 
 function App() {
+
   return (
     <BrowserRouter>
-      <PrivateRoute path="/" component={TaskList} />
-      <PublicRoute path="/login" component={LoginForm} />
+      <PrivateRoute exact path="/" component={TaskList} />
+      <PrivateRoute exact path="/tasks" component={TaskList} />
+      <Route exact path="/login" component={LoginForm} />
     </BrowserRouter>
 
   );

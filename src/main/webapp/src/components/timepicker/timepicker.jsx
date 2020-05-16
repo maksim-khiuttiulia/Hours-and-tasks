@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { DropdownItem, UncontrolledDropdown, DropdownMenu, DropdownToggle } from 'reactstrap';
 import './timepicker-style.css'
-import {getFormatedHoursMinutes} from '../utils/date-time'
+import {getFormatedHoursMinutes} from '../../utils/date-time'
 
 
 export default class TimePicker extends Component {

@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { Badge } from 'reactstrap';
-import {formatedDate} from '../utils/date-time'
+import {formatedDate} from '../../utils/date-time'
 
 export default class TaskDeadLineLabel extends Component {
     constructor(props) {

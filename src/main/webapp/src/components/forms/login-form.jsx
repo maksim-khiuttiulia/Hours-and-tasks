@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import {Redirect, withRouter } from "react-router-dom";
 import { Container, Alert, Form, FormGroup, Label, Input, Button } from 'reactstrap';
-import { login } from '../services/user-service'
+import { login, isLoggedIn } from '../../services/user-service'
 
 class LoginForm extends Component {
 
   constructor(props){
     super(props);
     this.state = {
-      isLoggedIn : props.isLoggedIn
+      isLoggedIn : isLoggedIn(),
+      from : "/"
     }
   }
 
@@ -60,9 +61,9 @@ class LoginForm extends Component {
     if (this.state.errorMessage){
         alert = <Alert color="danger">{this.state.errorMessage}</Alert>
     }
-    
-    if (this.state.isLoggedIn === true){
-        return (<Redirect to="/"/>)
+
+    if (this.state.isLoggedIn){
+      return (<Redirect to={this.state.from} />)
     }
     return (
       <Container className="d-flex h-100">

@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import Task from './task'
-import TaskDeleteDialog from './task-delete-dialog'
-import TaskAddDialog from './task-add-dialog'
+import TaskDeleteDialog from '../forms/task-delete-dialog'
+import TaskAddDialog from '../forms/task-add-dialog'
 import { ListGroup, ListGroupItem, Spinner, Button } from 'reactstrap';
-import { getAllTasks, saveNewTask, changeTaskStatus, deleteTask } from '../services/task-service'
+import { getAllTasks, saveNewTask, changeTaskStatus, deleteTask } from '../../services/task-service'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlusSquare } from '@fortawesome/free-solid-svg-icons'
 import { withRouter } from 'react-router-dom'
@@ -22,7 +22,7 @@ class TaskList extends Component {
                 isOpen: false
             },
             newTaskDialog: {
-                isOpen: true
+                isOpen: false
             }
 
         }
@@ -95,9 +95,9 @@ class TaskList extends Component {
         changeTaskStatus(task).then((data) => {
             this.setState(prevState => {
                 return prevState.tasks.map(t => {
-                    if (task.id === t.id){
-                       return t.done = task.done;
-                    } 
+                    if (task.id === t.id) {
+                        return t.done = task.done;
+                    }
                     return t;
                 })
             })
@@ -126,11 +126,14 @@ class TaskList extends Component {
                 <TaskDeleteDialog isOpen={this.state.deleteDialog.isOpen} task={this.state.deleteDialog.task} deleteDialogCallback={this.deleteDialogCallback} />
                 <ListGroup>
                     <ListGroupItem className="d-flex justify-content-end">
-                        <Button color="info" onClick={this.openAddTaskDialog} style={{ minWidth: 100 }}><FontAwesomeIcon icon={faPlusSquare}/></Button>
+                        <Button color="info" onClick={this.openAddTaskDialog} style={{ minWidth: 100 }}><FontAwesomeIcon icon={faPlusSquare} /></Button>
                     </ListGroupItem>
                     <ListGroupItem color="danger">In progress:</ListGroupItem>
                     {todoTasks}
-                    <ListGroupItem color="success">Done:</ListGroupItem>
+
+                </ListGroup>
+                <ListGroup className="mt-3">
+                    <ListGroupItem color="success" >Done:</ListGroupItem>
                     {doneTasks}
                 </ListGroup>
             </div>

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import TaskLabel from './task-label'
+import TaskLabel from '../tasks/task-label'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, DropdownItem, Input, UncontrolledDropdown, DropdownMenu, DropdownToggle, Alert} from 'reactstrap';
 import DatePicker from 'reactstrap-date-picker'
-import TimePicker from './timepicker'
-import { getCurrentDateJSON, concatDateAndTime, toJsonDate } from '../utils/date-time'
-import {getAllLabels} from '../services/label-service'
-import {saveNewTask} from '../services/task-service'
+import TimePicker from '../timepicker/timepicker'
+import { getCurrentDateJSON, concatDateAndTime, toJsonDate } from '../../utils/date-time'
+import {getAllLabels} from '../../services/label-service'
+import {saveNewTask} from '../../services/task-service'
 
 
 export default class TaskAddDialog extends Component {

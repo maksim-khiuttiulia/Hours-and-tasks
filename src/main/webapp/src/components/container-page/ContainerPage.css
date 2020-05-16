@@ -1,0 +1,11 @@
+.wrapper {
+    width: 70%;
+}
+
+.nav-link {
+    color: #fff !important;
+}
+
+.nav-link:hover {
+    color: #000 !important;
+}

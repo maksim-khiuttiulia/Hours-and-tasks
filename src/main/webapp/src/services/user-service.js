@@ -18,7 +18,12 @@ export async function login(username, password) {
     return false;
 }
 
-export async function isLogged() {
+export function logout() {
+    sessionStorage.removeItem("token")
+    localStorage.removeItem("token")
+}
+
+export function isLoggedIn() {
     let token = sessionStorage.getItem('token');
     if (!token) {
         token = localStorage.getItem('token');
@@ -26,7 +31,5 @@ export async function isLogged() {
     if (!token) {
         return false;
     }
-    let response = await API.get("/auth/authValid")
-    let data = await response.data;
-    return data.validAuth === true;
+    return true
 }
