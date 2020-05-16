@@ -4,7 +4,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, DropdownI
 import DatePicker from 'reactstrap-date-picker'
 import TimePicker from '../timepicker/timepicker'
 import { getCurrentDateJSON, concatDateAndTime, toJsonDate } from '../../utils/date-time'
-import {getAllLabels} from '../../services/label-service'
+import {getLabelsInProject} from '../../services/label-service'
 import {saveNewTask} from '../../services/task-service'
 
 
@@ -29,8 +29,8 @@ export default class TaskAddDialog extends Component {
     }
 
     async componentDidMount() {
-        
-        getAllLabels().then((data) => {
+        const {projectId} = this.props
+        getLabelsInProject(projectId).then((data) => {
             this.setState({
                 labelsToChoose : data
             })
@@ -38,10 +38,11 @@ export default class TaskAddDialog extends Component {
         
     }
 
-    componentDidUpdate(prevProps) {
+    async componentDidUpdate(prevProps) {
         if (prevProps !== this.props) {
           this.setState(prevState => ({
             isOpen: this.props.isOpen,
+            projectId : this.props.projectId
           }))
         }
       }

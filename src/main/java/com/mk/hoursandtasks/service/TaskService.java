@@ -67,7 +67,6 @@ public class TaskService {
         if (StringUtils.isEmpty(task.getName())){
             throw new ValidationException("Task name is empty");
         }
-        task.setCreated(currentDate);
 
         if (task.getDeadline() != null){
             if (task.getDeadline().before(currentDate)){
@@ -90,15 +89,16 @@ public class TaskService {
         if (!project.getOwner().equals(user)){
             throw new ValidationException("User hasnt access to this project");
         }
-        task.setProject(project);
 
+        List<TaskLabel> taskLabels = new ArrayList<>();
         for (TaskLabel taskLabel : task.getLabels()){
             TaskLabel taskLabelDB = taskLabelService.getTaskLabel(taskLabel.getLabelId(), project);
             if (taskLabelDB == null){
                 throw new ValidationException("Task label " + taskLabel.getLabelId() + " not exists");
             }
-            task.getLabels().add(taskLabelDB);
+            taskLabels.add(taskLabelDB);
         }
+        task.setLabels(taskLabels);
 
         task = taskRepository.save(task);
         return task;

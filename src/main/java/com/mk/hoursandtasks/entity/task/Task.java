@@ -6,6 +6,7 @@ import com.mk.hoursandtasks.entity.Project;
 import com.mk.hoursandtasks.entity.tasklabel.TaskLabel;
 import liquibase.util.BooleanUtils;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class Task {
 
     private String description;
 
+    @CreationTimestamp
     @Column(name = "CREATED", nullable = false)
     private Date created;
 
