@@ -40,7 +40,7 @@ export default class Task extends Component {
     }
 
     render() {
-        const deadlineLabel = <TaskDeadLineLabel deadline={this.state.deadline}/>
+        const deadlineLabel = <TaskDeadLineLabel deadline={this.state.task.deadline}/>
         const labelsElement = this.state.task.labels.map((label) => {
             return <TaskLabel label={label} key={label.id} />;
         })

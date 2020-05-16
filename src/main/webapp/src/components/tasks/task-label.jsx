@@ -15,9 +15,6 @@ export default class TaskLabel extends Component {
         e.preventDefault();
         if (typeof this.props.onClick === "function"){
             this.props.onClick(this.state.id)
-        } else {
-            console.warn("onClick is not function or not implemented")
-            alert("Haha you found a bug");
         }
     }
 

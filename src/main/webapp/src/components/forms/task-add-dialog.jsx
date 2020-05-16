@@ -42,9 +42,18 @@ export default class TaskAddDialog extends Component {
         if (prevProps !== this.props) {
           this.setState(prevState => ({
             isOpen: this.props.isOpen,
-            projectId : this.props.projectId
+            projectId : this.props.projectId,
+            labels : [],
+            deadlineDate: null,
+            deadlineTime: null,
           }))
+          getLabelsInProject(this.props.projectId).then((data) => {
+            this.setState({
+                labelsToChoose : data
+            })
+        }) 
         }
+    
       }
 
     onSubmit = (e) => {
@@ -80,9 +89,9 @@ export default class TaskAddDialog extends Component {
             labels : labels,
         }
         saveNewTask(data).then(data => {
-            this.setState({
-                isOpen: false
-            })
+            if (typeof this.props.callback === "function"){
+                this.props.callback(data)
+            }
         });
     }
 
@@ -211,8 +220,8 @@ export default class TaskAddDialog extends Component {
 
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="danger" onClick={this.onSubmit}>Save</Button>
-                    <Button color="secondary" onClick={this.onCancel}>Cancel</Button>
+                    <Button color="danger" onClick={this.onSubmit} style={{ minWidth: 100 }}>Save</Button>
+                    <Button color="secondary" onClick={this.onCancel} style={{ minWidth: 100 }}>Cancel</Button>
                 </ModalFooter>
             </Modal>
         )

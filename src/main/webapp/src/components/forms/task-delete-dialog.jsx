@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import {deleteTask} from '../../services/task-service'
 
 
 
@@ -26,11 +27,17 @@ export default class TaskDeleteDialog extends Component {
 
   onSubmit = (e) => {
     e.preventDefault();
-    this.props.deleteDialogCallback(this.state.task, true)
-    this.setState({
-      isOpen : false,
-      task : undefined
+    const {task} = this.state
+    deleteTask(task).then(data => {
+      this.setState({
+        isOpen : false,
+        task : undefined
+      })
+      if (typeof this.props.callback === "function"){
+        this.props.callback(task)
+      }
     })
+    
   }
 
   onCancel = (e) => {

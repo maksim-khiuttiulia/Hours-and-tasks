@@ -65,30 +65,25 @@ class TaskList extends Component {
 
     }
 
-    deleteDialogCallback = (task, isDeleted) => {
+    addTaskDialogCallback = (task) => {
+        const {tasks} = this.state
+        this.setState({
+            newTaskDialog: {
+                isOpen: false,
+            }, 
+            tasks : [...tasks, task]
+        })
+    }
+
+    deleteDialogCallback = (task) => {
+        const {tasks} = this.state
         this.setState({
             deleteDialog: {
                 isOpen: false
-            }
+            },
+            tasks : tasks.filter(t => t.id !== task.id)
         })
-
-        if (isDeleted && task) {
-            this.onDeleteTask(task);
-        }
-    }
-
-
-
-    onAddTask = (task) => {
-        saveNewTask(task).then((data) => {
-            this.readTasks()
-        })
-    }
-
-    onDeleteTask = (task) => {
-        deleteTask(task).then((data) => {
-            this.readTasks()
-        })
+        
     }
 
     onChangeTaskStatus = (task) => {
@@ -122,8 +117,8 @@ class TaskList extends Component {
 
         return (
             <div>
-                <TaskAddDialog projectId={1} isOpen={this.state.newTaskDialog.isOpen}></TaskAddDialog>
-                <TaskDeleteDialog isOpen={this.state.deleteDialog.isOpen} task={this.state.deleteDialog.task} deleteDialogCallback={this.deleteDialogCallback} />
+                <TaskAddDialog projectId={1} isOpen={this.state.newTaskDialog.isOpen} callback={this.addTaskDialogCallback}></TaskAddDialog>
+                <TaskDeleteDialog isOpen={this.state.deleteDialog.isOpen} task={this.state.deleteDialog.task} callback={this.deleteDialogCallback} />
                 <ListGroup>
                     <ListGroupItem className="d-flex justify-content-end">
                         <Button color="info" onClick={this.openAddTaskDialog} style={{ minWidth: 100 }}><FontAwesomeIcon icon={faPlusSquare} /></Button>

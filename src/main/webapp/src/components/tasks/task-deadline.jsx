@@ -11,7 +11,6 @@ export default class TaskDeadLineLabel extends Component {
     }
 
     render(){
-
         let deadlineBadge = <Badge color="success" className="mr-1" >No deadline</Badge>;
         if (this.state.deadline){
             deadlineBadge = <Badge color="danger" className="mr-1" >{formatedDate(this.state.deadline)}</Badge>;
