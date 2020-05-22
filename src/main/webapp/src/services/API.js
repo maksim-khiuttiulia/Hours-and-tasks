@@ -1,7 +1,5 @@
 import axios from "axios";
 
-
-
 const api = axios.create({
   baseURL: "https://hours-and-tasks.herokuapp.com/api",
   responseType: "json",

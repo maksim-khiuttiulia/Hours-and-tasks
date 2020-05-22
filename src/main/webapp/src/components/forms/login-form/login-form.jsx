@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Redirect, withRouter } from "react-router-dom";
 import { Container, Alert, Form, FormGroup, Label, Input, Button } from 'reactstrap';
-import { login, isLoggedIn } from '../../services/user-service'
+import { login, isLoggedIn } from '../../../services/user-service'
 
 class LoginForm extends Component {
 
@@ -31,17 +31,8 @@ class LoginForm extends Component {
 
   onSubmit = (e) => {
     let username = this.state.username
-    if (!username){
-      this.showError("Username is empty");
-      return;
-    }
 
     let password = this.state.password
-
-    if (!password){
-      this.showError("Password is empty");
-      return;
-    }
     login(username, password).then(data => {
       this.setState({
         isLoggedIn : true
@@ -66,7 +57,7 @@ class LoginForm extends Component {
       return (<Redirect to={this.state.from} />)
     }
     return (
-      <Container className="d-flex h-100">
+      <Container className="d-flex vh-100">
         
         <Form className="m-auto">
         
@@ -75,12 +66,12 @@ class LoginForm extends Component {
 
           <FormGroup>
             <Label>Username</Label>
-            <Input type="text" placeholder="username" onChange={this.onUsernameChanged} />
+            <Input type="text" placeholder="username" onChange={this.onUsernameChanged} required />
           </FormGroup>
 
           <FormGroup>
             <Label>Password</Label>
-            <Input type="password" placeholder="********" onChange={this.onPasswordChanged} />
+            <Input type="password" placeholder="********" onChange={this.onPasswordChanged} required/>
           </FormGroup>
 
           <FormGroup> 

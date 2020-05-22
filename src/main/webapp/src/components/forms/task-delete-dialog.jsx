@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import ServerError from '../error/server-error'
 import {deleteTask} from '../../services/task-service'
 
 
@@ -11,7 +12,9 @@ export default class TaskDeleteDialog extends Component {
     super(props)
     this.state = {
       isOpen: props.isOpen,
-      task: props.task
+      task: props.task,
+
+      serverError : ''
     }
   }
 
@@ -28,25 +31,30 @@ export default class TaskDeleteDialog extends Component {
   onSubmit = (e) => {
     e.preventDefault();
     const {task} = this.state
-    deleteTask(task).then(data => {
+    deleteTask(task)
+    .then(data => {
       this.setState({
         isOpen : false,
         task : undefined
       })
       if (typeof this.props.callback === "function"){
-        this.props.callback(task)
+        this.props.callback(task, true)
       }
     })
+    .catch(e => this.setState({serverError : e}))
     
   }
 
   onCancel = (e) => {
     e.preventDefault();
-    this.props.deleteDialogCallback(this.state.task, false)
+    const {task} = this.state
     this.setState({
       isOpen : false,
       task : undefined
     })
+    if (typeof this.props.callback === "function"){
+      this.props.callback(task, false)
+    }
   }
 
 
@@ -56,6 +64,7 @@ export default class TaskDeleteDialog extends Component {
     return (
       <Modal isOpen={this.state.isOpen} >
         <ModalHeader >Task deleting</ModalHeader>
+        <ServerError error={this.state.serverError}/>
         <ModalBody>
           {taskName}
         </ModalBody>

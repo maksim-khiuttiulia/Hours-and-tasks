@@ -3,7 +3,7 @@ import Task from './task'
 import TaskDeleteDialog from '../forms/task-delete-dialog'
 import TaskAddDialog from '../forms/task-add-dialog'
 import { ListGroup, ListGroupItem, Spinner, Button } from 'reactstrap';
-import { getAllTasks, saveNewTask, changeTaskStatus, deleteTask } from '../../services/task-service'
+import { getAllTasks, changeTaskStatus } from '../../services/task-service'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlusSquare } from '@fortawesome/free-solid-svg-icons'
 import { withRouter } from 'react-router-dom'
@@ -65,26 +65,44 @@ class TaskList extends Component {
 
     }
 
-    addTaskDialogCallback = (task) => {
-        const {tasks} = this.state
-        this.setState({
-            newTaskDialog: {
-                isOpen: false,
-            }, 
-            tasks : [...tasks, task]
-        })
+    addTaskDialogCallback = (task, added) => {
+        const { tasks } = this.state
+        if (added === true) {
+            this.setState({
+                newTaskDialog: {
+                    isOpen: false,
+                },
+                tasks: [...tasks, task]
+            })
+        } else {
+            this.setState({
+                newTaskDialog: {
+                    isOpen: false,
+                }
+            })
+        }
+
     }
 
-    deleteDialogCallback = (task) => {
-        const {tasks} = this.state
-        this.setState({
-            deleteDialog: {
-                isOpen: false
-            },
-            tasks : tasks.filter(t => t.id !== task.id)
-        })
-        
+    deleteDialogCallback = (task, deleted) => {
+        const { tasks } = this.state
+        if (deleted === true) {
+            this.setState({
+                deleteDialog: {
+                    isOpen: false
+                },
+                tasks: tasks.filter(t => t.id !== task.id)
+            })
+        } else {
+            this.setState({
+                deleteDialog: {
+                    isOpen: false
+                }
+            })
+        }
+
     }
+
 
     onChangeTaskStatus = (task) => {
         changeTaskStatus(task).then((data) => {

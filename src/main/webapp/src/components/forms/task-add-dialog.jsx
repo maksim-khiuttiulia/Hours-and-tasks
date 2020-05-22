@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import TaskLabel from '../tasks/task-label'
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, DropdownItem, Input, UncontrolledDropdown, DropdownMenu, DropdownToggle, Alert} from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, DropdownItem, Input, UncontrolledDropdown, DropdownMenu, DropdownToggle } from 'reactstrap';
 import DatePicker from 'reactstrap-date-picker'
 import TimePicker from '../timepicker/timepicker'
+import ServerError from '../error/server-error'
+import UserError from '../error/user-error'
 import { getCurrentDateJSON, concatDateAndTime, toJsonDate } from '../../utils/date-time'
-import {getLabelsInProject} from '../../services/label-service'
-import {saveNewTask} from '../../services/task-service'
+import { getLabelsInProject } from '../../services/label-service'
+import { saveNewTask } from '../../services/task-service'
 
 
 export default class TaskAddDialog extends Component {
@@ -15,54 +17,59 @@ export default class TaskAddDialog extends Component {
         super(props);
 
         this.state = {
-            name : "",
-            description : "",
+            name: "",
+            description: "",
             deadlineDate: null,
             deadlineTime: null,
-            labels : [],
-            projectId : this.props.projectId,
+            labels: [],
+            projectId: this.props.projectId,
 
             labelsToChoose: [],
-            errorMessage : "",
-            isOpen: this.props.isOpen
+            isOpen: this.props.isOpen,
+
+            serverError: '',
+            userError : ''
         }
     }
 
     async componentDidMount() {
-        const {projectId} = this.props
+        const { projectId } = this.props
         getLabelsInProject(projectId).then((data) => {
             this.setState({
-                labelsToChoose : data
+                labelsToChoose: data
             })
-        }) 
-        
+        })
+
     }
 
     async componentDidUpdate(prevProps) {
         if (prevProps !== this.props) {
-          this.setState(prevState => ({
-            isOpen: this.props.isOpen,
-            projectId : this.props.projectId,
-            labels : [],
-            deadlineDate: null,
-            deadlineTime: null,
-          }))
-          getLabelsInProject(this.props.projectId).then((data) => {
-            this.setState({
-                labelsToChoose : data
+            this.setState(prevState => ({
+                isOpen: this.props.isOpen,
+                projectId: this.props.projectId,
+                labels: [],
+                deadlineDate: null,
+                deadlineTime: null,
+            }))
+            getLabelsInProject(this.props.projectId)
+            .then((data) => {
+                this.setState({
+                    labelsToChoose: data
+                })
+            }).catch(e => {
+                this.setState({ serverError: e })
             })
-        }) 
         }
-    
-      }
+
+    }
 
     onSubmit = (e) => {
         const name = this.state.name;
         const description = this.state.description;
         const labels = this.state.labels;
 
-        if (!name){
-            this.showError("Name is empty")
+        if (!name) {
+            this.setState({userError : "Task name is empty"})
             return;
         }
 
@@ -72,26 +79,29 @@ export default class TaskAddDialog extends Component {
 
         if (deadlineDate) {
             if (!deadlineTime) {
-                this.showError("Deadline time is empty")
+                this.setState({userError : "Deadline time is empty"})
                 return;
             }
 
             deadline = concatDateAndTime(deadlineDate, deadlineTime);
             deadline = toJsonDate(deadline)
         }
-        
+
         let data = {
-            name : name,
-            description : description,
-            deadline : deadline,
-            isDone : false,
-            projectId : 1,
-            labels : labels,
+            name: name,
+            description: description,
+            deadline: deadline,
+            isDone: false,
+            projectId: 1,
+            labels: labels,
         }
-        saveNewTask(data).then(data => {
-            if (typeof this.props.callback === "function"){
-                this.props.callback(data)
+        saveNewTask(data)
+        .then(data => {
+            if (typeof this.props.callback === "function") {
+                this.props.callback(data, true)
             }
+        }).catch(e => {
+            this.setState({serverError : e})
         });
     }
 
@@ -99,13 +109,12 @@ export default class TaskAddDialog extends Component {
         e.preventDefault();
         this.setState({
             isOpen: false,
+            serverError : '',
+            userError : ''
         })
-    }
-
-    showError = (error) => {
-        this.setState({
-            errorMessage : error
-        })
+        if (typeof this.props.callback === "function") {
+            this.props.callback(null, false)
+        }
     }
 
 
@@ -131,36 +140,46 @@ export default class TaskAddDialog extends Component {
 
     onTaskNameChange = (e) => {
         let name = e.target.value
-        this.setState(prevState => ({
-            name : name
-        }))
+        this.setState({
+            name: name,
+            serverError : '',
+            userError : ''
+        })
     }
 
     onTaskTextChange = (e) => {
         let text = e.target.value
-        this.setState(prevState => ({
-            text : text
-        }))
+        this.setState({
+            text: text,
+            serverError : '',
+            userError : ''
+        })
     }
 
     onDateChange = (deadline) => {
-        this.setState(prevState => ({
-            deadlineDate: deadline
-        }))
+        this.setState({
+            deadlineDate: deadline,
+            serverError : '',
+            userError : ''
+        })
     }
 
     onTimeChange = (deadline) => {
-        this.setState(prevState => ({
-            deadlineTime: deadline
-        }))
+        this.setState({
+            deadlineTime: deadline,
+            serverError : '',
+            userError : ''
+        })
     }
 
     onDeadlineClear = (e) => {
         e.preventDefault();
-        this.setState(prevState => ({
+        this.setState({
             deadlineDate: null,
-            deadlineTime: null
-        }))
+            deadlineTime: null,
+            serverError : '',
+            userError : ''
+        })
     }
 
     render() {
@@ -170,16 +189,12 @@ export default class TaskAddDialog extends Component {
         const choosedLabels = this.state.labels.map((label) => {
             return <TaskLabel label={label} key={label.id} onClick={this.onDeleteLabel} />;
         })
-        
-        let alert = null;
-        if (this.state.errorMessage){
-            alert = <Alert color="danger">{this.state.errorMessage}</Alert>
-        }
         return (
             <Modal isOpen={this.state.isOpen} size="lg">
                 <ModalHeader >Add new task</ModalHeader>
+                <ServerError error={this.state.serverError}/>
+                <UserError error={this.state.userError}/>
                 <ModalBody>
-                    {alert}
                     <Row>
                         <Col xs="9" md="9">
                             <Input type="text" onChange={this.onTaskNameChange} placeholder="New task"></Input>

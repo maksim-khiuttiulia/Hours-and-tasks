@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter, Redirect, Route, withRouter } from "react-router-dom";
 import { isLoggedIn } from './services/user-service'
 import TaskList from './components/tasks/task-list'
-import LoginForm from './components/forms/login-form'
+import LoginForm from './components/forms/login-form/login-form'
 import ContainerPage from './components/container-page/container-page'
 
 
