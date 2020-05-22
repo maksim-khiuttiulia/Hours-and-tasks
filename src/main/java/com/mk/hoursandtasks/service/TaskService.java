@@ -7,12 +7,12 @@ import com.mk.hoursandtasks.entity.task.Task;
 import com.mk.hoursandtasks.entity.tasklabel.TaskLabel;
 import com.mk.hoursandtasks.entity.user.User;
 import com.mk.hoursandtasks.exceptions.ValidationException;
-import com.mk.hoursandtasks.repository.ProjectRepository;
-import com.mk.hoursandtasks.repository.TaskLabelRepository;
 import com.mk.hoursandtasks.repository.TaskRepository;
 import com.mk.hoursandtasks.utils.DateUtils;
 import liquibase.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +44,11 @@ public class TaskService {
     public List<Task> getAllInProject(Project project){
         Objects.requireNonNull(project);
         return taskRepository.findAllByProject_ProjectId(project.getProjectId());
+    }
+
+    public Page<Task> getAllInProject(Project project, Pageable pageable){
+        Objects.requireNonNull(project);
+        return taskRepository.findAllByProject_ProjectId(project.getProjectId(), pageable);
     }
 
     public Task getTask(Long taskId, User user){
@@ -114,7 +119,7 @@ public class TaskService {
             throw new ValidationException("Task is null");
         }
 
-        Task taskFromDB = taskRepository.getOne(taskId);
+        Task taskFromDB = taskRepository.findById(taskId).orElse(null);
         if (taskFromDB == null){
             throw new ValidationException("Task with id " + taskId + " doesnt exist");
         }
@@ -152,7 +157,7 @@ public class TaskService {
             throw new ValidationException("Task id is null");
         }
 
-        Task task = taskRepository.getOne(taskId);
+        Task task = taskRepository.findById(taskId).orElse(null);
         if (task == null){
             throw new ValidationException("Task with id " + taskId + " doesnt exist");
         }

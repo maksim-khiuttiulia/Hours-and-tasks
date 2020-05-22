@@ -11,6 +11,8 @@ import com.mk.hoursandtasks.service.ProjectService;
 import com.mk.hoursandtasks.service.TaskLabelService;
 import com.mk.hoursandtasks.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,6 +51,15 @@ public class ProjectController extends ControllerAncestor {
         User user = getCurrentUser(request);
         Project project = projectService.getProject(id, user);
         return taskService.getAllInProject(project).stream().map(Task::toTaskDto).collect(Collectors.toList());
+    }
+
+    @RequestMapping(value = "/{id}/tasks", method = RequestMethod.GET)
+    public @ResponseBody
+    Page<TaskDto> getTaskInProject(@PathVariable(name = "id") Long id, Pageable pageable, HttpServletRequest request){
+        User user = getCurrentUser(request);
+        Project project = projectService.getProject(id, user);
+        Page<Task> taskPage = taskService.getAllInProject(project, pageable);
+        return taskPage.map(Task::toTaskDto);
     }
 
     @RequestMapping(value = "/{id}/labels", method = RequestMethod.GET)
