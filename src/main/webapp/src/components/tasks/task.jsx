@@ -44,7 +44,7 @@ export default class Task extends Component {
         const labelsElement = this.state.task.labels.map((label) => {
             return <TaskLabel label={label} key={label.id} />;
         })
-
+        console.warn(this.state.task)
         let buttonState;
         if (this.state.task.done) {
             buttonState = <Button color="info" onClick={this.onNotDone} style={{ minWidth: 100 }}><FontAwesomeIcon icon={faTimesCircle}/></Button>
@@ -55,7 +55,6 @@ export default class Task extends Component {
 
         return (
             <ListGroupItem color={this.state.task.done ? "success" : "danger"} className="justify-content-between" key={this.state.task.id}>
-
                 <Row className="d-flex align-items-center">
                     <Col xs="6" md="6">
                         <Row>
@@ -75,8 +74,6 @@ export default class Task extends Component {
                         </ButtonGroup>
                     </Col>
                 </Row>
-
-
             </ListGroupItem>
         );
     }

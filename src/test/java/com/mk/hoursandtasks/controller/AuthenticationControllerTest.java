@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class AuthenticationControllerTest {
     private static final Long USER_ID_1 = 1L;
-    private static final String USER_USERNAME_1 = "test";
+    private static final String USER_USERNAME_1 = "maks";
     private static final String USER_PASSWORD_1 = "password";
     private static final String USER_PASSWORD_HASH_1 = "$2a$10$ITjRTdRw4E4n3aa2z0EWteNOavKfBZBl0dS4EkYtZiIKmcL2U9rbC";
 
@@ -61,7 +61,6 @@ class AuthenticationControllerTest {
         user.setLastName("test");
         user.setStatus(UserStatus.ACTIVE);
         Mockito.when(userService.findByUsername(user.getUsername())).thenReturn(user);
-
     }
 
     @Test
