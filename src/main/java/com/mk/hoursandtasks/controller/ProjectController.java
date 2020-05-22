@@ -47,14 +47,6 @@ public class ProjectController extends ControllerAncestor {
 
     @RequestMapping(value = "/{id}/tasks", method = RequestMethod.GET)
     public @ResponseBody
-    List<TaskDto> getTaskInProject(@PathVariable(name = "id") Long id, HttpServletRequest request){
-        User user = getCurrentUser(request);
-        Project project = projectService.getProject(id, user);
-        return taskService.getAllInProject(project).stream().map(Task::toTaskDto).collect(Collectors.toList());
-    }
-
-    @RequestMapping(value = "/{id}/tasks", method = RequestMethod.GET)
-    public @ResponseBody
     Page<TaskDto> getTaskInProject(@PathVariable(name = "id") Long id, Pageable pageable, HttpServletRequest request){
         User user = getCurrentUser(request);
         Project project = projectService.getProject(id, user);
