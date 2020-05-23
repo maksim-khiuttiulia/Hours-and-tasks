@@ -11,10 +11,22 @@ export async function getAllProjects() {
     return [];
 }
 
-export async function getTasksInProject(projectid) {
+export async function getTasksInProject(projectid, page, size, done) {
+    let url = `/projects/${projectid}/tasks?`
+    if (page >= 0 && size >= 0){
+        url += `page=${page}&size=${size}`
+    } 
+    if (done === true){
+        url += `&done=true`
+    }
+    if (done === false){
+        url += `&done=false`
+    }
+    console.log(url)
     try {
-        let response = await API.get(`/projects/${projectid}/tasks`);
+        let response = await API.get(url);
         let data = await response.data
+        console.log("RESPONCE ", data)
         return data;
     } catch (error) {
         console.error(error)

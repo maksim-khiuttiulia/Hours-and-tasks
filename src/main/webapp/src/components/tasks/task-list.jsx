@@ -7,8 +7,10 @@ import { getAllTasks, changeTaskStatus } from '../../services/task-service'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlusSquare } from '@fortawesome/free-solid-svg-icons'
 import { withRouter } from 'react-router-dom'
-import { getTasksInProject, getDoneTasksInProject, getNotDoneTasksInProject } from '../../services/project-service'
+import { getTasksInProject } from '../../services/project-service'
 import ServerError from '../error/server-error'
+import SortBy from '../sort-by/sort-by';
+import PaginationComponent from '../pagination/pagination'
 
 
 class TaskList extends Component {
@@ -17,11 +19,9 @@ class TaskList extends Component {
         super(props);
         this.state = {
             projectId: this.props.projectId | 1,
-            showDone: this.props.showDone | false,
-            showNotDone: this.props.showNotDone | false,
+            done: this.props.done == null ? null : Boolean(this.props.done),
 
-
-            loading: false,
+            loading: true,
             labels: [],
             tasks: [],
             deleteDialog: {
@@ -32,8 +32,12 @@ class TaskList extends Component {
                 isOpen: false
             },
 
-            serverError : ''
+            serverError: '',
 
+            activePage: 1,
+            totalPages: null,
+            itemsCountPerPage: this.props.itemsCountPerPage | 5,
+            totalItemsCount: null
         }
     }
 
@@ -42,62 +46,47 @@ class TaskList extends Component {
     }
 
 
-    readTasks() {
+    readTasks(pageNumber) {
         this.setState({
             loading: true
         })
 
-        const { projectId } = this.state
+        const { projectId, itemsCountPerPage, done, totalPages} = this.state
+        let page = (pageNumber > 0 && pageNumber !== null) ? pageNumber - 1 : 0
+        page = page + 1 > totalPages ? totalPages : page
+
         if (projectId) {
-            const { showDone, showNotDone } = this.state
-            if (Boolean(showDone) && Boolean(showNotDone)) {
-                getTasksInProject(projectId).then((response) => {
-                    this.setState({
-                        tasks: response.content,
-                        loading: false
-                    })
-                }).catch(e => {
-                    this.setState({
-                        serverError : e
-                    })
-                })
-            } else if (Boolean(showDone)) {
-                getDoneTasksInProject(projectId).then((response) => {
-                    this.setState({
-                        tasks: response.content,
-                        loading: false
-                    })
-                }).catch(e => {
-                    this.setState({
-                        serverError : e
-                    })
-                })
-            } else if (Boolean(showNotDone)) {
-                getNotDoneTasksInProject(projectId).then((response) => {
-                    this.setState({
-                        tasks: response.content,
-                        loading: false
-                    })
-                }).catch(e => {
-                    this.setState({
-                        serverError : e
-                    })
-                })
-            } else {
-                console.log("asd")
-                this.setState({
-                    tasks: [],
-                    loading: false
-                })
-            }
+            console.log("DONE", done)
+            getTasksInProject(projectId, page, itemsCountPerPage, done).then((response) => {
+                this.setStateAfterLoadTasks(response)
+            }).catch(e => {
+                this.setState({ serverError: e, loading: false })
+            })
         } else {
             getAllTasks().then((tasks) => {
                 this.setState({
                     tasks: tasks,
                     loading: false
                 })
+            }).catch(e => {
+                this.setState({ serverError: e, loading: false })
             })
         }
+    }
+
+    setStateAfterLoadTasks = (response) => {
+        const totalPages = response.totalPages;
+        const itemsCountPerPage = response.size;
+        const totalItemsCount = response.totalElements;
+        const tasks = Array.isArray(response.content) ? response.content : []
+
+        this.setState({
+            totalPages: totalPages,
+            totalItemsCount: totalItemsCount,
+            itemsCountPerPage: itemsCountPerPage,
+            tasks: tasks,
+            loading: false
+        })
     }
 
     openDeleteDialog = (task) => {
@@ -174,26 +163,10 @@ class TaskList extends Component {
     renderTasks = () => {
         let tasks = <ListGroupItem color="success"><Spinner animation="border" /></ListGroupItem>
 
-        const { showDone, showNotDone } = this.state
         if (!this.state.loading) {
-            if (Boolean(showDone) && Boolean(showNotDone)) {
-                
-
-                tasks = this.state.tasks.map((task) => {
-                    return <Task task={task} key={task.id} onChangeTaskStatus={this.onChangeTaskStatus} onDeleteTask={this.openDeleteDialog} />;
-                });
-
-            } else if (Boolean(showDone)) {
-                tasks = this.state.tasks.filter((task) => task.done).map((task) => {
-                    return <Task task={task} key={task.id} onChangeTaskStatus={this.onChangeTaskStatus} onDeleteTask={this.openDeleteDialog} />;
-                });
-            } else if (Boolean(showNotDone)) {
-                tasks = this.state.tasks.filter((task) => !task.done).map((task) => {
-                    return <Task task={task} key={task.id} onChangeTaskStatus={this.onChangeTaskStatus} onDeleteTask={this.openDeleteDialog} />;
-                });
-            } else {
-                tasks = []
-            }
+            tasks = this.state.tasks.map((task) => {
+                return <Task task={task} key={task.id} onChangeTaskStatus={this.onChangeTaskStatus} onDeleteTask={this.openDeleteDialog} />;
+            });
         }
         return (
             <ListGroup>
@@ -202,6 +175,21 @@ class TaskList extends Component {
         )
     }
 
+    selectPage = (page) => {
+        console.log("Selected page:", page)
+        this.setState({
+            activePage: page
+        })
+        this.readTasks(page);
+    }
+
+    renderPagination = () => {
+        const { itemsCountPerPage, totalItemsCount, activePage } = this.state;
+        return (
+            <ListGroupItem className="d-flex justify-content-center">
+                <PaginationComponent currentPage={activePage} countPerPage={itemsCountPerPage} totalCount={totalItemsCount} onSelected={this.selectPage} />
+            </ListGroupItem>)
+    }
 
 
 
@@ -210,13 +198,19 @@ class TaskList extends Component {
             <div>
                 <TaskAddDialog projectId={1} isOpen={this.state.newTaskDialog.isOpen} callback={this.addTaskDialogCallback}></TaskAddDialog>
                 <TaskDeleteDialog isOpen={this.state.deleteDialog.isOpen} task={this.state.deleteDialog.task} callback={this.deleteDialogCallback} />
-                <ServerError error={this.state.serverError}/>
+                <ServerError error={this.state.serverError} />
                 <ListGroup>
                     <ListGroupItem className="d-flex justify-content-end">
+                        <SortBy values={['Time', 'Priority', 'None']}></SortBy>
                         <Button color="info" onClick={this.openAddTaskDialog} style={{ minWidth: 100 }}><FontAwesomeIcon icon={faPlusSquare} /></Button>
                     </ListGroupItem>
                 </ListGroup>
+
                 {this.renderTasks()}
+
+                <ListGroup>
+                    {this.renderPagination()}
+                </ListGroup>
             </div>
         );
     }

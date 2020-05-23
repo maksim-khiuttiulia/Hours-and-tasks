@@ -1,8 +1,18 @@
 import API from './API'
 
-export async function getAllTasks() {
+export async function getAllTasks(page, size, done) {
     try {
-        let response = await API.get("/tasks");
+        let url = `/tasks?`
+        if (page >= 0 && size >= 0){
+            url += `page=${page}&size=${size}`
+        } 
+        if (done === true){
+            url += `&done=true`
+        }
+        if (done === false){
+            url += `&done=false`
+        }
+        let response = await API.get(url);
         let data = await response.data
         return data;
     } catch (error) {
