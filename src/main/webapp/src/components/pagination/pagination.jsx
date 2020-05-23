@@ -20,7 +20,7 @@ export default class PaginationComponent extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (prevState !== this.state) {
+        if (prevProps !== this.props) {
           console.log('pokemons state has changed.')
         }
       }
