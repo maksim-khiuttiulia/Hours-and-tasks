@@ -15,11 +15,18 @@ import PaginationComponent from '../pagination/pagination'
 
 class TaskList extends Component {
 
+    sortByParams = [
+        {key : "name" , value : "By name"},
+        {key : "created" , value : "By created"},
+        {key : "deadline" , value : "By deadline"},
+    ]
+
     constructor(props) {
         super(props);
         this.state = {
             projectId: this.props.projectId | 1,
             done: this.props.done == null ? null : Boolean(this.props.done),
+            sortBy : null,
 
             loading: true,
             labels: [],
@@ -46,7 +53,7 @@ class TaskList extends Component {
     }
 
 
-    readTasks(pageNumber) {
+    readTasks(pageNumber, sortBy) {
         this.setState({
             loading: true
         })
@@ -57,7 +64,7 @@ class TaskList extends Component {
 
         if (projectId) {
             console.log("DONE", done)
-            getTasksInProject(projectId, page, itemsCountPerPage, done).then((response) => {
+            getTasksInProject(projectId, page, itemsCountPerPage, done, sortBy).then((response) => {
                 this.setStateAfterLoadTasks(response)
             }).catch(e => {
                 this.setState({ serverError: e, loading: false })
@@ -160,6 +167,21 @@ class TaskList extends Component {
         })
     }
 
+    onSelectPage = (page) => {
+        console.log("Selected page:", page)
+        this.setState({
+            activePage: page
+        })
+        this.readTasks(page);
+    }
+
+    onSelectSortBy = (key) => {
+        this.setState({
+            sortBy : key
+        })
+        this.readTasks(this.state.activePage, key);
+    }
+
     renderTasks = () => {
         let tasks = <ListGroupItem color="success"><Spinner animation="border" /></ListGroupItem>
 
@@ -175,19 +197,11 @@ class TaskList extends Component {
         )
     }
 
-    selectPage = (page) => {
-        console.log("Selected page:", page)
-        this.setState({
-            activePage: page
-        })
-        this.readTasks(page);
-    }
-
     renderPagination = () => {
         const { itemsCountPerPage, totalItemsCount, activePage } = this.state;
         return (
             <ListGroupItem className="d-flex justify-content-center">
-                <PaginationComponent currentPage={activePage} countPerPage={itemsCountPerPage} totalCount={totalItemsCount} onSelected={this.selectPage} />
+                <PaginationComponent currentPage={activePage} countPerPage={itemsCountPerPage} totalCount={totalItemsCount} onSelected={this.onSelectPage} />
             </ListGroupItem>)
     }
 
@@ -201,7 +215,7 @@ class TaskList extends Component {
                 <ServerError error={this.state.serverError} />
                 <ListGroup>
                     <ListGroupItem className="d-flex justify-content-end">
-                        <SortBy values={['Time', 'Priority', 'None']}></SortBy>
+                        <SortBy params={this.sortByParams} selected={this.state.sortBy} onSelect={this.onSelectSortBy} ></SortBy>
                         <Button color="info" onClick={this.openAddTaskDialog} style={{ minWidth: 100 }}><FontAwesomeIcon icon={faPlusSquare} /></Button>
                     </ListGroupItem>
                 </ListGroup>

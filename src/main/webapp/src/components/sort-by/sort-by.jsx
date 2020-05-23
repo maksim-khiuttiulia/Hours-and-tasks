@@ -2,10 +2,11 @@ import React, { Component } from 'react'
 import { ButtonGroup, Button } from 'reactstrap';
 
 export default class SortBy extends Component {
+
     constructor(props) {
         super(props);
         this.state = {
-            values: this.props.values,
+            params: this.props.params,
             selected: this.props.selected
         }
     }
@@ -14,7 +15,7 @@ export default class SortBy extends Component {
     componentDidUpdate(props) {
         if (this.props !== props) {
             this.setState({
-                values: props.values,
+                params: props.params,
                 selected: props.selected
             })
         }
@@ -22,28 +23,28 @@ export default class SortBy extends Component {
 
     onSelect = (e) => {
         e.target.blur()
-        let value = e.target.value
+        let key = e.target.value
         const {selected} = this.state
 
-        if (selected && value === selected){
-            value = ''
+        if (selected && key === selected){
+            key = ''
         }
         this.setState({
-            selected : value
+            selected : key
         })
 
-        if (typeof this.props.callback == "function"){
-            this.props.callback(value);
+        if (typeof this.props.onSelect == "function"){
+            this.props.onSelect(key);
         }
     }
 
 
     renderButtons = () => {
-        let buttons = this.state.values.map((value, i) => {
-            if (value === this.state.selected) {
-                return <Button color="primary" key={i} className="active not-focusable" onClick={this.onSelect} value={value}>{value}</Button>
+        let buttons = this.state.params.map((param, i) => {
+            if (param.key === this.state.selected) {
+                return <Button color="primary" key={i} className="active not-focusable" onClick={this.onSelect} value={param.key}>{param.value}</Button>
             }
-            return <Button color="primary" key={i} className="not-focusable" onClick={this.onSelect} value={value}>{value}</Button>
+            return <Button color="primary" key={i} className="not-focusable" onClick={this.onSelect} value={param.key}>{param.value}</Button>
         })
         return buttons
     }

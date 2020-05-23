@@ -11,7 +11,7 @@ export async function getAllProjects() {
     return [];
 }
 
-export async function getTasksInProject(projectid, page, size, done) {
+export async function getTasksInProject(projectid, page, size, done, sortBy) {
     let url = `/projects/${projectid}/tasks?`
     if (page >= 0 && size >= 0){
         url += `page=${page}&size=${size}`
@@ -21,6 +21,9 @@ export async function getTasksInProject(projectid, page, size, done) {
     }
     if (done === false){
         url += `&done=false`
+    }
+    if (sortBy){
+        url += `&sort=${sortBy}`
     }
     console.log(url)
     try {
