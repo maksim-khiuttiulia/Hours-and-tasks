@@ -11,17 +11,12 @@ const PrivateRoute = withRouter(({ component: Component, ...rest }) => {
   return (<Route {...rest} render={(props) => isLoggedIn() === false ? <Redirect to={{pathname : '/login', state : {from: props.location.pathname} }} /> : <ContainerPage><Component {...props} /></ContainerPage>} />)
 })
 
-const PublicRoute = withRouter(({ component: Component, ...rest }) => {
-  return (<Route {...rest} render={(props) => isLoggedIn() === false ? <Component {...props}/> : <Redirect to={{pathname : '/login', state : {from: props.location.pathname} }} />} />)
-})
-
-
 function App() {
 
   return (
     <BrowserRouter>
-      <PrivateRoute exact path="/" component={() => <TaskList showDone={true} showNotDone={true} projectId={1}/>}/>
-      <PrivateRoute exact path="/tasks" component={TaskList} />
+      <PrivateRoute exact path="/" component={() => <TaskList showDone={false} showNotDone={true} projectId={1}/>}/>
+      <PrivateRoute exact path="/tasks" component={() => <TaskList showDone={true} showNotDone={true} projectId={1}/>}/>
       <Route exact path="/login" component={LoginForm} />
     </BrowserRouter>
 

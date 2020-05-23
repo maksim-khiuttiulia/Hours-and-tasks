@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlusSquare } from '@fortawesome/free-solid-svg-icons'
 import { withRouter } from 'react-router-dom'
 import { getTasksInProject, getDoneTasksInProject, getNotDoneTasksInProject } from '../../services/project-service'
+import ServerError from '../error/server-error'
 
 
 class TaskList extends Component {
@@ -29,7 +30,9 @@ class TaskList extends Component {
             },
             newTaskDialog: {
                 isOpen: false
-            }
+            },
+
+            serverError : ''
 
         }
     }
@@ -46,12 +49,16 @@ class TaskList extends Component {
 
         const { projectId } = this.state
         if (projectId) {
-            const {showDone, showNotDone} = this.state
+            const { showDone, showNotDone } = this.state
             if (Boolean(showDone) && Boolean(showNotDone)) {
                 getTasksInProject(projectId).then((response) => {
                     this.setState({
                         tasks: response.content,
                         loading: false
+                    })
+                }).catch(e => {
+                    this.setState({
+                        serverError : e
                     })
                 })
             } else if (Boolean(showDone)) {
@@ -60,6 +67,10 @@ class TaskList extends Component {
                         tasks: response.content,
                         loading: false
                     })
+                }).catch(e => {
+                    this.setState({
+                        serverError : e
+                    })
                 })
             } else if (Boolean(showNotDone)) {
                 getNotDoneTasksInProject(projectId).then((response) => {
@@ -67,8 +78,18 @@ class TaskList extends Component {
                         tasks: response.content,
                         loading: false
                     })
+                }).catch(e => {
+                    this.setState({
+                        serverError : e
+                    })
                 })
-            } 
+            } else {
+                console.log("asd")
+                this.setState({
+                    tasks: [],
+                    loading: false
+                })
+            }
         } else {
             getAllTasks().then((tasks) => {
                 this.setState({
@@ -152,10 +173,27 @@ class TaskList extends Component {
 
     renderTasks = () => {
         let tasks = <ListGroupItem color="success"><Spinner animation="border" /></ListGroupItem>
+
+        const { showDone, showNotDone } = this.state
         if (!this.state.loading) {
-            tasks = this.state.tasks.map((task) => {
-                return <Task task={task} key={task.id} onChangeTaskStatus={this.onChangeTaskStatus} onDeleteTask={this.openDeleteDialog} />;
-            });
+            if (Boolean(showDone) && Boolean(showNotDone)) {
+                
+
+                tasks = this.state.tasks.map((task) => {
+                    return <Task task={task} key={task.id} onChangeTaskStatus={this.onChangeTaskStatus} onDeleteTask={this.openDeleteDialog} />;
+                });
+
+            } else if (Boolean(showDone)) {
+                tasks = this.state.tasks.filter((task) => task.done).map((task) => {
+                    return <Task task={task} key={task.id} onChangeTaskStatus={this.onChangeTaskStatus} onDeleteTask={this.openDeleteDialog} />;
+                });
+            } else if (Boolean(showNotDone)) {
+                tasks = this.state.tasks.filter((task) => !task.done).map((task) => {
+                    return <Task task={task} key={task.id} onChangeTaskStatus={this.onChangeTaskStatus} onDeleteTask={this.openDeleteDialog} />;
+                });
+            } else {
+                tasks = []
+            }
         }
         return (
             <ListGroup>
@@ -172,6 +210,7 @@ class TaskList extends Component {
             <div>
                 <TaskAddDialog projectId={1} isOpen={this.state.newTaskDialog.isOpen} callback={this.addTaskDialogCallback}></TaskAddDialog>
                 <TaskDeleteDialog isOpen={this.state.deleteDialog.isOpen} task={this.state.deleteDialog.task} callback={this.deleteDialogCallback} />
+                <ServerError error={this.state.serverError}/>
                 <ListGroup>
                     <ListGroupItem className="d-flex justify-content-end">
                         <Button color="info" onClick={this.openAddTaskDialog} style={{ minWidth: 100 }}><FontAwesomeIcon icon={faPlusSquare} /></Button>
