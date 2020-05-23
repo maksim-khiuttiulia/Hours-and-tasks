@@ -1,4 +1,4 @@
-package com.mk.hoursandtasks.integration;
+package com.mk.hoursandtasks;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -6,10 +6,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -19,17 +18,13 @@ import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 
+
 @Component
 public class Creator {
 
     private Log log = LogFactory.getLog(Creator.class);
 
     static Creator instance;
-
-    @PostConstruct
-    public void postConstruct() {
-        instance = this;
-    }
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -39,6 +34,9 @@ public class Creator {
     }
 
     public static <T> T save(T entity) {
+        if (instance == null){
+            instance = new Creator();
+        }
         return instance.saveEntity(entity);
     }
 
@@ -91,13 +89,13 @@ public class Creator {
                 saveChildEntity(propValue);
             }
 
-            CrudRepository dao = getDao(entity);
+            JpaRepository dao = getDao(entity);
             // if (deleteOthers) {
             //   dao.deleteAllInBatch();
             // }
             dao.save(entity);
         } catch (Exception e) {
-            throw new IllegalStateException("Problem", e);
+            throw new IllegalStateException(e);
         }
         return entity;
 
@@ -107,10 +105,10 @@ public class Creator {
         return field.getDeclaredAnnotationsByType(annotationClass).length > 0;
     }
 
-    private CrudRepository getDao(Object entity) {
+    private JpaRepository getDao(Object entity) {
         String repoClassName = entity.getClass().getSimpleName();
         String repositoryBeanName = repoClassName.substring(0, 1).toLowerCase() + repoClassName.substring(1) + "Repository";
-        return (CrudRepository) applicationContext.getBean(repositoryBeanName);
+        return (JpaRepository) applicationContext.getBean(repositoryBeanName);
     }
 
 
@@ -124,7 +122,7 @@ public class Creator {
                 String className = propValue.getClass().getSimpleName();
                 String daoName = className.substring(0, 1).toLowerCase() + className.substring(1) + "Repository";
 
-                CrudRepository repository = applicationContext.getBeansOfType(CrudRepository.class).get(daoName);
+                JpaRepository repository = applicationContext.getBeansOfType(JpaRepository.class).get(daoName);
                 repository.save(propValue);
             }
         }

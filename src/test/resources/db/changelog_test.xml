@@ -1,0 +1,278 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+
+    <changeSet id="1" author="Maks">
+        <createTable tableName="HT_TASK_LABEL_COLOR">
+            <column name="COLOR_ID" type="bigint" autoIncrement="true" startWith="100">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="HEX" type="varchar">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+        <createIndex tableName="HT_TASK_LABEL_COLOR" indexName="INDEX_HEX">
+            <column name="HEX"/>
+        </createIndex>
+
+        <createTable tableName="HT_TASK_LABEL">
+            <column name="LABEL_ID" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="NAME" type="varchar">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="COLOR_ID" type="bigint">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="PROJECT_ID" type="bigint">
+                <constraints nullable="false" unique="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="HT_TASK_LABEL" baseColumnNames="COLOR_ID" constraintName="FK_COLOR"
+                                 referencedTableName="HT_TASK_LABEL_COLOR"
+                                 referencedColumnNames="COLOR_ID"/>
+    </changeSet>
+
+    <changeSet id="2" author="Maks">
+        <createTable tableName="HT_TASK">
+            <column name="TASK_ID" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="NAME" type="varchar">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="TEXT" type="varchar">
+                <constraints nullable="true" unique="false"/>
+            </column>
+            <column name="CREATED" type="datetime">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="DEADLINE" type="datetime">
+                <constraints nullable="true" unique="false"/>
+            </column>
+            <column name="IS_DONE" type="boolean">
+                <constraints nullable="true" unique="false"/>
+            </column>
+            <column name="PROJECT_ID" type="bigint">
+                <constraints nullable="true" unique="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="3" author="Maks">
+        <createTable tableName="HT_REL_TASK_LABEL">
+            <column name="TASK_ID" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="LABEL_ID" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="HT_REL_TASK_LABEL" baseColumnNames="LABEL_ID"
+                                 constraintName="FK_LABEL_ID" referencedTableName="HT_TASK_LABEL"
+                                 referencedColumnNames="LABEL_ID"/>
+        <addForeignKeyConstraint baseTableName="HT_REL_TASK_LABEL" baseColumnNames="TASK_ID" constraintName="FK_TASK_ID"
+                                 referencedTableName="HT_TASK"
+                                 referencedColumnNames="TASK_ID"/>
+    </changeSet>
+
+    <changeSet id="4" author="Maks">
+        <createTable tableName="HT_PROJECT">
+            <column name="PROJECT_ID" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="NAME" type="varchar">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="DESCRIPTION" type="varchar">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="OWNER" type="bigint"/>
+        </createTable>
+    </changeSet>
+
+
+    <changeSet id="5" author="Maks">
+        <renameColumn columnDataType="varchar"
+                      newColumnName="DESCRIPTION"
+                      oldColumnName="TEXT"
+                      schemaName="public"
+                      tableName="HT_TASK"/>
+    </changeSet>
+
+
+    <changeSet id="6" author="Maks">
+        <createTable tableName="HT_USER">
+            <column name="USER_ID" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="USERNAME" type="varchar">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="EMAIL" type="varchar">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="PASSWORD" type="varchar">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="LAST_PASSWORD_RESET" type="datetime">
+                <constraints nullable="true" unique="false"/>
+            </column>
+            <column name="FIRST_NAME" type="varchar">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="LAST_NAME" type="varchar">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="STATUS" type="varchar">
+                <constraints nullable="false" unique="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="HT_PROJECT" baseColumnNames="OWNER" constraintName="FK_PROJECT_OWNER"
+                                 referencedTableName="HT_USER"
+                                 referencedColumnNames="USER_ID"/>
+    </changeSet>
+
+    <changeSet id="7" author="Maks">
+        <insert tableName="HT_TASK_LABEL_COLOR">
+            <column name="COLOR_ID" value="1"/>
+            <column name="HEX" value="#39CCCC"/>
+        </insert>
+        <insert tableName="HT_TASK_LABEL_COLOR">
+            <column name="COLOR_ID" value="2"/>
+            <column name="HEX" value="#FF4136"/>
+        </insert>
+        <insert tableName="HT_TASK_LABEL_COLOR">
+            <column name="COLOR_ID" value="3"/>
+            <column name="HEX" value="#F012BE"/>
+        </insert>
+        <insert tableName="HT_TASK_LABEL_COLOR">
+            <column name="COLOR_ID" value="4"/>
+            <column name="HEX" value="#111111"/>
+        </insert>
+        <insert tableName="HT_TASK_LABEL_COLOR">
+            <column name="COLOR_ID" value="5"/>
+            <column name="HEX" value="#2ECC40"/>
+        </insert>
+        <insert tableName="HT_TASK_LABEL_COLOR">
+            <column name="COLOR_ID" value="6"/>
+            <column name="HEX" value="#FF851B"/>
+        </insert>
+
+        <insert tableName="HT_TASK_LABEL">
+            <column name="LABEL_ID" value="1"/>
+            <column name="NAME" value="ASAP"/>
+            <column name="COLOR_ID" value="1"/>
+            <column name="PROJECT_ID" value="1"/>
+        </insert>
+        <insert tableName="HT_TASK_LABEL">
+            <column name="LABEL_ID" value="2"/>
+            <column name="NAME" value="Dont do it"/>
+            <column name="COLOR_ID" value="2"/>
+            <column name="PROJECT_ID" value="1"/>
+        </insert>
+        <insert tableName="HT_TASK_LABEL">
+            <column name="LABEL_ID" value="3"/>
+            <column name="NAME" value="Do it"/>
+            <column name="COLOR_ID" value="3"/>
+            <column name="PROJECT_ID" value="1"/>
+        </insert>
+        <insert tableName="HT_TASK_LABEL">
+            <column name="LABEL_ID" value="4"/>
+            <column name="NAME" value="Need test"/>
+            <column name="COLOR_ID" value="4"/>
+            <column name="PROJECT_ID" value="1"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="8" author="Maks">
+        <insert tableName="HT_USER">
+            <column name="USER_ID" value="1"/>
+            <column name="USERNAME" value="test"/>
+            <column name="EMAIL" value="test1@email.test"/>
+            <column name="PASSWORD" value="$2a$10$ITjRTdRw4E4n3aa2z0EWteNOavKfBZBl0dS4EkYtZiIKmcL2U9rbC"/>
+            <column name="FIRST_NAME" value="TestFirstname"/>
+            <column name="LAST_NAME" value="TestLastname"/>
+            <column name="STATUS" value="ACTIVE"/>
+        </insert>
+
+        <insert tableName="HT_USER">
+            <column name="USER_ID" value="2"/>
+            <column name="USERNAME" value="test2"/>
+            <column name="EMAIL" value="test2@email.test"/>
+            <column name="PASSWORD" value="$2a$10$ITjRTdRw4E4n3aa2z0EWteNOavKfBZBl0dS4EkYtZiIKmcL2U9rbC"/>
+            <column name="FIRST_NAME" value="TestFirstname"/>
+            <column name="LAST_NAME" value="TestLastname"/>
+            <column name="STATUS" value="ACTIVE"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="9" author="Maks">
+        <insert tableName="HT_PROJECT">
+            <column name="PROJECT_ID" value="1"/>
+            <column name="NAME" value="Test project 1"/>
+            <column name="DESCRIPTION" value="Description 1"/>
+            <column name="OWNER" value="1"/>
+        </insert>
+        <insert tableName="HT_PROJECT">
+            <column name="PROJECT_ID" value="2"/>
+            <column name="NAME" value="Test project 2"/>
+            <column name="DESCRIPTION" value="Description 2"/>
+            <column name="OWNER" value="1"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="10" author="Maks">
+        <insert tableName="HT_TASK">
+            <column name="TASK_ID" value="1"/>
+            <column name="NAME" value="TASK 1"/>
+            <column name="DESCRIPTION" value="TASK TEXT 1"/>
+            <column name="CREATED" value="2020-01-01 01:00:00"/>
+            <column name="IS_DONE" value="FALSE"/>
+            <column name="PROJECT_ID" value="1"/>
+        </insert>
+        <insert tableName="HT_TASK">
+            <column name="TASK_ID" value="2"/>
+            <column name="NAME" value="TASK 2"/>
+            <column name="DESCRIPTION" value="TASK TEXT 2"/>
+            <column name="CREATED" value="2020-01-02 02:00:00"/>
+            <column name="IS_DONE" value="FALSE"/>
+            <column name="PROJECT_ID" value="1"/>
+        </insert>
+        <insert tableName="HT_TASK">
+            <column name="TASK_ID" value="3"/>
+            <column name="NAME" value="TASK 3"/>
+            <column name="DESCRIPTION" value="TASK TEXT 3"/>
+            <column name="CREATED" value="2020-01-03 03:00:00"/>
+            <column name="DEADLINE" value="2020-04-03 03:00:00"/>
+            <column name="IS_DONE" value="TRUE"/>
+            <column name="PROJECT_ID" value="1"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="11" author="Maks">
+        <insert tableName="HT_REL_TASK_LABEL">
+            <column name="TASK_ID" value="1"/>
+            <column name="LABEL_ID" value="1"/>
+        </insert>
+        <insert tableName="HT_REL_TASK_LABEL">
+            <column name="TASK_ID" value="1"/>
+            <column name="LABEL_ID" value="2"/>
+        </insert>
+        <insert tableName="HT_REL_TASK_LABEL">
+            <column name="TASK_ID" value="1"/>
+            <column name="LABEL_ID" value="3"/>
+        </insert>
+        <insert tableName="HT_REL_TASK_LABEL">
+            <column name="TASK_ID" value="2"/>
+            <column name="LABEL_ID" value="4"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
