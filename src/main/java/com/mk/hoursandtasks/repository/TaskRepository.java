@@ -10,4 +10,5 @@ import java.util.List;
 public interface TaskRepository extends PagingAndSortingRepository<Task, Long> {
     List<Task> findAllByProject_ProjectId(Long projectId);
     Page<Task> findAllByProject_ProjectId(Long projectId, Pageable pageable);
+    Page<Task> findAllByProject_ProjectIdAndIsDone(Long projectId, boolean isDone ,Pageable pageable);
 }

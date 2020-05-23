@@ -51,6 +51,11 @@ public class TaskService {
         return taskRepository.findAllByProject_ProjectId(project.getProjectId(), pageable);
     }
 
+    public Page<Task> getAllInProject(Project project, boolean isDone ,Pageable pageable){
+        Objects.requireNonNull(project);
+        return taskRepository.findAllByProject_ProjectIdAndIsDone(project.getProjectId(), isDone, pageable);
+    }
+
     public Task getTask(Long taskId, User user){
         Objects.requireNonNull(taskId);
         Objects.requireNonNull(user);

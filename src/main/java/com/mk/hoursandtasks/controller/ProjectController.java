@@ -10,6 +10,7 @@ import com.mk.hoursandtasks.entity.user.User;
 import com.mk.hoursandtasks.service.ProjectService;
 import com.mk.hoursandtasks.service.TaskLabelService;
 import com.mk.hoursandtasks.service.TaskService;
+import liquibase.util.BooleanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,10 +48,19 @@ public class ProjectController extends ControllerAncestor {
 
     @RequestMapping(value = "/{id}/tasks", method = RequestMethod.GET)
     public @ResponseBody
-    Page<TaskDto> getTaskInProject(@PathVariable(name = "id") Long id, Pageable pageable, HttpServletRequest request){
+    Page<TaskDto> getTaskInProject(@PathVariable(name = "id") Long id,
+                                   @RequestParam(name = "done", required = false) Boolean done,
+                                   Pageable pageable, HttpServletRequest request){
+
         User user = getCurrentUser(request);
         Project project = projectService.getProject(id, user);
-        Page<Task> taskPage = taskService.getAllInProject(project, pageable);
+        Page<Task> taskPage = null;
+        if (done == null){
+            taskPage = taskService.getAllInProject(project, pageable);
+        } else {
+            taskPage = taskService.getAllInProject(project, BooleanUtils.isTrue(done), pageable);
+        }
+
         return taskPage.map(Task::toTaskDto);
     }
 

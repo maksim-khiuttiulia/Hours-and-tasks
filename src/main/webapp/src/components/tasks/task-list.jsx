@@ -7,6 +7,7 @@ import { getAllTasks, changeTaskStatus } from '../../services/task-service'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlusSquare } from '@fortawesome/free-solid-svg-icons'
 import { withRouter } from 'react-router-dom'
+import { getTasksInProject, getDoneTasksInProject, getNotDoneTasksInProject } from '../../services/project-service'
 
 
 class TaskList extends Component {
@@ -14,6 +15,11 @@ class TaskList extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            projectId: this.props.projectId | 1,
+            showDone: this.props.showDone | false,
+            showNotDone: this.props.showNotDone | false,
+
+
             loading: false,
             labels: [],
             tasks: [],
@@ -38,12 +44,39 @@ class TaskList extends Component {
             loading: true
         })
 
-        getAllTasks().then((tasks) => {
-            this.setState({
-                tasks: tasks,
-                loading: false
+        const { projectId } = this.state
+        if (projectId) {
+            const {showDone, showNotDone} = this.state
+            if (Boolean(showDone) && Boolean(showNotDone)) {
+                getTasksInProject(projectId).then((response) => {
+                    this.setState({
+                        tasks: response.content,
+                        loading: false
+                    })
+                })
+            } else if (Boolean(showDone)) {
+                getDoneTasksInProject(projectId).then((response) => {
+                    this.setState({
+                        tasks: response.content,
+                        loading: false
+                    })
+                })
+            } else if (Boolean(showNotDone)) {
+                getNotDoneTasksInProject(projectId).then((response) => {
+                    this.setState({
+                        tasks: response.content,
+                        loading: false
+                    })
+                })
+            } 
+        } else {
+            getAllTasks().then((tasks) => {
+                this.setState({
+                    tasks: tasks,
+                    loading: false
+                })
             })
-        })
+        }
     }
 
     openDeleteDialog = (task) => {
@@ -117,22 +150,24 @@ class TaskList extends Component {
         })
     }
 
+    renderTasks = () => {
+        let tasks = <ListGroupItem color="success"><Spinner animation="border" /></ListGroupItem>
+        if (!this.state.loading) {
+            tasks = this.state.tasks.map((task) => {
+                return <Task task={task} key={task.id} onChangeTaskStatus={this.onChangeTaskStatus} onDeleteTask={this.openDeleteDialog} />;
+            });
+        }
+        return (
+            <ListGroup>
+                {tasks}
+            </ListGroup>
+        )
+    }
+
 
 
 
     render() {
-
-        let todoTasks = <ListGroupItem color="danger"><Spinner animation="border" /></ListGroupItem>
-        let doneTasks = <ListGroupItem color="success"><Spinner animation="border" /></ListGroupItem>
-        if (!this.state.loading) {
-            todoTasks = this.state.tasks.filter((task) => !task.done).map((task) => {
-                return <Task task={task} key={task.id} onChangeTaskStatus={this.onChangeTaskStatus} onDeleteTask={this.openDeleteDialog} />;
-            });
-            doneTasks = this.state.tasks.filter((task) => task.done).map((task) => {
-                return <Task task={task} key={task.id} onChangeTaskStatus={this.onChangeTaskStatus} onDeleteTask={this.openDeleteDialog} />;
-            });
-        }
-
         return (
             <div>
                 <TaskAddDialog projectId={1} isOpen={this.state.newTaskDialog.isOpen} callback={this.addTaskDialogCallback}></TaskAddDialog>
@@ -141,17 +176,9 @@ class TaskList extends Component {
                     <ListGroupItem className="d-flex justify-content-end">
                         <Button color="info" onClick={this.openAddTaskDialog} style={{ minWidth: 100 }}><FontAwesomeIcon icon={faPlusSquare} /></Button>
                     </ListGroupItem>
-                    <ListGroupItem color="danger">In progress:</ListGroupItem>
-                    {todoTasks}
-
                 </ListGroup>
-                <ListGroup className="mt-3">
-                    <ListGroupItem color="success" >Done:</ListGroupItem>
-                    {doneTasks}
-                </ListGroup>
+                {this.renderTasks()}
             </div>
-
-
         );
     }
 }
