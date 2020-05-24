@@ -7,8 +7,10 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -22,9 +24,14 @@ import java.util.Map;
 @Component
 public class Creator {
 
-    private Log log = LogFactory.getLog(Creator.class);
+    Log log = LogFactory.getLog(Creator.class);
 
     static Creator instance;
+
+    @PostConstruct
+    public void postConstruct() {
+        instance = this;
+    }
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -34,9 +41,6 @@ public class Creator {
     }
 
     public static <T> T save(T entity) {
-        if (instance == null){
-            instance = new Creator();
-        }
         return instance.saveEntity(entity);
     }
 
@@ -89,13 +93,13 @@ public class Creator {
                 saveChildEntity(propValue);
             }
 
-            JpaRepository dao = getDao(entity);
+            JpaRepository dao = (JpaRepository) getDao(entity);
             // if (deleteOthers) {
             //   dao.deleteAllInBatch();
             // }
             dao.save(entity);
         } catch (Exception e) {
-            throw new IllegalStateException(e);
+            throw new IllegalStateException("Problem", e);
         }
         return entity;
 
@@ -122,7 +126,7 @@ public class Creator {
                 String className = propValue.getClass().getSimpleName();
                 String daoName = className.substring(0, 1).toLowerCase() + className.substring(1) + "Repository";
 
-                JpaRepository repository = applicationContext.getBeansOfType(JpaRepository.class).get(daoName);
+                CrudRepository repository = applicationContext.getBeansOfType(CrudRepository.class).get(daoName);
                 repository.save(propValue);
             }
         }
