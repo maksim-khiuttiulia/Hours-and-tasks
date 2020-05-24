@@ -7,7 +7,7 @@ const UserError = ({error}) => {
         return (<div></div>)       
     }
     return (
-        <div className="alert alert-danger" role="alert">{error}</div>
+        <div id="user-error" className="alert alert-danger" role="alert">{error}</div>
     )
 }
 

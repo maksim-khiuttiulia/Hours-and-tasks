@@ -6,6 +6,7 @@ import com.mk.hoursandtasks.entity.user.UserStatus;
 
 public abstract class TestAncestor {
 
+    public static final String USERNAME = "test";
     public static final String USER_PASSWORD = "password";
     public static final String USER_PASSWORD_HASH = "$2a$10$ITjRTdRw4E4n3aa2z0EWteNOavKfBZBl0dS4EkYtZiIKmcL2U9rbC";
 

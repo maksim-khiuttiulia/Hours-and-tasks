@@ -7,7 +7,14 @@ const ServerError = ({error}) => {
     
 
     if (error.response) {
-        errorMessage = error.response.data.error;
+        if (error.response.data){
+            errorMessage = error.response.data.error;
+        } else if (error.response.status == 400){
+            errorMessage = "Server not avaiable"
+        } else {
+            errorMessage = error.response.statusText;
+        }
+        
     } 
 
     if (!errorMessage){
@@ -15,8 +22,7 @@ const ServerError = ({error}) => {
     }
     
     return (
-        
-        <div className="alert alert-danger" role="alert">{errorMessage}</div>
+        <div id="server-error" className="alert alert-danger" role="alert">{errorMessage}</div>
     )
 }
 
