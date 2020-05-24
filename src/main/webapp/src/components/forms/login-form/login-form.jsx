@@ -66,12 +66,12 @@ class LoginForm extends Component {
 
           <FormGroup>
             <Label>Username</Label>
-            <Input type="text" placeholder="username" onChange={this.onUsernameChanged} required />
+            <Input id="input-username" type="text" placeholder="username" onChange={this.onUsernameChanged} required />
           </FormGroup>
 
           <FormGroup>
             <Label>Password</Label>
-            <Input type="password" placeholder="********" onChange={this.onPasswordChanged} required/>
+            <Input id="input-password" type="password" placeholder="********" onChange={this.onPasswordChanged} required/>
           </FormGroup>
 
           <FormGroup> 
