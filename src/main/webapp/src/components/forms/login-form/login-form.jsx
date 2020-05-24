@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import {Redirect, withRouter } from "react-router-dom";
 import { Container, Alert, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import { login, isLoggedIn } from '../../../services/user-service'
+import ServerError from '../../error/server-error'
+import UserError from '../../error/user-error'
 
 class LoginForm extends Component {
 
@@ -9,14 +11,17 @@ class LoginForm extends Component {
     super(props);
     this.state = {
       isLoggedIn : isLoggedIn(),
-      from : "/"
+      from : "/",
+
+      userError : '',
+      serverError : ''
     }
   }
 
   onUsernameChanged = (e) => {
     let username = e.target.value
     this.setState({
-      errorMessage : "",
+      userError : "",
       username: username
     })
   }
@@ -24,35 +29,34 @@ class LoginForm extends Component {
   onPasswordChanged = (e) => {
     let password = e.target.value
     this.setState({
-      errorMessage : "",
+      userError : "",
       password: password
     })
   }
 
   onSubmit = (e) => {
     let username = this.state.username
+    if (!username){
+      this.setState({userError : "Username is empty"})
+      return
+    }
 
     let password = this.state.password
+
+    if (!password){
+      this.setState({userError : "Password is empty"})
+      return
+    }
+
     login(username, password).then(data => {
       this.setState({
         isLoggedIn : true
       })
-    })
+    }).catch(e => {console.log(e); this.setState({serverError : e})})
   }
 
-  showError = (error) => {
-    this.setState({
-        errorMessage : error
-    })
-  }
 
   render() {
-
-    let alert = null;
-    if (this.state.errorMessage){
-        alert = <Alert color="danger">{this.state.errorMessage}</Alert>
-    }
-
     if (this.state.isLoggedIn){
       return (<Redirect to={this.state.from} />)
     }
@@ -63,6 +67,8 @@ class LoginForm extends Component {
         
 
           <h2>Sign In</h2>
+          <ServerError error={this.state.serverError}/>
+          <UserError error={this.state.userError}/>
 
           <FormGroup>
             <Label>Username</Label>
@@ -75,8 +81,7 @@ class LoginForm extends Component {
           </FormGroup>
 
           <FormGroup> 
-            <Button onClick={this.onSubmit} color="success" block>Login</Button>
-            {alert}
+            <Button id="submit" onClick={this.onSubmit} color="success" block>Login</Button>
           </FormGroup>
         </Form>
       </Container>
