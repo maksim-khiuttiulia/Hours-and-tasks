@@ -1,18 +1,15 @@
 package com.mk.hoursandtasks.controller;
 
 import com.mk.hoursandtasks.dto.AuthDto;
-import com.mk.hoursandtasks.dto.UserDto;
 import com.mk.hoursandtasks.entity.user.User;
-import com.mk.hoursandtasks.exceptions.JwtAuthenticationException;
+import com.mk.hoursandtasks.exceptions.RestAuthenticationException;
 import com.mk.hoursandtasks.security.JwtTokenProvider;
 import com.mk.hoursandtasks.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -35,14 +32,13 @@ public class AuthenticationController extends ControllerAncestor  {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<AuthDto> login(@RequestBody AuthDto authDto){
-        try {
             String username = authDto.getUsername();
             String password = authDto.getPassword();
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
             authenticationManager.authenticate(authenticationToken);
             User user = userService.findByUsername(username);
             if (user == null){
-                throw new UsernameNotFoundException("User not found");
+                throw new RestAuthenticationException("User not found");
             }
             String token = jwtTokenProvider.createToken(username);
             AuthDto response = new AuthDto();
@@ -50,9 +46,6 @@ public class AuthenticationController extends ControllerAncestor  {
             response.setUsername(username);
             response.setValidAuth(true);
             return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (JwtAuthenticationException e){
-            throw new BadCredentialsException("Invalid username or password");
-        }
     }
 
     @RequestMapping(value = "/authValid", method = RequestMethod.GET)

@@ -11,7 +11,7 @@ const ServerError = ({error}) => {
             errorMessage = error.response.data.error;
         } else if (error.response.status === 400){
             errorMessage = "Internal error"
-        } else if (error.response.status === 403){
+        } else if (error.response.data.status === 403){
             errorMessage = "Access error, please relogin"
         }
         else {

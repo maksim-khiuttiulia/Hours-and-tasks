@@ -1,6 +1,6 @@
 package com.mk.hoursandtasks.security;
 
-import com.mk.hoursandtasks.exceptions.JwtAuthenticationException;
+import com.mk.hoursandtasks.exceptions.RestAuthenticationException;
 import com.mk.hoursandtasks.utils.DateUtils;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +72,7 @@ public class JwtTokenProvider {
             }
             return true;
         } catch (JwtException | IllegalArgumentException ex){
-            throw new JwtAuthenticationException("JWT Token is expired or invalid");
+            throw new RestAuthenticationException("JWT Token is expired or invalid");
         }
     }
 }

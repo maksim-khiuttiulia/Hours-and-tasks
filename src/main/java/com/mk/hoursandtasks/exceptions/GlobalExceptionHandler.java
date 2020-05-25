@@ -2,6 +2,7 @@ package com.mk.hoursandtasks.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -22,8 +23,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler   {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(JwtAuthenticationException.class)
-    public ResponseEntity<ErrorResponse> authenticationExceptionHandler(JwtAuthenticationException ex) {
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponse> authenticationExceptionHandler(AuthenticationException ex) {
 
         ErrorResponse errors = new ErrorResponse();
         errors.setTimestamp(LocalDateTime.now());
