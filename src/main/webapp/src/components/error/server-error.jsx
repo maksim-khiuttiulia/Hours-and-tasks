@@ -9,9 +9,12 @@ const ServerError = ({error}) => {
     if (error.response) {
         if (error.response.data){
             errorMessage = error.response.data.error;
-        } else if (error.response.status == 400){
-            errorMessage = "Server not avaiable"
-        } else {
+        } else if (error.response.status === 400){
+            errorMessage = "Internal error"
+        } else if (error.response.status === 403){
+            errorMessage = "Access error, please relogin"
+        }
+        else {
             errorMessage = error.response.statusText;
         }
         

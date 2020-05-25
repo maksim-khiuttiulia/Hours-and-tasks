@@ -11,7 +11,7 @@ export async function getAllProjects() {
     return [];
 }
 
-export async function getTasksInProject(projectid, page, size, done, sortBy) {
+export async function getTasksInProject(projectid, page, size, done, sortBy, orderBy) {
     let url = `/projects/${projectid}/tasks?`
     if (page >= 0 && size >= 0){
         url += `page=${page}&size=${size}`
@@ -24,12 +24,13 @@ export async function getTasksInProject(projectid, page, size, done, sortBy) {
     }
     if (sortBy){
         url += `&sort=${sortBy}`
+        if (orderBy){
+            url += `,${orderBy}`
+        }
     }
-    console.log(url)
     try {
         let response = await API.get(url);
         let data = await response.data
-        console.log("RESPONCE ", data)
         return data;
     } catch (error) {
         console.error(error)

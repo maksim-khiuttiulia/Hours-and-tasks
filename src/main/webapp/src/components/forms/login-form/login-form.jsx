@@ -52,7 +52,7 @@ class LoginForm extends Component {
       this.setState({
         isLoggedIn : true
       })
-    }).catch(e => {console.log(e); this.setState({serverError : e})})
+    }).catch(this.setState({serverError : e}))
   }
 
 

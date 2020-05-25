@@ -41,7 +41,6 @@ export default class PaginationComponent extends Component {
         for (let i = 1; i <= this.state.pageCount; i++) {
             pagesNumbers.push(i);
         }
-        console.log("ACTIAL PAGE", this.state.currentPage)
 
         let numbers = pagesNumbers.map(number => {
             return (

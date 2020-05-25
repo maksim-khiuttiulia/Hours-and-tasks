@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import { ButtonGroup, Button } from 'reactstrap';
+import {faArrowUp, faArrowDown  } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export default class SortBy extends Component {
 
@@ -7,7 +9,8 @@ export default class SortBy extends Component {
         super(props);
         this.state = {
             params: this.props.params,
-            selected: this.props.selected
+            selected: this.props.selected,
+            orderBy : null
         }
     }
 
@@ -16,35 +19,59 @@ export default class SortBy extends Component {
         if (this.props !== props) {
             this.setState({
                 params: props.params,
-                selected: props.selected
+                selected: props.selected,
             })
         }
     }
 
     onSelect = (e) => {
         e.target.blur()
+        const {selected, orderBy} = this.state
         let key = e.target.value
-        const {selected} = this.state
+        let newOrder = "asc"
+        
 
         if (selected && key === selected){
-            key = ''
+            if (orderBy === "asc"){
+                newOrder = "desc"
+            }
+            if (orderBy === "desc"){
+                newOrder = null;
+                key = null;
+            }
+        }
+        if (!selected){
+            newOrder = "asc"
         }
         this.setState({
-            selected : key
+            selected : key,
+            orderBy : newOrder
         })
 
         if (typeof this.props.onSelect == "function"){
-            this.props.onSelect(key);
+            this.props.onSelect(key, newOrder);
         }
     }
 
 
     renderButtons = () => {
+
+        const {selected, orderBy} = this.state
+
+        let icon
+
+        if (orderBy === "asc"){
+            icon = <FontAwesomeIcon icon={faArrowDown}/>
+        } 
+        if (orderBy === "desc"){
+            icon = <FontAwesomeIcon icon={faArrowUp}/>
+        } 
+
         let buttons = this.state.params.map((param, i) => {
-            if (param.key === this.state.selected) {
-                return <Button color="primary" key={i} className="active not-focusable" onClick={this.onSelect} value={param.key}>{param.value}</Button>
+            if (param.key === selected) {
+            return <Button color="primary" key={i} className="active not-focusable" onClick={this.onSelect} value={param.key}>{param.value} {icon}</Button>
             }
-            return <Button color="primary" key={i} className="not-focusable" onClick={this.onSelect} value={param.key}>{param.value}</Button>
+            return <Button color="primary" key={i} className="not-focusable" onClick={this.onSelect} value={param.key}>{param.value} </Button>
         })
         return buttons
     }

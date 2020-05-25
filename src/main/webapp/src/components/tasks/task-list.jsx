@@ -27,6 +27,7 @@ class TaskList extends Component {
             projectId: this.props.projectId | 1,
             done: this.props.done == null ? null : Boolean(this.props.done),
             sortBy : null,
+            orderBy : null,
 
             loading: true,
             labels: [],
@@ -53,7 +54,7 @@ class TaskList extends Component {
     }
 
 
-    readTasks(pageNumber, sortBy) {
+    readTasks(pageNumber, sortBy, orderBy) {
         this.setState({
             loading: true
         })
@@ -63,8 +64,7 @@ class TaskList extends Component {
         page = page + 1 > totalPages ? totalPages : page
 
         if (projectId) {
-            console.log("DONE", done)
-            getTasksInProject(projectId, page, itemsCountPerPage, done, sortBy).then((response) => {
+            getTasksInProject(projectId, page, itemsCountPerPage, done, sortBy, orderBy).then((response) => {
                 this.setStateAfterLoadTasks(response)
             }).catch(e => {
                 this.setState({ serverError: e, loading: false })
@@ -168,18 +168,18 @@ class TaskList extends Component {
     }
 
     onSelectPage = (page) => {
-        console.log("Selected page:", page)
         this.setState({
             activePage: page
         })
         this.readTasks(page);
     }
 
-    onSelectSortBy = (key) => {
+    onSelectSortBy = (key, orderBy) => {
         this.setState({
-            sortBy : key
+            sortBy : key,
+            orderBy : orderBy
         })
-        this.readTasks(this.state.activePage, key);
+        this.readTasks(this.state.activePage, key, orderBy);
     }
 
     renderTasks = () => {
@@ -215,7 +215,7 @@ class TaskList extends Component {
                 <ServerError error={this.state.serverError} />
                 <ListGroup>
                     <ListGroupItem className="d-flex justify-content-end">
-                        <SortBy params={this.sortByParams} selected={this.state.sortBy} onSelect={this.onSelectSortBy} ></SortBy>
+                        <SortBy params={this.sortByParams} selected={this.state.sortBy} orderBy={this.state.orderBy} onSelect={this.onSelectSortBy} ></SortBy>
                         <Button color="info" onClick={this.openAddTaskDialog} style={{ minWidth: 100 }}><FontAwesomeIcon icon={faPlusSquare} /></Button>
                     </ListGroupItem>
                 </ListGroup>
