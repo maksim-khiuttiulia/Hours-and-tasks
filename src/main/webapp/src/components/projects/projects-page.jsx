@@ -4,17 +4,10 @@ import ProjectList from './project-list'
 import { Row, Container, Alert } from 'reactstrap';
 import { getAllProjects } from '../../services/project-service'
 import { Spinner } from 'reactstrap';
-import SortBy from '../sort-by/sort-by';
 import PaginationComponent from '../pagination/pagination-component';
 
 
 export default class ProjectsPage extends Component {
-
-    sortByParams = [
-        {key : "name" , value : "By name"},
-        {key : "taskCount" , value : "By tasks count"},
-        {key : "deadline" , value : "By deadline"},
-    ]
 
     constructor(props) {
         super(props)
@@ -24,8 +17,6 @@ export default class ProjectsPage extends Component {
 
             serverError: '',
 
-            sortBy: null,
-            orderBy: null,
             activePage: 1,
             totalPages: null,
             itemsCountPerPage: 9,
@@ -34,11 +25,11 @@ export default class ProjectsPage extends Component {
     }
 
     async componentDidMount() {
-        const {pageNumber, sortBy, orderBy} = this.state
-        this.readProjects(pageNumber, sortBy, orderBy);
+        const {pageNumber} = this.state
+        this.readProjects(pageNumber);
     }
 
-    readProjects(pageNumber, sortBy, orderBy) {
+    readProjects(pageNumber) {
         this.setState({
             loading: true
         })
@@ -48,7 +39,7 @@ export default class ProjectsPage extends Component {
         page = page + 1 > totalPages ? totalPages : page
 
         getAllProjects().then(response => {
-            this.setStateAfterLoadProjects(response)
+            this.setStateAfterLoadProjects(response, page, itemsCountPerPage)
         }).catch(e => {
             this.setState({
                 loading: false,
@@ -59,7 +50,6 @@ export default class ProjectsPage extends Component {
     }
 
     setStateAfterLoadProjects = (response) => {
-        console.log(response)
         const totalPages = response.totalPages;
         const itemsCountPerPage = response.size;
         const totalItemsCount = response.totalElements;
@@ -75,14 +65,14 @@ export default class ProjectsPage extends Component {
     }
 
     render() {
-        const { loading, sortBy, orderBy, serverError, totalItemsCount } = this.state
+        const { loading, serverError, totalItemsCount, projects } = this.state
         if (loading) {
             return (<Container className="m-auto text-center">
                 <Spinner />
             </Container>)
         }
 
-        if(totalItemsCount == 0 || totalItemsCount == null){
+        if(totalItemsCount === 0 || totalItemsCount == null){
             return(
             <Alert color="primary" style={{ textAlign : "center"}}>
                 You havent any project
@@ -92,13 +82,13 @@ export default class ProjectsPage extends Component {
         return (
             <Container>
                 <ServerError error={serverError} />
-                <Row className="d-flex justify-content-end">
-                    <SortBy params={this.sortByParams} selected={sortBy} orderBy={orderBy} onSelect={this.onSelectSortBy} />
+                <Row className="mt-4">
+                    
                 </Row>
-                <Row>
-
+                <Row className="mt-4">
+                    <ProjectList projects={projects}/>
                 </Row>
-                <Row className="d-flex justify-content-center">
+                <Row className="d-flex justify-content-center mt-4">
                     <PaginationComponent/>
                 </Row>
             </Container>

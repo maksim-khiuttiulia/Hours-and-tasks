@@ -16,7 +16,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <PrivateRoute exact path="/" component={() => <TaskList done={false} projectId={1}/>}/>
+      <PrivateRoute exact path="/" component={ProjectPage}/>
       <PrivateRoute exact path="/tasks" component={() => <TaskList projectId={1}/>}/>
       <PrivateRoute exact path="/projects" component={ProjectPage}/>
       <Route exact path="/login" component={LoginForm} />

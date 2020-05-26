@@ -1,6 +1,6 @@
 import API from './API'
 
-export async function getAllProjects() {
+export async function getAllProjects(page, size, sortBy, orderBy) {
     try {
         let response = await API.get("/projects");
         let data = await response.data
