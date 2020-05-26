@@ -59,6 +59,7 @@ export default class ProjectsPage extends Component {
     }
 
     setStateAfterLoadProjects = (response) => {
+        console.log(response)
         const totalPages = response.totalPages;
         const itemsCountPerPage = response.size;
         const totalItemsCount = response.totalElements;

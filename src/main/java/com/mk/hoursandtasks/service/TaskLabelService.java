@@ -19,11 +19,11 @@ public class TaskLabelService {
     private TaskLabelColorRepository labelColorRepository;
 
     public TaskLabel getTaskLabel(Long labelId, Project project){
-        return taskLabelRepository.findByLabelIdAndProject_ProjectId(labelId, project.getProjectId());
+        return taskLabelRepository.findByLabelIdAndProject(labelId, project);
     }
 
     public List<TaskLabel> getAllOnProject(Project project){
-        List<TaskLabel> taskLabels = taskLabelRepository.findAllByProject_ProjectId(project.getProjectId());
+        List<TaskLabel> taskLabels = taskLabelRepository.findAllByProject(project);
         return taskLabels;
     }
 

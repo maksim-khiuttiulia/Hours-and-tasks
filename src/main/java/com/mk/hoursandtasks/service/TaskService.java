@@ -36,24 +36,24 @@ public class TaskService {
         List<Task> tasks = new LinkedList<>();
         List<Project> projects = projectService.getAllProjects(user);
         for (Project project : projects){
-            tasks.addAll(taskRepository.findAllByProject_ProjectId(project.getProjectId()));
+            tasks.addAll(taskRepository.findAllByProject(project));
         }
         return tasks;
     }
 
     public List<Task> getAllInProject(Project project){
         Objects.requireNonNull(project);
-        return taskRepository.findAllByProject_ProjectId(project.getProjectId());
+        return taskRepository.findAllByProject(project);
     }
 
     public Page<Task> getAllInProject(Project project, Pageable pageable){
         Objects.requireNonNull(project);
-        return taskRepository.findAllByProject_ProjectId(project.getProjectId(), pageable);
+        return taskRepository.findAllByProject(project, pageable);
     }
 
     public Page<Task> getAllInProject(Project project, boolean isDone ,Pageable pageable){
         Objects.requireNonNull(project);
-        return taskRepository.findAllByProject_ProjectIdAndIsDone(project.getProjectId(), isDone, pageable);
+        return taskRepository.findAllByProjectAndIsDone(project, isDone, pageable);
     }
 
     public Task getTask(Long taskId, User user){

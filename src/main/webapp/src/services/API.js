@@ -14,7 +14,6 @@ const api = axios.create({
 api.interceptors.request.use(
     config => {
       let token = getAuthenticationToken();
-      getURL()
       if (token) {
         config.headers.Authorization = token;
       }
@@ -33,7 +32,6 @@ function getURL(){
     hostname = remotehost
     protocol = "https:"
   }
-  console.error(protocol+'//'+ hostname + port + apiPath)
   return protocol+'//'+ hostname + port + apiPath;
 }
 

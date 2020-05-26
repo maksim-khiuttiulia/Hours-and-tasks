@@ -34,9 +34,9 @@ public class ProjectController extends ControllerAncestor {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public @ResponseBody
-    List<ProjectDto> getProjects(HttpServletRequest request){
+    Page<ProjectDto> getProjects(Pageable pageable, HttpServletRequest request){
         User user = getCurrentUser(request);
-        return projectService.getAllProjects(user).stream().map(Project::toProjectDto).collect(Collectors.toList());
+        return projectService.getAllProjects(user, pageable).map(Project::toProjectDto);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
