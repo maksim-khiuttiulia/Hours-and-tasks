@@ -10,7 +10,7 @@ import { withRouter } from 'react-router-dom'
 import { getTasksInProject } from '../../services/project-service'
 import ServerError from '../error/server-error'
 import SortBy from '../sort-by/sort-by';
-import PaginationComponent from '../pagination/pagination'
+import PaginationComponent from '../pagination/pagination-component'
 
 
 class TaskList extends Component {

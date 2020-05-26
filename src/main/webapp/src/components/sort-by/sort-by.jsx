@@ -8,8 +8,8 @@ export default class SortBy extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            params: this.props.params,
-            selected: this.props.selected,
+            params: Array.isArray(this.props.params) ? this.props.params : [] ,
+            selected: this.props.selected | null,
             orderBy : null
         }
     }

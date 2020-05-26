@@ -66,7 +66,6 @@ class LoginForm extends Component {
       <Container className="d-flex vh-100">
         
         <Form className="m-auto">
-        
 
           <h2>Sign In</h2>
           <ServerError error={this.state.serverError}/>

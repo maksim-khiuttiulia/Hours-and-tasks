@@ -4,6 +4,7 @@ import { isLoggedIn } from './services/user-service'
 import TaskList from './components/tasks/task-list'
 import LoginForm from './components/forms/login-form/login-form'
 import ContainerPage from './components/container-page/container-page'
+import ProjectPage from './components/projects/projects-page'
 
 
 
@@ -17,6 +18,7 @@ function App() {
     <BrowserRouter>
       <PrivateRoute exact path="/" component={() => <TaskList done={false} projectId={1}/>}/>
       <PrivateRoute exact path="/tasks" component={() => <TaskList projectId={1}/>}/>
+      <PrivateRoute exact path="/projects" component={ProjectPage}/>
       <Route exact path="/login" component={LoginForm} />
     </BrowserRouter>
 
