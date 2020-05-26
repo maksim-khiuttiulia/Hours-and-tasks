@@ -1,6 +1,5 @@
 package com.mk.hoursandtasks.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
@@ -23,7 +22,7 @@ public class TaskDto {
 
     private boolean isDone;
 
-    private Long projectId;
+    private ProjectDto project;
 
     private List<TaskLabelDto> labels;
 }

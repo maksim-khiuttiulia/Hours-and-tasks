@@ -1,5 +1,6 @@
 package com.mk.hoursandtasks.entity.task;
 
+import com.mk.hoursandtasks.dto.ProjectDto;
 import com.mk.hoursandtasks.dto.TaskDto;
 import com.mk.hoursandtasks.dto.TaskLabelDto;
 import com.mk.hoursandtasks.entity.Project;
@@ -68,7 +69,8 @@ public class Task {
         taskDto.setDone(BooleanUtils.isTrue(this.getIsDone()));
 
         if (this.getProject() != null){
-            taskDto.setProjectId(this.getProject().getProjectId());
+            ProjectDto projectDto = this.getProject().toProjectDto(false, false);
+            taskDto.setProject(projectDto);
         }
 
         List<TaskLabelDto> labelDtos = this.getLabels().stream().map(TaskLabel::toTaskLabelDto).collect(Collectors.toList());

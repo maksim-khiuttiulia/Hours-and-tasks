@@ -50,14 +50,18 @@ public class Project {
         return labels;
     }
 
-    public ProjectDto toProjectDto(){
+    public ProjectDto toProjectDto(boolean initTasks, boolean initLabels){
         ProjectDto projectDto = new ProjectDto();
         projectDto.setProjectId(this.projectId);
         projectDto.setName(this.name);
         projectDto.setDescription(this.description);
         projectDto.setOwner(owner.toUserDto());
-        projectDto.setLabels(labels.stream().map(TaskLabel::toTaskLabelDto).collect(Collectors.toList()));
-        projectDto.setTasks(tasks.stream().map(Task::toTaskDto).collect(Collectors.toList()));
+        if (initTasks){
+            projectDto.setTasks(tasks.stream().map(Task::toTaskDto).collect(Collectors.toList()));
+        }
+        if (initLabels){
+            projectDto.setLabels(labels.stream().map(TaskLabel::toTaskLabelDto).collect(Collectors.toList()));
+        }
         return projectDto;
     }
 }

@@ -1,5 +1,6 @@
 package com.mk.hoursandtasks.service;
 
+import com.mk.hoursandtasks.dto.ProjectDto;
 import com.mk.hoursandtasks.dto.TaskDto;
 import com.mk.hoursandtasks.dto.TaskLabelDto;
 import com.mk.hoursandtasks.entity.Project;
@@ -194,9 +195,13 @@ public class TaskService {
         task.setCreated(taskDto.getCreated());
         task.setDeadline(taskDto.getDeadline());
         task.setIsDone(taskDto.isDone());
-        Project project = projectService.getProject(taskDto.getProjectId());
+        ProjectDto projectDto = taskDto.getProject();
+        if (projectDto == null){
+            throw new ValidationException("Project is null");
+        }
+        Project project = projectService.getProject(projectDto.getProjectId());
         if (project == null){
-            throw new ValidationException("Project with id " + taskDto.getProjectId() + " doesnt exist");
+            throw new ValidationException("Project with id " + projectDto.getProjectId() + " doesnt exist");
         }
         task.setProject(project);
 
