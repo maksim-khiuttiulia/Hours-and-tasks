@@ -21,7 +21,7 @@ class TasksPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            projectId: this.props.projectId | 1,
+            projectId: this.props.projectId,
             done: this.props.done == null ? null : Boolean(this.props.done),
             sortBy: null,
             orderBy: null,
@@ -38,7 +38,7 @@ class TasksPage extends Component {
 
             activePage: 1,
             totalPages: null,
-            itemsCountPerPage: this.props.itemsCountPerPage | 5,
+            itemsCountPerPage:  5,
             totalItemsCount: null
         }
     }

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from "react-router-dom";
 import { Col, Card, CardHeader, CardBody, Row, ListGroup, ListGroupItem, Badge, Button } from 'reactstrap';
 import TaksPage from '../tasks/tasks-page'
-import {getProject} from '../../services/project-service';
+import { getProject } from '../../services/project-service';
 
 class ProjectFullPage extends Component {
 
@@ -10,50 +10,51 @@ class ProjectFullPage extends Component {
         super(props)
         this.state = {
             projectId: props.match.params.id,
-            project : null,
+            project: null,
 
             tasksCount: 0,
-            todoTasksCount : 0,
-            doneTasksCount : 0,
+            todoTasksCount: 0,
+            doneTasksCount: 0,
 
-            serverError : '',
-            clientError : '',
-            loading : true
+            serverError: '',
+            clientError: '',
+            loading: true
         }
     }
 
-    async componentDidMount(){
+    async componentDidMount() {
         this.readProject()
     }
 
     readProject() {
-        this.setState({loading : true})
-        const {projectId } = this.state
+        this.setState({ loading: true })
+        const { projectId } = this.state
         getProject(projectId).then(data => {
-            const {name, description, tasksCount, todoTasksCount, doneTasksCount } = data;
+            const { name, description, tasksCount, todoTasksCount, doneTasksCount } = data;
             this.setState({
-                name : name,
-                description : description, 
-                tasksCount : tasksCount,
-                todoTasksCount : todoTasksCount, 
-                doneTasksCount : doneTasksCount,
-                loading : false
+                name: name,
+                description: description,
+                tasksCount: tasksCount,
+                todoTasksCount: todoTasksCount,
+                doneTasksCount: doneTasksCount,
+                loading: false
             })
         })
     }
 
 
     render() {
-        const {projectId, name, description, tasksCount, todoTasksCount, doneTasksCount, loading } = this.state
-
-        if (loading){
+        const { projectId, name, description, tasksCount, todoTasksCount, doneTasksCount, loading } = this.state
+        
+        if (loading) {
             return <h1>asdsadda</h1>
         }
 
+        console.log(projectId)
         return (
             <Card>
                 <CardHeader className="bg-danger text-white">
-        <h3 className="pb-5" style={{ fontWeight: 300 }}>{name}</h3>
+                    <h3 className="pb-5" style={{ fontWeight: 300 }}>{name}</h3>
                     <p>{description}</p>
                 </CardHeader>
 
@@ -83,12 +84,12 @@ class ProjectFullPage extends Component {
                         </Col>
                         <Col xs="4">
                             <h6>Done tasks: </h6>
-                            <TaksPage done={true} projectId={projectId}/>
+                            <TaksPage done={true} projectId={projectId} />
                         </Col>
-                        
+
                         <Col xs="4">
                             <h6>In progress: </h6>
-                            <TaksPage done={false} projectId={projectId}/>
+                            <TaksPage done={false} projectId={projectId} />
                         </Col>
                     </Row>
                 </CardBody>
