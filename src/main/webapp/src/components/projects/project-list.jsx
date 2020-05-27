@@ -1,5 +1,6 @@
 import React from 'react';
 import ProjectCard from './project-card'
+import {withRouter} from 'react-router-dom'
 import { Row, Container, Col } from 'reactstrap';
 
 
@@ -21,4 +22,4 @@ const ProjectList = ({ projects }) => {
     )
 }
 
-export default ProjectList
+export default withRouter(ProjectList)

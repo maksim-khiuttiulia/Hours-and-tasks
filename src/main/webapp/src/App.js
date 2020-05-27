@@ -5,6 +5,7 @@ import TaksPage from './components/tasks/tasks-page'
 import LoginForm from './components/forms/login-form/login-form'
 import ContainerPage from './components/container-page/container-page'
 import ProjectPage from './components/projects/projects-page'
+import ProjectFullPage from './components/projects/project-full-page';
 
 
 
@@ -19,6 +20,7 @@ function App() {
       <PrivateRoute exact path="/" component={ProjectPage}/>
       <PrivateRoute exact path="/tasks" component={() => <TaksPage projectId={1}/>}/>
       <PrivateRoute exact path="/projects" component={ProjectPage}/>
+      <PrivateRoute exact path="/projects/:id" component={ ProjectFullPage}/>
       <Route exact path="/login" component={LoginForm} />
     </BrowserRouter>
 

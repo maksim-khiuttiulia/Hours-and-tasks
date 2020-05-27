@@ -5,6 +5,11 @@ export async function getAllProjects(page, size, sortBy, orderBy) {
     return await response.data
 }
 
+export async function getProject(projectid){
+    let response = await API.get(`/projects/${projectid}`);
+    return await response.data
+}
+
 export async function getTasksInProject(projectid, page, size, done, sortBy, orderBy) {
     let url = `/projects/${projectid}/tasks?`
     if (page >= 0 && size >= 0){

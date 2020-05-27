@@ -20,7 +20,6 @@ const ServerError = ({error}) => {
         else {
             errorMessage = error.response.statusText;
         }
-        
     } 
 
     if (!errorMessage){

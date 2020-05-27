@@ -43,8 +43,9 @@ class TasksPage extends Component {
         }
     }
 
-    componentDidMount() {
-        this.readTasks();
+    async componentDidMount() {
+        const {activePage} = this.state
+        this.readTasks(activePage);
     }
 
 
@@ -54,8 +55,8 @@ class TasksPage extends Component {
         })
 
         const { projectId, itemsCountPerPage, done, totalPages } = this.state
-        let page = (pageNumber > 0 && pageNumber !== null) ? pageNumber - 1 : 0
-        page = page + 1 > totalPages ? totalPages : page
+        let page = (pageNumber >= 0 && pageNumber != null) ? pageNumber - 1 : 0
+        page = (totalPages !== null && page + 1 > totalPages) ? totalPages : page
 
         if (projectId) {
             getTasksInProject(projectId, page, itemsCountPerPage, done, sortBy, orderBy).then((response) => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect, withRouter } from "react-router-dom";
+import {withRouter } from "react-router-dom";
 import { Col, Card, CardHeader, CardBody, Row, ListGroup, ListGroupItem, Badge } from 'reactstrap';
 import TaskDeadLineLabel from '../tasks/task-deadline'
 
@@ -37,7 +37,7 @@ const ProjectCard = ({ project, history }) => {
 
 
     const onOpenProject = () => {
-        console.warn("Open project: ", projectId)
+        history.push(`projects/${projectId}`)
     }
 
     return (
