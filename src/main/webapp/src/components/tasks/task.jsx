@@ -58,27 +58,23 @@ export default class Task extends Component {
         })
         let buttonState;
         if (this.state.task.done) {
-            buttonState = <Button color="info" onClick={this.onNotDone} style={{ minWidth: 100 }}><FontAwesomeIcon icon={faTimesCircle}/></Button>
+            buttonState = <Button color="info" onClick={this.onNotDone} style={{ minWidth: 50 }}><FontAwesomeIcon icon={faTimesCircle}/></Button>
         } else {
-            buttonState = <Button color="success" onClick={this.onDone} style={{ minWidth: 100 }}><FontAwesomeIcon icon={faCheck}/></Button>
+            buttonState = <Button color="success" onClick={this.onDone} style={{ minWidth: 50 }}><FontAwesomeIcon icon={faCheck}/></Button>
         }
-        let buttonDelete = <Button color="danger" onClick={this.onDelete}  style={{ minWidth: 100 }}><FontAwesomeIcon icon={faTrash}/></Button>
+        let buttonDelete = <Button color="danger" onClick={this.onDelete}  style={{ minWidth: 50 }}><FontAwesomeIcon icon={faTrash}/></Button>
 
         return (
-            <ListGroupItem color={this.state.task.done ? "success" : "danger"} className="justify-content-between" key={this.state.task.id}>
-                <Row className="d-flex align-items-center">
-                    <Col xs="6" md="6">
-                        <Row>
-                            <Col xs="12">
-                                <h4>{this.state.task.name}</h4>
-                            </Col>
-                            <Col xs="12">
-                                {deadlineLabel}
-                                {labelsElement}
-                            </Col>
-                        </Row>
+            <ListGroupItem color={this.state.task.done ? "success" : "danger"} key={this.state.task.id}>
+                <Row>
+                    <Col xs="12">
+                        <h4>{this.state.task.name}</h4>
                     </Col>
-                    <Col xs="6" md="6" className="d-flex justify-content-end">
+                    <Col xs="6" className="d-flex align-items-end">
+                        {deadlineLabel}
+                        {labelsElement}
+                    </Col>
+                    <Col xs="6" className="d-flex justify-content-end">
                         <ButtonGroup>
                             {buttonState}
                             {buttonDelete}
