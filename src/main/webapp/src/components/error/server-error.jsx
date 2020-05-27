@@ -2,7 +2,10 @@
 import React from 'react';
 
 const ServerError = ({error}) => {
-
+    if (error){
+        console.error("Internal error", error)
+    }
+    
     let errorMessage;
     
 

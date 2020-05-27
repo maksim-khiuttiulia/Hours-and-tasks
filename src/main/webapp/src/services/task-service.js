@@ -1,24 +1,18 @@
 import API from './API'
 
 export async function getAllTasks(page, size, done) {
-    try {
-        let url = `/tasks?`
-        if (page >= 0 && size >= 0){
-            url += `page=${page}&size=${size}`
-        } 
-        if (done === true){
-            url += `&done=true`
-        }
-        if (done === false){
-            url += `&done=false`
-        }
-        let response = await API.get(url);
-        let data = await response.data
-        return data;
-    } catch (error) {
-        console.error(error)
+    let url = `/tasks?`
+    if (page >= 0 && size >= 0) {
+        url += `page=${page}&size=${size}`
     }
-    return [];
+    if (done === true) {
+        url += `&done=true`
+    }
+    if (done === false) {
+        url += `&done=false`
+    }
+    let response = await API.get(url);
+    return await response.data
 }
 
 export async function saveNewTask(task) {
@@ -32,10 +26,9 @@ export async function deleteTask(task) {
 }
 
 export async function changeTaskStatus(task) {
-    if (task.done){
-        await API.put(`/tasks/${task.id}/done`, task)
+    if (task.done === true) {
+        return await API.put(`/tasks/${task.id}/done`, task)
     } else {
-        await API.put(`/tasks/${task.id}/notDone`, task)
+        return await API.put(`/tasks/${task.id}/notDone`, task)
     }
-
 }

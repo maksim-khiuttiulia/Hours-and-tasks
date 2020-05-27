@@ -13,12 +13,20 @@ export default class Task extends Component {
         }
     }
 
+    componentDidUpdate(prevProps){
+        if (prevProps !== this.props){
+            this.setState({
+                task : this.props.task
+            })
+        }
+    }
+
     onDelete = (e) => {
        e.preventDefault();
-        let task = {
-            ...this.state.task,
+        let {task} = this.state
+        if (typeof this.props.onDeleteTask === "function"){
+            this.props.onDeleteTask(task)
         }
-        this.props.onDeleteTask(task)
     }
 
     onDone = (e) => {
@@ -27,7 +35,9 @@ export default class Task extends Component {
             ...this.state.task,
             done : true
         }
-        this.props.onChangeTaskStatus(task)
+        if (typeof this.props.onChangeTaskStatus === "function"){
+            this.props.onChangeTaskStatus(task)
+        }
     }
 
     onNotDone = (e) => {
@@ -36,7 +46,9 @@ export default class Task extends Component {
             ...this.state.task,
             done : false
         }
-        this.props.onChangeTaskStatus(task)
+        if (typeof this.props.onChangeTaskStatus === "function"){
+            this.props.onChangeTaskStatus(task)
+        }
     }
 
     render() {

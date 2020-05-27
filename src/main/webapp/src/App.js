@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Redirect, Route, withRouter } from "react-router-dom";
 import { isLoggedIn } from './services/user-service'
-import TaskList from './components/tasks/task-list'
+import TaksPage from './components/tasks/tasks-page'
 import LoginForm from './components/forms/login-form/login-form'
 import ContainerPage from './components/container-page/container-page'
 import ProjectPage from './components/projects/projects-page'
@@ -17,7 +17,7 @@ function App() {
   return (
     <BrowserRouter>
       <PrivateRoute exact path="/" component={ProjectPage}/>
-      <PrivateRoute exact path="/tasks" component={() => <TaskList projectId={1}/>}/>
+      <PrivateRoute exact path="/tasks" component={() => <TaksPage projectId={1}/>}/>
       <PrivateRoute exact path="/projects" component={ProjectPage}/>
       <Route exact path="/login" component={LoginForm} />
     </BrowserRouter>
