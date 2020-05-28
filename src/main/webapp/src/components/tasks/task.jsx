@@ -3,7 +3,7 @@ import TaskLabel from './task-label'
 import TaskDeadLineLabel from './task-deadline'
 import { Button, ButtonGroup, Col, ListGroupItem, Row, Badge } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faTrash, faTimesCircle, faBath } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faTrash, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 
 export default class Task extends Component {
     constructor(props) {
@@ -52,7 +52,7 @@ export default class Task extends Component {
     }
 
     render() {
-        const { id, name, created, deadline, labels, done, project } = this.state.task
+        const { id, name, deadline, labels, done, project } = this.state.task
 
 
         const deadlineLabel = <TaskDeadLineLabel deadline={deadline} />

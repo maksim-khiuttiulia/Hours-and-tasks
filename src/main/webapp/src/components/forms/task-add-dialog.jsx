@@ -6,7 +6,6 @@ import TimePicker from '../timepicker/timepicker'
 import ServerError from '../error/server-error'
 import UserError from '../error/user-error'
 import { getCurrentDateJSON, concatDateAndTime, toJsonDate } from '../../utils/date-time'
-import { getLabelsInProject } from '../../services/label-service'
 import { saveNewTask } from '../../services/task-service'
 
 

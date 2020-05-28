@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { withRouter, Redirect } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { Col, Card, CardHeader, CardBody, Row, ListGroup, ListGroupItem, Badge, Button } from 'reactstrap';
 import TaksPage from '../tasks/tasks-page'
 import { getProject } from '../../services/project-service';
@@ -69,7 +69,7 @@ class ProjectFullPage extends Component {
 
 
     render() {
-        const { projectId, name, description, labels, tasksCount, todoTasksCount, doneTasksCount, loading, addTaskDialogOpen} = this.state
+        const { projectId, name, description, labels, tasksCount, todoTasksCount, doneTasksCount, addTaskDialogOpen} = this.state
         
         return (
             <Card>
