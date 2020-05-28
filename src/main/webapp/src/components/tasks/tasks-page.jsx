@@ -49,15 +49,19 @@ class TasksPage extends Component {
         this.readTasks(activePage);
     }
 
+    componentDidUpdate(prevProps){
+        console.log(prevProps)
+    }
+
     readTasks(pageNumber, sortBy, orderBy) {
         this.setState({
             loading: true
         })
 
         const { projectId, itemsCountPerPage, done, totalPages } = this.state
-        let page = (pageNumber >= 0 && pageNumber != null) ? pageNumber - 1 : 0
+        let page = (pageNumber > 0 && pageNumber != null) ? pageNumber - 1 : 0
         page = (totalPages !== null && page + 1 > totalPages) ? totalPages : page
-        this.setState({activePage : page + 1})
+
 
         
 

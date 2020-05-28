@@ -26,9 +26,6 @@ export default class PaginationComponent extends Component {
             let currentPage = this.props.currentPage == null ? 1 : this.props.currentPage
 
             let pageCount = Math.ceil(totalCount / countPerPage)
-            if (currentPage > pageCount) {
-                currentPage = totalCount
-            }
     
             this.setState({
                 countPerPage: countPerPage,
