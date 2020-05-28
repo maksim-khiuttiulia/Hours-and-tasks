@@ -8,6 +8,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,6 +57,18 @@ public class Project {
         projectDto.setName(this.name);
         projectDto.setDescription(this.description);
         projectDto.setOwner(owner.toUserDto());
+
+        List<Task> tasks = getTasks();
+        projectDto.setTasksCount(tasks.size());
+
+        int doneTasksCount = (int) tasks.stream().filter(Task::getIsDone).count();
+        int todoTasksCount = (int) tasks.stream().filter(task -> !task.getIsDone()).count();
+        Date nearestDeadline = tasks.stream().map(Task::getDeadline).min(Date::compareTo).orElse(null);
+
+        projectDto.setNearestDeadline(nearestDeadline);
+        projectDto.setDoneTasksCount(doneTasksCount);
+        projectDto.setTodoTasksCount(todoTasksCount);
+
         if (initTasks){
             projectDto.setTasks(tasks.stream().map(Task::toTaskDto).collect(Collectors.toList()));
         }

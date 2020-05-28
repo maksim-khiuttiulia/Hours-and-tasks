@@ -24,7 +24,7 @@ export default class TaskAddDialog extends Component {
             labels: [],
             projectId: this.props.projectId,
 
-            labelsToChoose: [],
+            labelsToChoose: Array.isArray(this.props.labelsToChoose) ? this.props.labelsToChoose : [],
             isOpen: this.props.isOpen,
 
             serverError: '',
@@ -32,41 +32,23 @@ export default class TaskAddDialog extends Component {
         }
     }
 
-    async componentDidMount() {
-        const { projectId } = this.props
-        getLabelsInProject(projectId).then((data) => {
-            this.setState({
-                labelsToChoose: data
-            })
-        })
-
-    }
-
     async componentDidUpdate(prevProps) {
+        const {isOpen, projectId, labelsToChoose } = this.props
+
         if (prevProps !== this.props) {
             this.setState(prevState => ({
-                isOpen: this.props.isOpen,
-                projectId: this.props.projectId,
-                labels: [],
+                isOpen: isOpen,
+                projectId: projectId,
+                labelsToChoose: labelsToChoose,
                 deadlineDate: null,
                 deadlineTime: null,
             }))
-            getLabelsInProject(this.props.projectId)
-            .then((data) => {
-                this.setState({
-                    labelsToChoose: data
-                })
-            }).catch(e => {
-                this.setState({ serverError: e })
-            })
-        }
+        } 
 
     }
 
     onSubmit = (e) => {
-        const name = this.state.name;
-        const description = this.state.description;
-        const labels = this.state.labels;
+        const {projectId, name, description, labels, deadlineDate, deadlineTime} = this.state
 
         if (!name) {
             this.setState({userError : "Task name is empty"})
@@ -74,8 +56,6 @@ export default class TaskAddDialog extends Component {
         }
 
         let deadline = null;
-        const deadlineDate = this.state.deadlineDate;
-        const deadlineTime = this.state.deadlineTime;
 
         if (deadlineDate) {
             if (!deadlineTime) {
@@ -92,7 +72,9 @@ export default class TaskAddDialog extends Component {
             description: description,
             deadline: deadline,
             isDone: false,
-            projectId: 1,
+            project : {
+                projectId : projectId
+            },
             labels: labels,
         }
         saveNewTask(data)

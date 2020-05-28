@@ -36,14 +36,14 @@ public class ProjectController extends ControllerAncestor {
     public @ResponseBody
     Page<ProjectDto> getProjects(Pageable pageable, HttpServletRequest request){
         User user = getCurrentUser(request);
-        return projectService.getAllProjects(user, pageable).map(project -> project.toProjectDto(true, true));
+        return projectService.getAllProjects(user, pageable).map(project -> project.toProjectDto(false, false));
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public @ResponseBody
     ProjectDto getProject(@PathVariable(name = "id") Long id, HttpServletRequest request){
         User user = getCurrentUser(request);
-        return projectService.getProject(id, user).toProjectDto(true, true);
+        return projectService.getProject(id, user).toProjectDto(false, true);
     }
 
     @RequestMapping(value = "/{id}/tasks", method = RequestMethod.GET)
