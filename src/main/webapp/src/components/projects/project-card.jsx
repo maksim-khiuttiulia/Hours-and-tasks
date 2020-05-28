@@ -7,33 +7,7 @@ import TaskDeadLineLabel from '../tasks/task-deadline'
 
 
 const ProjectCard = ({ project, history }) => {
-
-
-    const { projectId, name } = project
-
-    let tasksCount = 0;
-    let todoTasksCount = 0;
-    let doneTasksCount = 0;
-    let nearestDeadline = null;
-
-    project.tasks.forEach(task => {
-        tasksCount++;
-        if (task.done === true){
-            doneTasksCount++;
-        } else {
-            todoTasksCount++;
-        }
-        if (task.deadline != null){
-            let deadline = new Date(task.deadline)
-            if (nearestDeadline == null){
-                nearestDeadline = deadline;
-            } else {
-                if (nearestDeadline > deadline){
-                    nearestDeadline = deadline;
-                }
-            }
-        }
-    });
+    const { projectId, name, tasksCount, todoTasksCount, doneTasksCount, nearestDeadline } = project
 
 
     const onOpenProject = () => {

@@ -32,7 +32,6 @@ function getURL(){
     hostname = remotehost
     protocol = "https:"
   }
-  console.log(protocol+'//'+ hostname + port + apiPath)
   return protocol+'//'+ hostname + port + apiPath;
 }
 

@@ -119,7 +119,6 @@ class TasksPage extends Component {
                 }
                 return t;
             })
-            
             this.setState({tasks : tasks})
         }).catch(e => {
             this.setState({serverError : e})

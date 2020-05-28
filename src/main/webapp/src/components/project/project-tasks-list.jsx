@@ -23,7 +23,6 @@ class ProjectTasksList extends Component {
     render() {
         const { projectId,  doneTasks, todoTasks} = this.state
         
-        console.log(projectId)
         return (
                     <Row>
                         <Col xs="6">

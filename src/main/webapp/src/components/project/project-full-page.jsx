@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { withRouter } from "react-router-dom";
+import { withRouter, Redirect } from "react-router-dom";
 import { Col, Card, CardHeader, CardBody, Row, ListGroup, ListGroupItem, Badge, Button } from 'reactstrap';
 import TaksPage from '../tasks/tasks-page'
 import { getProject } from '../../services/project-service';
@@ -35,9 +35,8 @@ class ProjectFullPage extends Component {
         this.setState({ loading: true })
         const { projectId } = this.state
         getProject(projectId).then(data => {
-            console.log(data)
             const { name, description, tasksCount, todoTasksCount, doneTasksCount, labels } = data;
-            console.log(data)
+
             this.setState({
                 name: name,
                 description: description,
@@ -58,7 +57,7 @@ class ProjectFullPage extends Component {
 
     onAddTaskCallback = (task, added) => {
         if (added === true){
-
+            this.readProject()
         }
 
         this.setState({addTaskDialogOpen : false})
@@ -84,13 +83,13 @@ class ProjectFullPage extends Component {
                                     <Button color="success" className="w-100" onClick={this.onAddTaskClick}>Add task</Button>
                                 </ListGroupItem>
                                 <ListGroupItem>
-                                    Total tasks: <Badge color="light">{tasksCount}</Badge>
+                                    Total tasks: <Badge color="warning">{tasksCount}</Badge>
                                 </ListGroupItem>
                                 <ListGroupItem>
-                                    Done tasks: <Badge color="light">{doneTasksCount}</Badge>
+                                    Done tasks: <Badge color="warning">{doneTasksCount}</Badge>
                                 </ListGroupItem>
                                 <ListGroupItem>
-                                    In progress tasks: <Badge color="light">{todoTasksCount}</Badge>
+                                    In progress tasks: <Badge color="warning">{todoTasksCount}</Badge>
                                 </ListGroupItem>
                                 <ListGroupItem>
                                     <Button color="success" className="w-100">Edit project</Button>
