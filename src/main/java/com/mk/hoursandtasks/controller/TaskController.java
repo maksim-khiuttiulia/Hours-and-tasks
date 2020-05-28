@@ -5,13 +5,13 @@ import com.mk.hoursandtasks.entity.task.Task;
 import com.mk.hoursandtasks.entity.user.User;
 import com.mk.hoursandtasks.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/tasks")
@@ -21,9 +21,9 @@ public class TaskController extends ControllerAncestor {
     private TaskService taskService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public List<TaskDto> getAllTasks(HttpServletRequest request){
+    public Page<TaskDto> getAllTasks(Pageable pageable, HttpServletRequest request){
         User user = getCurrentUser(request);
-        return taskService.getAll(user).stream().map(Task::toTaskDto).collect(Collectors.toList());
+        return taskService.getAll(user, pageable).map(Task::toTaskDto);
     }
 
     @RequestMapping(value = "/{taskId}", method = RequestMethod.GET)

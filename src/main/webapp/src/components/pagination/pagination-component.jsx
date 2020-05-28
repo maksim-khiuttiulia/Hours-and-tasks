@@ -24,7 +24,11 @@ export default class PaginationComponent extends Component {
             let countPerPage = this.props.countPerPage == null ? 5 : this.props.countPerPage
             let totalCount = this.props.totalCount == null ? 1 : this.props.totalCount
             let currentPage = this.props.currentPage == null ? 1 : this.props.currentPage
+
             let pageCount = Math.ceil(totalCount / countPerPage)
+            if (currentPage > pageCount) {
+                currentPage = totalCount
+            }
     
             this.setState({
                 countPerPage: countPerPage,
@@ -62,7 +66,7 @@ export default class PaginationComponent extends Component {
 
     onLastClick = (e) => {
         this.setState({
-            currentPage: this.state.totalCount
+            currentPage: this.state.pageCount
         })
         this.callback(this.state.pageCount)
     }

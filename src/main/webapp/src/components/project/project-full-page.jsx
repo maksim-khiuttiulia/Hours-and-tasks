@@ -23,7 +23,7 @@ class ProjectFullPage extends Component {
 
             serverError: '',
             clientError: '',
-            loading: true
+            loading: true,
         }
     }
 
@@ -63,6 +63,10 @@ class ProjectFullPage extends Component {
         this.setState({addTaskDialogOpen : false})
     }
 
+    onTaskListChanged = () =>{
+        this.readProject()
+    }
+
 
     render() {
         const { projectId, name, description, labels, tasksCount, todoTasksCount, doneTasksCount, loading, addTaskDialogOpen} = this.state
@@ -100,7 +104,7 @@ class ProjectFullPage extends Component {
                             </ListGroup>
                         </Col>
                         <Col xs="9">
-                            <TaksPage projectId={projectId}/>
+                            <TaksPage projectId={projectId} callback={this.onTaskListChanged}/>
                         </Col>
                     </Row>
                 </CardBody>

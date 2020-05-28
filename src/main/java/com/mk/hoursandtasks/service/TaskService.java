@@ -42,6 +42,12 @@ public class TaskService {
         return tasks;
     }
 
+    public Page<Task> getAll(User user, Pageable pageable){
+        Objects.requireNonNull(user);
+        return taskRepository.findAllByProject_Owner(user, pageable);
+    }
+
+
     public List<Task> getAllInProject(Project project){
         Objects.requireNonNull(project);
         return taskRepository.findAllByProject(project);

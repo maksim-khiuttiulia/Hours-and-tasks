@@ -8,13 +8,14 @@ import { getTasksInProject } from '../../services/project-service'
 import ServerError from '../error/server-error'
 import SortBy from '../sort-by/sort-by';
 import PaginationComponent from '../pagination/pagination-component'
+import {getTasks} from '../../services/task-service'
 
 
 class TasksPage extends Component {
 
     sortByParams = [
         { key: "name", value: "By name" },
-        { key: "created", value: "By created" },
+        { key: "isDone", value: "By done" },
         { key: "deadline", value: "By deadline" },
     ]
 
@@ -48,7 +49,6 @@ class TasksPage extends Component {
         this.readTasks(activePage);
     }
 
-
     readTasks(pageNumber, sortBy, orderBy) {
         this.setState({
             loading: true
@@ -57,9 +57,18 @@ class TasksPage extends Component {
         const { projectId, itemsCountPerPage, done, totalPages } = this.state
         let page = (pageNumber >= 0 && pageNumber != null) ? pageNumber - 1 : 0
         page = (totalPages !== null && page + 1 > totalPages) ? totalPages : page
+        this.setState({activePage : page + 1})
+
+        
 
         if (projectId) {
             getTasksInProject(projectId, page, itemsCountPerPage, done, sortBy, orderBy).then((response) => {
+                this.setStateAfterLoadTasks(response)
+            }).catch(e => {
+                this.setState({ serverError: e, loading: false })
+            })
+        } else {
+            getTasks(page, itemsCountPerPage, done, sortBy, orderBy).then((response) => {
                 this.setStateAfterLoadTasks(response)
             }).catch(e => {
                 this.setState({ serverError: e, loading: false })
@@ -92,7 +101,7 @@ class TasksPage extends Component {
     }
 
     deleteDialogCallback = (task, deleted) => {
-        const { tasks } = this.state
+        const { tasks, activePage } = this.state
         if (deleted === true) {
             this.setState({
                 deleteDialog: {
@@ -100,6 +109,9 @@ class TasksPage extends Component {
                 },
                 tasks: tasks.filter(t => t.id !== task.id)
             })
+            this.readTasks()
+
+            this.parentRefresh(activePage)
         } else {
             this.setState({
                 deleteDialog: {
@@ -119,6 +131,8 @@ class TasksPage extends Component {
                 }
                 return t;
             })
+            
+            this.parentRefresh()
             this.setState({tasks : tasks})
         }).catch(e => {
             this.setState({serverError : e})
@@ -144,6 +158,11 @@ class TasksPage extends Component {
         this.readTasks(this.state.activePage, key, orderBy);
     }
 
+    parentRefresh = () => {
+        if (typeof this.props.callback === "function"){
+            this.props.callback()
+        }
+    }
 
     render() {
         const { itemsCountPerPage, totalItemsCount, activePage } = this.state;

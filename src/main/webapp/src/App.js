@@ -18,7 +18,7 @@ function App() {
   return (
     <BrowserRouter>
       <PrivateRoute exact path="/" component={ProjectPage}/>
-      <PrivateRoute exact path="/tasks" component={() => <TaksPage projectId={1}/>}/>
+      <PrivateRoute exact path="/tasks" component={TaksPage}/>
       <PrivateRoute exact path="/projects" component={ProjectPage}/>
       <PrivateRoute exact path="/projects/:id" component={ ProjectFullPage}/>
       <Route exact path="/login" component={LoginForm} />
