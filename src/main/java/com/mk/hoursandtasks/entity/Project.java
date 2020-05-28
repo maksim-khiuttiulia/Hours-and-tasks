@@ -4,6 +4,7 @@ import com.mk.hoursandtasks.dto.ProjectDto;
 import com.mk.hoursandtasks.entity.task.Task;
 import com.mk.hoursandtasks.entity.tasklabel.TaskLabel;
 import com.mk.hoursandtasks.entity.user.User;
+import liquibase.util.BooleanUtils;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -61,10 +62,29 @@ public class Project {
         List<Task> tasks = getTasks();
         projectDto.setTasksCount(tasks.size());
 
-        int doneTasksCount = (int) tasks.stream().filter(Task::getIsDone).count();
-        int todoTasksCount = (int) tasks.stream().filter(task -> !task.getIsDone()).count();
-        Date nearestDeadline = tasks.stream().map(Task::getDeadline).min(Date::compareTo).orElse(null);
+        int tasksCount = tasks.size();
+        int doneTasksCount = 0;
+        int todoTasksCount = 0;
+        Date nearestDeadline = null;
+        for (Task task : getTasks()){
+            if (BooleanUtils.isTrue(task.getIsDone())){
+                doneTasksCount++;
+            } else {
+                todoTasksCount++;
+            }
 
+            Date deadline = task.getDeadline();
+
+            if (nearestDeadline == null){
+                nearestDeadline = deadline;
+            } else {
+                if (deadline != null && deadline.before(nearestDeadline)){
+                    nearestDeadline = deadline;
+                }
+            }
+        }
+
+        projectDto.setTasksCount(tasksCount);
         projectDto.setNearestDeadline(nearestDeadline);
         projectDto.setDoneTasksCount(doneTasksCount);
         projectDto.setTodoTasksCount(todoTasksCount);
