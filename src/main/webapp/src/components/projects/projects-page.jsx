@@ -7,6 +7,7 @@ import { Spinner } from 'reactstrap';
 import PaginationComponent from '../pagination/pagination-component';
 
 
+
 export default class ProjectsPage extends Component {
 
     constructor(props) {

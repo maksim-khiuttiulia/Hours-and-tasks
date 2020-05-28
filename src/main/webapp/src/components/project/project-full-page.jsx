@@ -82,14 +82,8 @@ class ProjectFullPage extends Component {
                                 </ListGroupItem>
                             </ListGroup>
                         </Col>
-                        <Col xs="4">
-                            <h6>Done tasks: </h6>
-                            <TaksPage done={true} projectId={projectId} />
-                        </Col>
-
-                        <Col xs="4">
-                            <h6>In progress: </h6>
-                            <TaksPage done={false} projectId={projectId} />
+                        <Col xs="9">
+                            <TaksPage projectId={projectId} />
                         </Col>
                     </Row>
                 </CardBody>

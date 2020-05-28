@@ -5,7 +5,7 @@ import TaksPage from './components/tasks/tasks-page'
 import LoginForm from './components/forms/login-form/login-form'
 import ContainerPage from './components/container-page/container-page'
 import ProjectPage from './components/projects/projects-page'
-import ProjectFullPage from './components/projects/project-full-page';
+import ProjectFullPage from './components/project/project-full-page';
 
 
 
