@@ -24,6 +24,8 @@ class ProjectFullPage extends Component {
             serverError: '',
             clientError: '',
             loading: true,
+
+            updateCounter : 0
         }
     }
 
@@ -36,7 +38,7 @@ class ProjectFullPage extends Component {
         const { projectId } = this.state
         getProject(projectId).then(data => {
             const { name, description, tasksCount, todoTasksCount, doneTasksCount, labels } = data;
-
+        
             this.setState({
                 name: name,
                 description: description,
@@ -44,9 +46,11 @@ class ProjectFullPage extends Component {
                 todoTasksCount: todoTasksCount,
                 doneTasksCount: doneTasksCount,
                 labels : labels,
-                loading: false
+                loading: false,
+                
             })
         })
+    
     }
 
     onAddTaskClick = (e) => {
@@ -57,6 +61,7 @@ class ProjectFullPage extends Component {
 
     onAddTaskCallback = (task, added) => {
         if (added === true){
+            this.updateChild()
             this.readProject()
         }
 
@@ -67,9 +72,15 @@ class ProjectFullPage extends Component {
         this.readProject()
     }
 
+    updateChild = () => {
+        const {updateCounter} = this.state
+        this.setState({
+            updateCounter : updateCounter + 1
+        })
+    }
 
     render() {
-        const { projectId, name, description, labels, tasksCount, todoTasksCount, doneTasksCount, addTaskDialogOpen} = this.state
+        const { projectId, name, description, labels, tasksCount, todoTasksCount, doneTasksCount, addTaskDialogOpen, updateCounter} = this.state
         
         return (
             <Card>
@@ -104,7 +115,7 @@ class ProjectFullPage extends Component {
                             </ListGroup>
                         </Col>
                         <Col xs="9">
-                            <TaksPage projectId={projectId} callback={this.onTaskListChanged}/>
+                            <TaksPage projectId={projectId} callback={this.onTaskListChanged} updateCounter={updateCounter}/>
                         </Col>
                     </Row>
                 </CardBody>
