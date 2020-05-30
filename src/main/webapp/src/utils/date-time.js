@@ -15,6 +15,16 @@
         return ('0' + hours).slice(-2) + ":" + ('0' + minutes).slice(-2);
     }
 
+    export let getHHMM = (time) => {
+        if (time == null){
+            return null
+        }
+        let date = new Date(time)
+        let hh = ('0' + date.getHours()).slice(-2)
+        let mm = ('0' + date.getMinutes()).slice(-2);
+        return hh + ":" + mm
+    }
+
     export let toJsonDate = (date) => {
         return date.toJSON();
     }

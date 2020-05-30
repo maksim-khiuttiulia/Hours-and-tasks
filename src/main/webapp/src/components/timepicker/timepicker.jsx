@@ -9,8 +9,7 @@ export default class TimePicker extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isEmpty: this.props.isEmpty || true,
-            time: null,
+            time: this.props.time,
             nullValue: this.props.nullValue || "--:--",
             disabled: this.props.disabled || false
         }
@@ -20,7 +19,8 @@ export default class TimePicker extends Component {
 
         if (prevProps !== this.props) {
             this.setState(prevState => ({
-                isEmpty: this.props.isEmpty || prevState.isEmpty,
+                time: this.props.time,
+                isEmpty: this.props.time === this.state.nullValue || this.props.time === null,
                 disabled: this.props.disabled,
             }))
         }

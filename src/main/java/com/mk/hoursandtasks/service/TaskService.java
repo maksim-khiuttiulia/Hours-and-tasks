@@ -151,6 +151,8 @@ public class TaskService {
                 throw new ValidationException("Deadline is before current date");
             }
             taskFromDB.setDeadline(task.getDeadline());
+        } else {
+            taskFromDB.setDeadline(null);
         }
 
         task.setIsDone(task.getIsDone());

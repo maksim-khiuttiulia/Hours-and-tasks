@@ -5,7 +5,7 @@ import DatePicker from 'reactstrap-date-picker'
 import TimePicker from '../timepicker/timepicker'
 import ServerError from '../error/server-error'
 import UserError from '../error/user-error'
-import { getCurrentDateJSON, concatDateAndTime, toJsonDate } from '../../utils/date-time'
+import { getCurrentDateJSON, concatDateAndTime, toJsonDate, getHHMM} from '../../utils/date-time'
 import { saveNewTask, updateTask } from '../../services/task-service'
 import {getLabelsInProject} from '../../services/label-service'
 
@@ -51,9 +51,10 @@ export default class TaskAddDialog extends Component {
     }
 
     setStateEditMode = async (task) =>{
-            console.log(task)
+        
             let labelsToChoose = await getLabelsInProject(task.project.projectId)
-            let deadlineTime = ""
+            let deadlineTime = getHHMM(task.deadline)
+            console.log(deadlineTime)
             this.setState({
                 taskId : task.id,
                 name : task.name,
@@ -61,6 +62,8 @@ export default class TaskAddDialog extends Component {
                 projectId : task.project.projectId,
                 labels : task.labels,
                 labelsToChoose : labelsToChoose,
+                deadlineTime : deadlineTime,
+                deadlineDate : task.deadline,
                 editMode : true,
             })
     }
@@ -252,7 +255,7 @@ export default class TaskAddDialog extends Component {
                             <DatePicker id="datepicker" value={this.state.deadlineDate} dateFormat="DD.MM.YYYY" minDate={getCurrentDateJSON()} onChange={this.onDateChange} showClearButton={false} />
                         </Col>
                         <Col xs="3">
-                            <TimePicker className="w-100" onChange={this.onTimeChange} nullValue="No deadline" disabled={this.state.deadlineDate == null} />
+                            <TimePicker className="w-100" onChange={this.onTimeChange} nullValue="No deadline" disabled={this.state.deadlineDate == null} isEmpty={false} time={this.state.deadlineTime} />
                         </Col>
                         <Col xs="3">
                             <Button color="danger" className="w-100" onClick={this.onDeadlineClear} >Clear</Button>
