@@ -3,13 +3,16 @@ import TaskLabel from './task-label'
 import TaskDeadLineLabel from './task-deadline'
 import { Button, ButtonGroup, Col, ListGroupItem, Row, Badge } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faTrash, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
+import TaskFull from './task-full';
 
 export default class Task extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            task: this.props.task
+            task: this.props.task,
+
+            taskFullOpen: false
         }
     }
 
@@ -21,8 +24,8 @@ export default class Task extends Component {
         }
     }
 
-    onDelete = (e) => {
-        e.preventDefault();
+    onDelete = () => {
+        this.setState({taskFullOpen : false})
         let { task } = this.state
         if (typeof this.props.onDeleteTask === "function") {
             this.props.onDeleteTask(task)
@@ -51,6 +54,22 @@ export default class Task extends Component {
         }
     }
 
+    onEditTask = () => {
+        this.setState({taskFullOpen : false})
+        let { task } = this.state
+        if (typeof this.props.onEditTask === "function") {
+            this.props.onEditTask(task)
+        }
+    }
+
+    onOpenTaskView = (e) => {
+        this.setState({ taskFullOpen: true })
+    }
+
+    onCloseTaskView = (e) => {
+        this.setState({ taskFullOpen: false })
+    }
+
     render() {
         const { id, name, deadline, labels, done, project } = this.state.task
 
@@ -61,36 +80,38 @@ export default class Task extends Component {
         })
         let buttonState;
         if (this.state.task.done) {
-            buttonState = <Button color="info" onClick={this.onNotDone} style={{ minWidth: 50 }}><FontAwesomeIcon icon={faTimesCircle} /></Button>
+            buttonState = <Button color="info" onClick={this.onNotDone} style={{ minWidth: 100 }}><FontAwesomeIcon icon={faTimesCircle} /></Button>
         } else {
-            buttonState = <Button color="success" onClick={this.onDone} style={{ minWidth: 50 }}><FontAwesomeIcon icon={faCheck} /></Button>
+            buttonState = <Button color="success" onClick={this.onDone} style={{ minWidth: 100 }}><FontAwesomeIcon icon={faCheck} /></Button>
         }
-        let buttonDelete = <Button color="danger" onClick={this.onDelete} style={{ minWidth: 50 }}><FontAwesomeIcon icon={faTrash} /></Button>
 
         return (
-            <ListGroupItem color={done ? "success" : "danger"} key={id}>
-                <Row>
-                    <Col xs="10">
-                        <Row xs="12" className="ml-1">
-                            <h4>{name}</h4>
-                        </Row>
-                        <Row className="ml-1 d-flex align-items-end">
-                            <Badge color="info">{project.name}</Badge>
-                        </Row>
-                        <Row  className="ml-1 mt-2 d-flex align-items-end">
-                            {deadlineLabel}
-                            {labelsElement}
-                        </Row>
+            <div>
+                <TaskFull isOpen={this.state.taskFullOpen} task={this.state.task} onClose={this.onCloseTaskView} onDelete={this.onDelete}/>
+                <ListGroupItem color={done ? "success" : "danger"} key={id}>
+                    <Row>
+                        <Col xs="10">
+                            <Row xs="12" className="ml-1">
+                                <h4 style={{ cursor: "pointer" }} onClick={this.onOpenTaskView}>{name}</h4>
+                            </Row>
+                            <Row className="ml-1 d-flex align-items-end">
+                                <Badge color="info">{project.name}</Badge>
+                            </Row>
+                            <Row className="ml-1 mt-2 d-flex align-items-end">
+                                {deadlineLabel}
+                                {labelsElement}
+                            </Row>
 
-                    </Col>
-                    <Col xs="2" className="d-flex justify-content-end">
-                        <ButtonGroup className="pt-4">
-                            {buttonState}
-                            {buttonDelete}
-                        </ButtonGroup>
-                    </Col>
-                </Row>
-            </ListGroupItem>
+                        </Col>
+                        <Col xs="2" className="d-flex justify-content-end">
+                            <ButtonGroup className="pt-4">
+                                {buttonState}
+                            </ButtonGroup>
+                        </Col>
+                    </Row>
+                </ListGroupItem>
+            </div>
+
 
         );
     }

@@ -128,10 +128,10 @@ export default class TaskAddDialog extends Component {
         })
     }
 
-    onTaskTextChange = (e) => {
-        let text = e.target.value
+    onTaskDescriptionChange = (e) => {
+        let description = e.target.value
         this.setState({
-            text: text,
+            description: description,
             serverError : '',
             userError : ''
         })
@@ -198,7 +198,7 @@ export default class TaskAddDialog extends Component {
                     <br />
                     <Row>
                         <Col xs="12">
-                            <Input type="textarea" name="text" onChange={this.onTaskTextChange} placeholder="Task description" />
+                            <Input type="textarea" name="text" onChange={this.onTaskDescriptionChange} placeholder="Task description" />
                         </Col>
                     </Row>
                     <br />

@@ -65,9 +65,6 @@ class TasksPage extends Component {
         let page = (pageNumber > 0 && pageNumber != null) ? pageNumber - 1 : 0
         page = (totalPages !== null && page + 1 > totalPages) ? totalPages : page
 
-
-        
-
         if (projectId) {
             getTasksInProject(projectId, page, itemsCountPerPage, done, sortBy, orderBy).then((response) => {
                 this.setStateAfterLoadTasks(response)
