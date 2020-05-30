@@ -28,6 +28,12 @@ export async function saveNewTask(task) {
     return data;
 }
 
+export async function updateTask(taskId, task) {
+    let response = await API.put(`/tasks/${taskId}`, task)
+    let data = await response.data
+    return data;
+}
+
 export async function deleteTask(task) {
     await API.delete(`/tasks/${task.id}`)
 }

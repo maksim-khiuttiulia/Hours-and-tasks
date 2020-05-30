@@ -9,6 +9,7 @@ import ServerError from '../error/server-error'
 import SortBy from '../sort-by/sort-by';
 import PaginationComponent from '../pagination/pagination-component'
 import {getTasks} from '../../services/task-service'
+import TaskAddDialog from '../forms/task-add-dialog';
 
 
 class TasksPage extends Component {
@@ -31,6 +32,11 @@ class TasksPage extends Component {
             labels: [],
             tasks: [],
             deleteDialog: {
+                task: null,
+                isOpen: false
+            },
+
+            editDialog: {
                 task: null,
                 isOpen: false
             },
@@ -94,6 +100,29 @@ class TasksPage extends Component {
         })
     }
 
+    openEditDialog = (task) => {
+        this.setState({
+            editDialog: {
+                isOpen: true,
+                task: task
+            }
+        })
+    }
+
+    closeEditDialog = (task, edited) => {
+        if (edited === true) {
+            const { activePage, sortBy, orderBy } = this.state
+            this.readTasks(activePage, sortBy, orderBy)
+        }
+
+        this.setState({
+            editDialog: {
+                isOpen: false,
+                task: task
+            }
+        })
+    }
+
     openDeleteDialog = (task) => {
         this.setState({
             deleteDialog: {
@@ -106,7 +135,6 @@ class TasksPage extends Component {
     deleteDialogCallback = (task, deleted) => {
         const { activePage, sortBy, orderBy } = this.state
         if (deleted === true) {
-            
             this.readTasks(activePage, sortBy, orderBy)
             this.parentRefresh(activePage, sortBy, orderBy)
         }
@@ -165,13 +193,14 @@ class TasksPage extends Component {
         return (
             <div>
                 <TaskDeleteDialog isOpen={this.state.deleteDialog.isOpen} task={this.state.deleteDialog.task} callback={this.deleteDialogCallback} />
+                <TaskAddDialog isOpen={this.state.editDialog.isOpen} task={this.state.editDialog.task} callback={this.closeEditDialog}/>
                 <ServerError error={this.state.serverError} />
                 <ListGroup>
                     <ListGroupItem className="d-flex justify-content-start">
                         <SortBy params={this.sortByParams} selected={this.state.sortBy} orderBy={this.state.orderBy} onSelect={this.onSelectSortBy} ></SortBy>
                     </ListGroupItem>
 
-                    <TaskList tasks={this.state.tasks} onDeleteTask={this.openDeleteDialog} onChangeStatus={this.onChangeTaskStatus} />
+                    <TaskList tasks={this.state.tasks} onEditTask={this.openEditDialog} onDeleteTask={this.openDeleteDialog} onChangeStatus={this.onChangeTaskStatus} />
 
                     <ListGroupItem className="d-flex justify-content-center">
                         <PaginationComponent currentPage={activePage} countPerPage={itemsCountPerPage} totalCount={totalItemsCount} onSelected={this.onSelectPage} />
