@@ -32,6 +32,8 @@ Password: password
 4. Modify ***src/main/webapp/src/services/API.js*** if needed change API endpoint for frontend
 4. Run one of next commands in terminal:
 
+## Run
+
 For run just backend:
  ```
 spring-boot:run -P development-backend 
@@ -46,6 +48,14 @@ spring-boot:run -P production
 ```
 
 All dependencies and libraries will download automatically
+
+
+## Test
+
+For run UI tests on local machine:
+1. Set development profile
+2. Make build
+3. Run tests
 
 ## Project structure
 * Folder ***src/main/java*** contains backend

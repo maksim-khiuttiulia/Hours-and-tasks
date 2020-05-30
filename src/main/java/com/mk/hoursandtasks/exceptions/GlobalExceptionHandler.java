@@ -15,6 +15,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler   {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> exceptionHandler(Exception ex) {
 
+        ex.printStackTrace();
+
         ErrorResponse errors = new ErrorResponse();
         errors.setTimestamp(LocalDateTime.now());
         errors.setError(ex.getMessage());
@@ -25,6 +27,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler   {
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorResponse> authenticationExceptionHandler(AuthenticationException ex) {
+
+        ex.printStackTrace();
 
         ErrorResponse errors = new ErrorResponse();
         errors.setTimestamp(LocalDateTime.now());

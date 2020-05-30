@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.Repository;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -93,11 +95,17 @@ public class Creator {
                 saveChildEntity(propValue);
             }
 
-            JpaRepository dao = (JpaRepository) getDao(entity);
-            // if (deleteOthers) {
-            //   dao.deleteAllInBatch();
-            // }
-            dao.save(entity);
+            Repository repository = getDao(entity);
+            if (repository instanceof JpaRepository){
+                JpaRepository jpaRepository = (JpaRepository) repository;
+                jpaRepository.save(entity);
+            } else if (repository instanceof CrudRepository) {
+                CrudRepository crudRepository = (CrudRepository) repository;
+                crudRepository.save(entity);
+            } else {
+                PagingAndSortingRepository crudRepository = (PagingAndSortingRepository) repository;
+                crudRepository.save(entity);
+            }
         } catch (Exception e) {
             throw new IllegalStateException("Problem", e);
         }
@@ -109,10 +117,10 @@ public class Creator {
         return field.getDeclaredAnnotationsByType(annotationClass).length > 0;
     }
 
-    private JpaRepository getDao(Object entity) {
+    private Repository getDao(Object entity) {
         String repoClassName = entity.getClass().getSimpleName();
         String repositoryBeanName = repoClassName.substring(0, 1).toLowerCase() + repoClassName.substring(1) + "Repository";
-        return (JpaRepository) applicationContext.getBean(repositoryBeanName);
+        return (Repository) applicationContext.getBean(repositoryBeanName);
     }
 
 
@@ -126,8 +134,17 @@ public class Creator {
                 String className = propValue.getClass().getSimpleName();
                 String daoName = className.substring(0, 1).toLowerCase() + className.substring(1) + "Repository";
 
-                CrudRepository repository = applicationContext.getBeansOfType(CrudRepository.class).get(daoName);
-                repository.save(propValue);
+                Repository repository = applicationContext.getBeansOfType(Repository.class).get(daoName);
+                if (repository instanceof JpaRepository){
+                    JpaRepository jpaRepository = (JpaRepository) repository;
+                    jpaRepository.save(propValue);
+                } else if (repository instanceof CrudRepository) {
+                    CrudRepository crudRepository = (CrudRepository) repository;
+                    crudRepository.save(propValue);
+                } else {
+                    PagingAndSortingRepository crudRepository = (PagingAndSortingRepository) repository;
+                    crudRepository.save(propValue);
+                }
             }
         }
     }
