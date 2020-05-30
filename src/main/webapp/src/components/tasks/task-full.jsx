@@ -3,7 +3,7 @@ import { Modal, ModalBody, ModalFooter, Button, Row, Col, Container } from 'reac
 import TaskLabel from './task-label'
 import { formatedDate } from '../../utils/date-time'
 
-const TaskFull = ({ task, isOpen, onClose, onDelete, onModify }) => {
+const TaskFull = ({ task, isOpen, onClose, onDelete, onEdit }) => {
 
 
     const onModalClose = (e) => {
@@ -18,9 +18,9 @@ const TaskFull = ({ task, isOpen, onClose, onDelete, onModify }) => {
         }
     }
 
-    const onTaskModify = (e) => {
-        if (typeof onModify === "function") {
-            onModify()
+    const onTaskEdit = (e) => {
+        if (typeof onEdit === "function") {
+            onEdit()
         }
     }
 
@@ -69,7 +69,7 @@ const TaskFull = ({ task, isOpen, onClose, onDelete, onModify }) => {
 
             </ModalBody>
             <ModalFooter>
-                <Button color="danger" style={{ minWidth: 50 }} onClick={onTaskModify}>Edit</Button>
+                <Button color="danger" style={{ minWidth: 50 }} onClick={onTaskEdit}>Edit</Button>
                 <Button color="danger" style={{ minWidth: 50 }} onClick={onTaskDelete}>Delete</Button>
                 <Button color="secondary" style={{ minWidth: 50 }} onClick={onModalClose} >Close</Button>
             </ModalFooter>

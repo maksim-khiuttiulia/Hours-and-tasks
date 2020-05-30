@@ -139,6 +139,11 @@ public class TaskService {
             throw new ValidationException("User hasnt access to this project");
         }
 
+        if (StringUtils.isEmpty(task.getName())){
+            throw new ValidationException("Task name is empty");
+        }
+        taskFromDB.setName(task.getName());
+
         taskFromDB.setDescription(task.getDescription());
 
         if (task.getDeadline() != null){

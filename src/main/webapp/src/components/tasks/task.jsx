@@ -87,7 +87,7 @@ export default class Task extends Component {
 
         return (
             <div>
-                <TaskFull isOpen={this.state.taskFullOpen} task={this.state.task} onClose={this.onCloseTaskView} onDelete={this.onDelete}/>
+                <TaskFull isOpen={this.state.taskFullOpen} task={this.state.task} onClose={this.onCloseTaskView} onDelete={this.onDelete} onEdit={this.onEditTask}/>
                 <ListGroupItem color={done ? "success" : "danger"} key={id}>
                     <Row>
                         <Col xs="10">
