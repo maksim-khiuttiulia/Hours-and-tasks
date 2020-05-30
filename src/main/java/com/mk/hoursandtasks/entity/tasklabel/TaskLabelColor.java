@@ -6,6 +6,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @Entity
@@ -28,5 +29,18 @@ public class TaskLabelColor {
         colorDto.setId(this.getColorId());
         colorDto.setHex(this.getHex());
         return colorDto;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TaskLabelColor color = (TaskLabelColor) o;
+        return colorId.equals(color.colorId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(colorId);
     }
 }

@@ -7,6 +7,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @Entity
@@ -45,4 +46,17 @@ public class TaskLabel {
         return labelDto;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TaskLabel taskLabel = (TaskLabel) o;
+        return name.equals(taskLabel.name) &&
+                color.equals(taskLabel.color);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, color);
+    }
 }

@@ -1,8 +1,6 @@
 package com.mk.hoursandtasks.controller;
 
 import com.mk.hoursandtasks.dto.TaskLabelColorDto;
-import com.mk.hoursandtasks.dto.TaskLabelDto;
-import com.mk.hoursandtasks.entity.tasklabel.TaskLabel;
 import com.mk.hoursandtasks.entity.tasklabel.TaskLabelColor;
 import com.mk.hoursandtasks.service.TaskLabelService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +25,4 @@ public class TaskLabelController extends ControllerAncestor {
         getCurrentUser(request);
         return taskLabelService.getAllColors().stream().map(TaskLabelColor::taskLabelColorDto).collect(Collectors.toList());
     }
-
-
 }

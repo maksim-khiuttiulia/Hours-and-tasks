@@ -2,6 +2,7 @@ package com.mk.hoursandtasks.service;
 
 import com.mk.hoursandtasks.entity.Project;
 import com.mk.hoursandtasks.entity.user.User;
+import com.mk.hoursandtasks.exceptions.ValidationException;
 import com.mk.hoursandtasks.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -35,7 +36,11 @@ public class ProjectService {
     public Project getProject(Long id, User user){
         Objects.requireNonNull(id);
         Objects.requireNonNull(user);
-        return projectRepository.findByProjectIdAndOwner(id, user);
+        Project project = projectRepository.findByProjectIdAndOwner(id, user);
+        if (project == null){
+            throw new ValidationException("Project not exists or user hasn't access");
+        }
+        return project;
     }
 
 

@@ -72,5 +72,13 @@ public class ProjectController extends ControllerAncestor {
         return taskLabelService.getAllOnProject(project).stream().map(TaskLabel::toTaskLabelDto).collect(Collectors.toList());
     }
 
+    @RequestMapping(value = "/{id}/labels", method = RequestMethod.POST)
+    public @ResponseBody TaskLabelDto addTaskLabel(@PathVariable(name = "id") Long id, @RequestBody TaskLabelDto dto, HttpServletRequest request){
+        User user = getCurrentUser(request);
+        Project project = projectService.getProject(id, user);
+        TaskLabel taskLabel = taskLabelService.convert(dto);
+        return taskLabelService.addTaskLabel(taskLabel, project).toTaskLabelDto();
+    }
+
 
 }
