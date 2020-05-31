@@ -4,28 +4,32 @@ import { Col, Card, CardHeader, CardBody, Row, ListGroup, ListGroupItem, Badge, 
 import TaksPage from '../tasks/tasks-page'
 import { getProject } from '../../services/project-service';
 import TaskAddDialog from '../forms/task-add-dialog'
+import ProjectAddDialog from '../forms/project-add-form';
 
 class ProjectFullPage extends Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            projectId: props.match.params.id,
+            project: {
+                projectId: props.match.params.id,
+                name: null,
+                description: null,
+                tasksCount: 0,
+                todoTasksCount: 0,
+                doneTasksCount: 0,
+                labels: [],
+            },
 
-            name : null,
-            description: null,
-            tasksCount: 0,
-            todoTasksCount: 0,
-            doneTasksCount: 0,
-            labels : [],
 
-            addTaskDialogOpen : false,
+            addTaskDialogOpen: false,
+            editProjectDialogOpen: false,
 
             serverError: '',
             clientError: '',
             loading: true,
 
-            updateCounter : 0
+            updateCounter: 0
         }
     }
 
@@ -35,56 +39,71 @@ class ProjectFullPage extends Component {
 
     readProject() {
         this.setState({ loading: true })
-        const { projectId } = this.state
+        const { projectId } = this.state.project
         getProject(projectId).then(data => {
-            const { name, description, tasksCount, todoTasksCount, doneTasksCount, labels } = data;
-        
+            const { projectId, name, description, tasksCount, todoTasksCount, doneTasksCount, labels } = data;
+
             this.setState({
-                name: name,
-                description: description,
-                tasksCount: tasksCount,
-                todoTasksCount: todoTasksCount,
-                doneTasksCount: doneTasksCount,
-                labels : labels,
+                project: {
+                    projectId: projectId,
+                    name: name,
+                    description: description,
+                    tasksCount: tasksCount,
+                    todoTasksCount: todoTasksCount,
+                    doneTasksCount: doneTasksCount,
+                    labels: labels,
+                },
+
                 loading: false,
-                
+
             })
         })
-    
+    }
+
+    onEditProjectDialogOpen = () => {
+        this.setState({ editProjectDialogOpen: true })
+    }
+
+    onEditProjectDialogClose= () => {
+        this.setState({ editProjectDialogOpen: false })
     }
 
     onAddTaskClick = (e) => {
         this.setState({
-            addTaskDialogOpen : true
+            addTaskDialogOpen: true
         })
     }
 
     onAddTaskCallback = (task, added) => {
-        if (added === true){
+        if (added === true) {
             this.updateChild()
             this.readProject()
         }
 
-        this.setState({addTaskDialogOpen : false})
+        this.setState({ addTaskDialogOpen: false })
     }
 
-    onTaskListChanged = () =>{
+    onTaskListChanged = () => {
         this.readProject()
     }
 
+
+
     updateChild = () => {
-        const {updateCounter} = this.state
+        const { updateCounter } = this.state.project
         this.setState({
-            updateCounter : updateCounter + 1
+            updateCounter: updateCounter + 1
         })
     }
 
     render() {
-        const { projectId, name, description, labels, tasksCount, todoTasksCount, doneTasksCount, addTaskDialogOpen, updateCounter} = this.state
-        
+        const { projectId, name, description, labels, tasksCount, todoTasksCount, doneTasksCount } = this.state.project
+        const { updateCounter, addTaskDialogOpen, editProjectDialogOpen, project } = this.state
+
         return (
             <Card>
-                <TaskAddDialog projectId={projectId} isOpen={addTaskDialogOpen} callback={this.onAddTaskCallback} labelsToChoose={labels}/>
+                <TaskAddDialog projectId={projectId} isOpen={addTaskDialogOpen} callback={this.onAddTaskCallback} labelsToChoose={labels} />
+                <ProjectAddDialog project={project} isOpen={editProjectDialogOpen} callback={this.onEditProjectDialogClose}/>
                 <CardHeader className="bg-danger text-white">
                     <h3 className="pb-5" style={{ fontWeight: 300 }}>{name}</h3>
                     <p>{description}</p>
@@ -107,7 +126,7 @@ class ProjectFullPage extends Component {
                                     In progress tasks: <Badge color="warning">{todoTasksCount}</Badge>
                                 </ListGroupItem>
                                 <ListGroupItem>
-                                    <Button color="success" className="w-100">Edit project</Button>
+                                    <Button color="success" className="w-100" onClick={this.onEditProjectDialogOpen}>Edit project</Button>
                                 </ListGroupItem>
                                 <ListGroupItem>
                                     <Button color="success" className="w-100">Delete project</Button>
@@ -115,7 +134,7 @@ class ProjectFullPage extends Component {
                             </ListGroup>
                         </Col>
                         <Col xs="9">
-                            <TaksPage projectId={projectId} callback={this.onTaskListChanged} updateCounter={updateCounter}/>
+                            <TaksPage projectId={projectId} callback={this.onTaskListChanged} updateCounter={updateCounter} />
                         </Col>
                     </Row>
                 </CardBody>

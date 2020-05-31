@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import {Redirect, withRouter } from "react-router-dom";
 import { Container, Form, FormGroup, Label, Input, Button } from 'reactstrap';
-import { login, isLoggedIn } from '../../../services/user-service'
-import ServerError from '../../error/server-error'
-import UserError from '../../error/user-error'
+import { login, isLoggedIn } from '../../services/user-service'
+import ServerError from '../error/server-error'
+import UserError from '../error/user-error'
 
 class LoginForm extends Component {
 
