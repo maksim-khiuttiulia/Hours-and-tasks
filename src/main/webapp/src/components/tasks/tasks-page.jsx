@@ -55,7 +55,7 @@ class TasksPage extends Component {
         this.readTasks(activePage);
     }
 
-    componentWillReceiveProps(props) {
+    componentDidUpdate(props) {
         const { refresh } = this.props;
         if (props.refresh !== refresh) {
             const { activePage, sortBy, orderBy } = this.state
@@ -187,7 +187,7 @@ class TasksPage extends Component {
     }
 
     render() {
-        const { itemsCountPerPage, totalItemsCount, activePage, sortBy, orderBy, sortByParams, tasks, serverError } = this.state;
+        const { itemsCountPerPage, totalItemsCount, activePage, sortBy, orderBy, tasks, serverError } = this.state;
 
         if (tasks.length === 0) {
             return <Alert color="info" style={{ textAlign : "center"}}>You havent any task</Alert>
@@ -200,7 +200,7 @@ class TasksPage extends Component {
                 <ServerError error={serverError} />
                 <ListGroup>
                     <ListGroupItem className="d-flex justify-content-end">
-                        <SortBy params={sortByParams} selected={sortBy} orderBy={orderBy} onSelect={this.onSelectSortBy} ></SortBy>
+                        <SortBy params={this.sortByParams} selected={sortBy} orderBy={orderBy} onSelect={this.onSelectSortBy} ></SortBy>
                     </ListGroupItem>
 
                     <TaskList tasks={tasks} onEditTask={this.openEditDialog} onDeleteTask={this.openDeleteDialog} onChangeStatus={this.onChangeTaskStatus} />

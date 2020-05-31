@@ -126,13 +126,25 @@ export default class TaskAddDialog extends Component {
                 this.setState({serverError : e})
             });
         }
+        this.setState({
+            taskId : '',
+            name : '',
+            description : '',
+            labels : [],
+            deadlineTime : '',
+            deadlineDate : '',
+        })
     }
 
     onCancel = (e) => {
         e.preventDefault();
         this.setState({
-            serverError : '',
-            userError : ''
+            taskId : '',
+            name : '',
+            description : '',
+            labels : [],
+            deadlineTime : '',
+            deadlineDate : '',
         })
         if (typeof this.props.callback === "function") {
             this.props.callback(null, false)

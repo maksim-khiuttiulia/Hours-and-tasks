@@ -1,79 +1,52 @@
-import React, { Component } from 'react';
+import React, { useState} from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import ServerError from '../error/server-error'
 import {deleteTask} from '../../services/task-service'
+import { withRouter } from 'react-router-dom';
 
 
 
-export default class TaskDeleteDialog extends Component {
+const TaskDeleteDialog = ({isOpen, task, callback}) => {
 
+  const [serverError, setServerError] = useState('')
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      isOpen: props.isOpen,
-      task: props.task,
-
-      serverError : ''
+const onSubmit = (e) => {
+  e.preventDefault();
+  deleteTask(task)
+  .then(data => {
+    if (typeof callback === "function"){
+        callback(task, true)
     }
-  }
+  })
+  .catch(e => setServerError(e))
+}
 
-
-  componentDidUpdate(prevProps) {
-    if (prevProps !== this.props) {
-      this.setState(prevState => ({
-        isOpen: this.props.isOpen,
-        task: this.props.task
-      }))
-    }
-  }
-
-  onSubmit = (e) => {
-    e.preventDefault();
-    const {task} = this.state
-    deleteTask(task)
-    .then(data => {
-      this.setState({
-        isOpen : false,
-        task : undefined
-      })
-      if (typeof this.props.callback === "function"){
-        this.props.callback(task, true)
-      }
-    })
-    .catch(e => this.setState({serverError : e}))
-    
-  }
-
-  onCancel = (e) => {
-    e.preventDefault();
-    const {task} = this.state
-    this.setState({
-      isOpen : false,
-      task : undefined
-    })
-    if (typeof this.props.callback === "function"){
-      this.props.callback(task, false)
-    }
-  }
-
-
-
-  render() {
-    const taskName = this.state.task ? this.state.task.name : "Not task to delete";
-    return (
-      <Modal isOpen={this.state.isOpen} >
-        <ModalHeader >Task deleting</ModalHeader>
-        <ServerError error={this.state.serverError}/>
-        <ModalBody>
-          {taskName}
-        </ModalBody>
-        <ModalFooter>
-          <Button color="danger" onClick={this.onSubmit}>Delete</Button>
-          <Button color="secondary" onClick={this.onCancel}>Cancel</Button>
-        </ModalFooter>
-      </Modal>
-    )
+const onCancel = (e) => {
+  e.preventDefault();
+  if (typeof callback === "function"){
+    callback(task, false)
   }
 }
+
+
+
+  const taskname = task ? task.name : "Not project to delete";
+  return (
+    <Modal isOpen={isOpen} >
+      <ModalHeader >Project deleting</ModalHeader>
+      <ServerError error={serverError}/>
+      <ModalBody>
+        {taskname}
+      </ModalBody>
+      <ModalFooter>
+        <Button color="danger" onClick={onSubmit}>Delete</Button>
+        <Button color="secondary" onClick={onCancel}>Cancel</Button>
+      </ModalFooter>
+    </Modal>
+  )
+
+}
+
+export default withRouter(TaskDeleteDialog)
+
 

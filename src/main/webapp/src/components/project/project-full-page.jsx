@@ -79,7 +79,7 @@ class ProjectFullPage extends Component {
     }
 
     onDeleteProjectDialogCallback = (project, deleted) => {
-        this.setState({ editProjectDialogOpen: false })
+        this.setState({ deleteProjectDialogOpen: false })
         if (deleted === true) {
             this.props.history.push("/projects")
         }
@@ -115,7 +115,6 @@ class ProjectFullPage extends Component {
     render() {
         const { projectId, name, description, labels, tasksCount, todoTasksCount, doneTasksCount } = this.state.project
         const { refreshTaskList, addTaskDialogOpen, editProjectDialogOpen, deleteProjectDialogOpen, project } = this.state
-
         return (
             <Card>
                 <TaskAddDialog projectId={projectId} isOpen={addTaskDialogOpen} callback={this.onAddTaskCallback} labelsToChoose={labels} />

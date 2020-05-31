@@ -1,79 +1,51 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import ServerError from '../error/server-error'
 import {deleteProject} from '../../services/project-service'
+import { withRouter } from 'react-router-dom';
 
 
 
-export default class ProjectDeleteDialog extends Component {
+const ProjectDeleteDialog = ({isOpen, project, callback}) => {
 
+    const [serverError, setServerError] = useState('')
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      isOpen: props.isOpen,
-      project: props.project,
-
-      serverError : ''
-    }
-  }
-
-
-  componentDidUpdate(prevProps) {
-    if (prevProps !== this.props) {
-      this.setState(prevState => ({
-        isOpen: this.props.isOpen,
-        project: this.props.project
-      }))
-    }
-  }
-
-  onSubmit = (e) => {
+  const onSubmit = (e) => {
     e.preventDefault();
-    const {project} = this.state
     deleteProject(project.projectId)
     .then(data => {
-      this.setState({
-        isOpen : false,
-        project : undefined
-      })
-      if (typeof this.props.callback === "function"){
-          this.props.callback(project, true)
+      if (typeof callback === "function"){
+          callback(project, true)
       }
     })
-    .catch(e => this.setState({serverError : e}))
-    
+    .catch(e => setServerError(e))
   }
 
-  onCancel = (e) => {
+  const onCancel = (e) => {
     e.preventDefault();
-    const {project} = this.state
-    this.setState({
-      isOpen : false,
-      project : undefined
-    })
-    if (typeof this.props.callback === "function"){
-      this.props.callback(project, false)
+    if (typeof callback === "function"){
+      callback(project, false)
     }
   }
 
 
 
-  render() {
-    const projectName = this.state.project ? this.state.project.name : "Not project to delete";
+    const projectName = project ? project.name : "Not project to delete";
     return (
-      <Modal isOpen={this.state.isOpen} >
+      <Modal isOpen={isOpen} >
         <ModalHeader >Project deleting</ModalHeader>
-        <ServerError error={this.state.serverError}/>
+        <ServerError error={serverError}/>
         <ModalBody>
           {projectName}
         </ModalBody>
         <ModalFooter>
-          <Button color="danger" onClick={this.onSubmit}>Delete</Button>
-          <Button color="secondary" onClick={this.onCancel}>Cancel</Button>
+          <Button color="danger" onClick={onSubmit}>Delete</Button>
+          <Button color="secondary" onClick={onCancel}>Cancel</Button>
         </ModalFooter>
       </Modal>
     )
-  }
+  
 }
+
+export default withRouter(ProjectDeleteDialog)
 

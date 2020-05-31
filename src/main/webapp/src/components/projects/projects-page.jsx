@@ -6,10 +6,15 @@ import { getAllProjects } from '../../services/project-service'
 import { Spinner } from 'reactstrap';
 import PaginationComponent from '../pagination/pagination-component';
 import ProjectAddDialog from '../forms/project-add-form';
+import SortBy from '../sort-by/sort-by';
 
 
 
 export default class ProjectsPage extends Component {
+
+    sortByParams = [
+        { key: "name", value: "By name" },
+    ]
 
     constructor(props) {
         super(props)
@@ -18,21 +23,23 @@ export default class ProjectsPage extends Component {
             projects: [],
 
             serverError: '',
-            addProjectDialogOpen : false,
+            addProjectDialogOpen: false,
 
             activePage: 1,
             totalPages: null,
-            itemsCountPerPage: 9,
-            totalItemsCount: 0
+            itemsCountPerPage: 6,
+            totalItemsCount: 0,
+            sortBy: null,
+            orderBy: null,
         }
     }
 
     async componentDidMount() {
-        const {pageNumber} = this.state
+        const { pageNumber } = this.state
         this.readProjects(pageNumber);
     }
 
-    readProjects(pageNumber) {
+    readProjects(pageNumber, sortBy, orderBy) {
         this.setState({
             loading: true
         })
@@ -41,8 +48,8 @@ export default class ProjectsPage extends Component {
         let page = (pageNumber > 0 && pageNumber !== null) ? pageNumber - 1 : 0
         page = page + 1 > totalPages ? totalPages : page
 
-        getAllProjects().then(response => {
-            this.setStateAfterLoadProjects(response, page, itemsCountPerPage)
+        getAllProjects(page, itemsCountPerPage, sortBy, orderBy).then(response => {
+            this.setStateAfterLoadProjects(response)
         }).catch(e => {
             this.setState({
                 loading: false,
@@ -68,44 +75,80 @@ export default class ProjectsPage extends Component {
     }
 
     onAddDialogOpen = () => {
-        this.setState({addProjectDialogOpen : true})
+        this.setState({ addProjectDialogOpen: true })
     }
 
     onAddDialogClose = (project, needRefresh) => {
-        if (needRefresh === true){
-            const {pageNumber} = this.state
+        if (needRefresh === true) {
+            const { pageNumber } = this.state
             this.readProjects(pageNumber);
         }
-        this.setState({addProjectDialogOpen : false})
+        this.setState({ addProjectDialogOpen: false })
     }
 
+    onSelectSortBy = (key, orderBy) => {
+        const { activePage } = this.state
+        this.setState({
+            sortBy: key,
+            orderBy: orderBy
+        })
+        this.readProjects(activePage, key, orderBy);
+    }
+
+    onSelectPage = (page) => {
+        const { activePage, sortBy, orderBy } = this.state
+        if (activePage !== page) {
+            this.setState({
+                activePage: page
+            })
+            this.readProjects(page, sortBy, orderBy);
+        }
+    }
+
+
     render() {
-        const { loading, serverError, totalItemsCount, projects, addProjectDialogOpen } = this.state
+        const { loading, serverError, totalItemsCount, projects, addProjectDialogOpen, itemsCountPerPage, activePage, sortBy, orderBy } = this.state
+
+        let spinner = ''
         if (loading) {
-            return (<Container className="m-auto text-center">
-                <Spinner />
-            </Container>)
+            spinner =   <Container className="m-auto text-center">
+                            <Spinner />
+                        </Container>
         }
 
-        if(totalItemsCount === 0 || totalItemsCount == null){
-            return(
-            <Alert color="primary" style={{ textAlign : "center"}}>
-                You havent any project
-          </Alert>)
+        if ((totalItemsCount === 0 || totalItemsCount == null) && loading === false) {
+            return (
+                <Container>
+                    <ServerError error={serverError} />
+                    <ProjectAddDialog isOpen={addProjectDialogOpen} callback={this.onAddDialogClose} />
+                    <Row className="mt-4 d-flex justify-content-end" >
+                        <Button color="success" onClick={this.onAddDialogOpen}>Add project</Button>
+                    </Row>
+                    <Row className="mt-4 d-flex justify-content-end" >
+
+                    </Row>
+                    <Alert color="primary" style={{ textAlign: "center" }}>
+                        You havent any project
+                    </Alert>
+                </Container>
+            )
+
         }
 
         return (
             <Container>
                 <ServerError error={serverError} />
-                <ProjectAddDialog isOpen={addProjectDialogOpen} callback={this.onAddDialogClose}/>
+                <ProjectAddDialog isOpen={addProjectDialogOpen} callback={this.onAddDialogClose} />
                 <Row className="mt-4 d-flex justify-content-end" >
+                    <SortBy params={this.sortByParams} selected={sortBy} orderBy={orderBy} onSelect={this.onSelectSortBy} ></SortBy>
                     <Button color="success" onClick={this.onAddDialogOpen}>Add project</Button>
                 </Row>
+                {spinner}
                 <Row className="mt-4">
-                    <ProjectList projects={projects}/>
+                    <ProjectList projects={projects} />
                 </Row>
                 <Row className="d-flex justify-content-center mt-4">
-                    <PaginationComponent/>
+                    <PaginationComponent currentPage={activePage} countPerPage={itemsCountPerPage} totalCount={totalItemsCount} onSelected={this.onSelectPage} />
                 </Row>
             </Container>
         )
