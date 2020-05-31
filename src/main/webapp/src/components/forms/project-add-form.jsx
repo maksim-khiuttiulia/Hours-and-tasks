@@ -1,13 +1,8 @@
 import React, { Component } from 'react';
-import TaskLabel from '../tasks/task-label'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, DropdownItem, Input, UncontrolledDropdown, DropdownMenu, DropdownToggle } from 'reactstrap';
-import DatePicker from 'reactstrap-date-picker'
-import TimePicker from '../timepicker/timepicker'
 import ServerError from '../error/server-error'
 import UserError from '../error/user-error'
-import { getCurrentDateJSON, concatDateAndTime, toJsonDate, getHHMM} from '../../utils/date-time'
-import { saveNewTask, updateTask } from '../../services/task-service'
-import {getLabelsInProject} from '../../services/label-service'
+import { updateProject, createProject } from '../../services/project-service'
 
 
 export default class ProjectAddDialog extends Component {
@@ -20,7 +15,6 @@ export default class ProjectAddDialog extends Component {
             projectId : null,
             name: "",
             description: "",
-            labels: [],
 
             isOpen: this.props.isOpen,
             editMode : false,
@@ -41,14 +35,12 @@ export default class ProjectAddDialog extends Component {
                         projectId : project.projectId,
                         name: project.name,
                         description: project.description,
-                        labels: project.labels,
                     })
                 } else {
                     this.setState({
                         projectId : null,
                         name: "",
                         description: "",
-                        labels: [],
                     })
                 }
             
@@ -57,7 +49,34 @@ export default class ProjectAddDialog extends Component {
 
 
     onSubmit = (e) => {
-        
+        const {projectId, name, description} = this.state
+        if (!name){
+            this.setState({userError : "Name is empty"})
+            return
+        }
+        if (!description){
+            this.setState({userError : "Description is empty"})
+            return
+        }
+
+        const project = {
+            projectId : projectId,
+            name : name,
+            description : description
+        }
+        if (projectId) {
+            updateProject(projectId, project).then(data => {
+                if (typeof this.props.callback == "function"){
+                    this.props.callback(project, true)
+                }
+            }).catch( e=> this.setState({serverError : e}))
+        } else {
+            createProject(project).then(data => {
+                if (typeof this.props.callback == "function"){
+                    this.props.callback(data, true)
+                }
+            }).catch( e=> this.setState({serverError : e}))
+        }
     }
 
     onCancel = (e) => {
@@ -70,15 +89,6 @@ export default class ProjectAddDialog extends Component {
         if (typeof this.props.callback === "function") {
             this.props.callback(null, false)
         }
-    }
-
-
-    onAddLabel = (e) => {
-
-    }
-
-    onDeleteLabel = (id) => {
-
     }
 
     onProjectNameChange = (e) => {
@@ -101,11 +111,7 @@ export default class ProjectAddDialog extends Component {
 
     render() {
 
-        const {projectId, name, description, labels} = this.state
-
-        const projectLabels = labels.map((label) => {
-            return <TaskLabel label={label} key={label.id} onClick={this.onDeleteLabel} />;
-        })
+        const {projectId, name, description} = this.state
 
         const header = projectId ? "Edit project" : "Add new project"
         return (
@@ -119,13 +125,6 @@ export default class ProjectAddDialog extends Component {
                             <Input type="text" onChange={this.onProjectNameChange} placeholder="New project" value={name}></Input>
                         </Col>
                     </Row>
-
-                    <Row>
-                        <Col xs="12" md="12">
-                            {projectLabels}
-                        </Col>
-                    </Row>
-                    <br />
                     <Row>
                         <Col xs="12">
                             <Input type="textarea" name="text" onChange={this.onProjectDescriptionChange} placeholder="Project description" value={description}/>

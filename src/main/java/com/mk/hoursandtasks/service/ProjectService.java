@@ -76,7 +76,7 @@ public class ProjectService {
         }
         projectFromDB.setDescription(project.getDescription());
 
-        return projectRepository.save(project);
+        return projectRepository.save(projectFromDB);
     }
 
     @Transactional(rollbackOn = Exception.class)

@@ -68,6 +68,13 @@ class ProjectFullPage extends Component {
         this.setState({ editProjectDialogOpen: false })
     }
 
+    onEditProjectDialogCallback= (project, needRefresh) => {
+        if (needRefresh === true){
+            this.readProject();
+        }
+        this.setState({ editProjectDialogOpen: false })
+    }
+
     onAddTaskClick = (e) => {
         this.setState({
             addTaskDialogOpen: true
@@ -103,7 +110,7 @@ class ProjectFullPage extends Component {
         return (
             <Card>
                 <TaskAddDialog projectId={projectId} isOpen={addTaskDialogOpen} callback={this.onAddTaskCallback} labelsToChoose={labels} />
-                <ProjectAddDialog project={project} isOpen={editProjectDialogOpen} callback={this.onEditProjectDialogClose}/>
+                <ProjectAddDialog project={project} isOpen={editProjectDialogOpen} callback={this.onEditProjectDialogCallback}/>
                 <CardHeader className="bg-danger text-white">
                     <h3 className="pb-5" style={{ fontWeight: 300 }}>{name}</h3>
                     <p>{description}</p>
