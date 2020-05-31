@@ -7,6 +7,7 @@ import com.mk.hoursandtasks.entity.Project;
 import com.mk.hoursandtasks.entity.task.Task;
 import com.mk.hoursandtasks.entity.tasklabel.TaskLabel;
 import com.mk.hoursandtasks.entity.user.User;
+import com.mk.hoursandtasks.exceptions.ValidationException;
 import com.mk.hoursandtasks.service.ProjectService;
 import com.mk.hoursandtasks.service.TaskLabelService;
 import com.mk.hoursandtasks.service.TaskService;
@@ -14,6 +15,8 @@ import liquibase.util.BooleanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,7 +46,14 @@ public class ProjectController extends ControllerAncestor {
     public @ResponseBody
     ProjectDto getProject(@PathVariable(name = "id") Long id, HttpServletRequest request){
         User user = getCurrentUser(request);
-        return projectService.getProject(id, user).toProjectDto(false, true);
+        Project project = projectService.getProject(id);
+        if (project == null){
+            throw new ValidationException("Project not exists");
+        }
+        if (project.getOwner() != user){
+            throw new ValidationException("User hasn't access");
+        }
+        return project.toProjectDto(false, true);
     }
 
     @RequestMapping(value = "/{id}/tasks", method = RequestMethod.GET)
@@ -53,7 +63,13 @@ public class ProjectController extends ControllerAncestor {
                                    Pageable pageable, HttpServletRequest request){
 
         User user = getCurrentUser(request);
-        Project project = projectService.getProject(id, user);
+        Project project = projectService.getProject(id);
+        if (project == null){
+            throw new ValidationException("Project not exists");
+        }
+        if (project.getOwner() != user){
+            throw new ValidationException("User hasn't access");
+        }
         Page<Task> taskPage = null;
         if (done == null){
             taskPage = taskService.getAllInProject(project, pageable);
@@ -68,17 +84,80 @@ public class ProjectController extends ControllerAncestor {
     public @ResponseBody
     List<TaskLabelDto> getLabelsInProject(@PathVariable(name = "id") Long id, HttpServletRequest request){
         User user = getCurrentUser(request);
-        Project project = projectService.getProject(id, user);
+        Project project = projectService.getProject(id);
+        if (project == null){
+            throw new ValidationException("Project not exists");
+        }
+        if (project.getOwner() != user){
+            throw new ValidationException("User hasn't access");
+        }
         return taskLabelService.getAllOnProject(project).stream().map(TaskLabel::toTaskLabelDto).collect(Collectors.toList());
     }
 
     @RequestMapping(value = "/{id}/labels", method = RequestMethod.POST)
     public @ResponseBody TaskLabelDto addTaskLabel(@PathVariable(name = "id") Long id, @RequestBody TaskLabelDto dto, HttpServletRequest request){
         User user = getCurrentUser(request);
-        Project project = projectService.getProject(id, user);
+        Project project = projectService.getProject(id);
+        if (project == null){
+            throw new ValidationException("Project not exists");
+        }
+        if (project.getOwner() != user){
+            throw new ValidationException("User hasn't access");
+        }
         TaskLabel taskLabel = taskLabelService.convert(dto);
         return taskLabelService.addTaskLabel(taskLabel, project).toTaskLabelDto();
     }
 
+    @RequestMapping(value = "/{id}/labels/{labelId}", method = RequestMethod.POST)
+    public ResponseEntity<?> deleteTaskLabel(@PathVariable(name = "id") Long id, @PathVariable(name = "labelId") Long labelId, HttpServletRequest request){
+        User user = getCurrentUser(request);
+        Project project = projectService.getProject(id);
+        if (project == null){
+            throw new ValidationException("Project not exists");
+        }
+        if (project.getOwner() != user){
+            throw new ValidationException("User hasn't access");
+        }
+        TaskLabel taskLabel = taskLabelService.getTaskLabel(labelId, project);
+        if (taskLabel != null){
+            taskLabelService.deleteTaskLabel(taskLabel);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public @ResponseBody ProjectDto createProject(@RequestBody ProjectDto projectDto, HttpServletRequest request){
+        User user = getCurrentUser(request);
+        Project project = projectService.convert(projectDto);
+        return projectService.createProject(project, user).toProjectDto(false, false);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    public @ResponseBody ProjectDto updateProject(@PathVariable(name = "id") Long id, @RequestBody ProjectDto projectDto, HttpServletRequest request){
+        User user = getCurrentUser(request);
+        Project project = projectService.getProject(id);
+        if (project == null){
+            throw new ValidationException("Project not exist");
+        }
+        if (!user.equals(project.getOwner())){
+            throw new ValidationException("User hasnt access to project");
+        }
+        Project newProject = projectService.convert(projectDto);
+        return projectService.updateProject(project.getProjectId(), newProject).toProjectDto(false, false);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<?>  deleteProject(@PathVariable(name = "id") Long id, HttpServletRequest request){
+        User user = getCurrentUser(request);
+        Project project = projectService.getProject(id);
+        if (project == null){
+            throw new ValidationException("Project not exist");
+        }
+        if (!user.equals(project.getOwner())){
+            throw new ValidationException("User hasnt access to project");
+        }
+        projectService.deleteProject(project);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 }

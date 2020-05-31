@@ -1,5 +1,6 @@
 package com.mk.hoursandtasks.service;
 
+import com.mk.hoursandtasks.dto.ProjectDto;
 import com.mk.hoursandtasks.entity.Project;
 import com.mk.hoursandtasks.entity.user.User;
 import com.mk.hoursandtasks.exceptions.ValidationException;
@@ -8,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,6 +20,12 @@ public class ProjectService {
 
     @Autowired
     private ProjectRepository projectRepository;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private TaskLabelService taskLabelService;
 
     public List<Project> getAllProjects(User user){
         Objects.requireNonNull(user);
@@ -33,12 +42,55 @@ public class ProjectService {
         return projectRepository.findById(id).orElse(null);
     }
 
-    public Project getProject(Long id, User user){
-        Objects.requireNonNull(id);
+    @Transactional(rollbackOn = Exception.class)
+    public Project createProject(Project project, User user){
+        Objects.requireNonNull(project);
         Objects.requireNonNull(user);
-        Project project = projectRepository.findByProjectIdAndOwner(id, user);
-        if (project == null){
-            throw new ValidationException("Project not exists or user hasn't access");
+
+        if (StringUtils.isEmpty(project.getName())){
+            throw new ValidationException("Name is empty");
+        }
+        if (StringUtils.isEmpty(project.getDescription())){
+            throw new ValidationException("Description is empty");
+        }
+        project.setOwner(user);
+        return projectRepository.save(project);
+    }
+
+    @Transactional(rollbackOn = Exception.class)
+    public Project updateProject(Long id, Project project){
+        Objects.requireNonNull(project);
+
+        Project projectFromDB = projectRepository.findById(id).orElse(null);
+        if (projectFromDB == null){
+            throw new ValidationException("Project not exists");
+        }
+
+        if (StringUtils.isEmpty(project.getName())){
+            throw new ValidationException("Name is empty");
+        }
+        projectFromDB.setName(project.getName());
+
+        if (StringUtils.isEmpty(project.getDescription())){
+            throw new ValidationException("Description is empty");
+        }
+        projectFromDB.setDescription(project.getDescription());
+
+        return projectRepository.save(project);
+    }
+
+    @Transactional(rollbackOn = Exception.class)
+    public void deleteProject(Project project) {
+        projectRepository.delete(project);
+    }
+
+    public Project convert(ProjectDto projectDto){
+        Project project = new Project();
+        project.setName(projectDto.getName());
+        project.setDescription(projectDto.getDescription());
+        if (project.getOwner() != null){
+            User user = userService.findById(project.getOwner().getUserId());
+            project.setOwner(user);
         }
         return project;
     }

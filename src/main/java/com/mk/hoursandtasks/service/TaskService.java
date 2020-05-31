@@ -99,7 +99,7 @@ public class TaskService {
             throw new ValidationException("Project id is null");
         }
 
-        Project project = projectService.getProject(task.getProject().getProjectId(), user);
+        Project project = projectService.getProject(task.getProject().getProjectId());
         if (project == null){
             throw new ValidationException("Project with id " + task.getProject().getProjectId() + " doesnt exist");
         }

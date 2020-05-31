@@ -52,6 +52,11 @@ public class TaskLabelService {
         return taskLabelRepository.save(taskLabel);
     }
 
+    @Transactional(rollbackOn = Exception.class)
+    public void deleteTaskLabel(TaskLabel taskLabel){
+        taskLabelRepository.delete(taskLabel);
+    }
+
     public List<TaskLabelColor> getAllColors(){
         List<TaskLabelColor> taskLabelColors = labelColorRepository.findAll();
         return taskLabelColors;
