@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import TaskDeleteDialog from '../forms/task-delete-dialog'
 import TaskList from '../tasks/task-list'
-import { ListGroup, ListGroupItem } from 'reactstrap';
+import { ListGroup, ListGroupItem, Alert } from 'reactstrap';
 import { changeTaskStatus } from '../../services/task-service'
 import { withRouter } from 'react-router-dom'
 import { getTasksInProject } from '../../services/project-service'
 import ServerError from '../error/server-error'
 import SortBy from '../sort-by/sort-by';
 import PaginationComponent from '../pagination/pagination-component'
-import {getTasks} from '../../services/task-service'
+import { getTasks } from '../../services/task-service'
 import TaskAddDialog from '../forms/task-add-dialog';
 
 
@@ -45,22 +45,20 @@ class TasksPage extends Component {
 
             activePage: 1,
             totalPages: null,
-            itemsCountPerPage:  5,
+            itemsCountPerPage: 5,
             totalItemsCount: null,
         }
     }
 
     async componentDidMount() {
-        const {activePage} = this.state
+        const { activePage } = this.state
         this.readTasks(activePage);
     }
 
-    componentDidUpdate(prevProps){
-        const prevUpdateCounter = prevProps.updateCounter
-        const currentUpdateCounter = this.props.updateCounter
-
-        if (currentUpdateCounter > prevUpdateCounter) {
-            const {activePage, sortBy, orderBy} = this.state
+    componentWillReceiveProps(props) {
+        const { refresh } = this.props;
+        if (props.refresh !== refresh) {
+            const { activePage, sortBy, orderBy } = this.state
             this.readTasks(activePage, sortBy, orderBy);
         }
     }
@@ -151,22 +149,22 @@ class TasksPage extends Component {
         changeTaskStatus(task).then((data) => {
             const tasks = this.state.tasks.map(t => {
                 if (task.id === t.id) {
-                     t.done = task.done;
+                    t.done = task.done;
                 }
                 return t;
             })
-            
+
             this.parentRefresh()
-            this.setState({tasks : tasks})
+            this.setState({ tasks: tasks })
         }).catch(e => {
-            this.setState({serverError : e})
+            this.setState({ serverError: e })
         })
-        
+
     }
 
     onSelectPage = (page) => {
-        const {activePage, sortBy, orderBy} = this.state
-        if (activePage !== page){
+        const { activePage, sortBy, orderBy } = this.state
+        if (activePage !== page) {
             this.setState({
                 activePage: page
             })
@@ -183,24 +181,29 @@ class TasksPage extends Component {
     }
 
     parentRefresh = () => {
-        if (typeof this.props.callback === "function"){
+        if (typeof this.props.callback === "function") {
             this.props.callback()
         }
     }
 
     render() {
-        const { itemsCountPerPage, totalItemsCount, activePage } = this.state;
+        const { itemsCountPerPage, totalItemsCount, activePage, sortBy, orderBy, sortByParams, tasks, serverError } = this.state;
+
+        if (tasks.length === 0) {
+            return <Alert color="info" style={{ textAlign : "center"}}>You havent any task</Alert>
+        }
+
         return (
             <div>
                 <TaskDeleteDialog isOpen={this.state.deleteDialog.isOpen} task={this.state.deleteDialog.task} callback={this.deleteDialogCallback} />
-                <TaskAddDialog isOpen={this.state.editDialog.isOpen} task={this.state.editDialog.task} callback={this.closeEditDialog}/>
-                <ServerError error={this.state.serverError} />
+                <TaskAddDialog isOpen={this.state.editDialog.isOpen} task={this.state.editDialog.task} callback={this.closeEditDialog} />
+                <ServerError error={serverError} />
                 <ListGroup>
-                    <ListGroupItem className="d-flex justify-content-start">
-                        <SortBy params={this.sortByParams} selected={this.state.sortBy} orderBy={this.state.orderBy} onSelect={this.onSelectSortBy} ></SortBy>
+                    <ListGroupItem className="d-flex justify-content-end">
+                        <SortBy params={sortByParams} selected={sortBy} orderBy={orderBy} onSelect={this.onSelectSortBy} ></SortBy>
                     </ListGroupItem>
 
-                    <TaskList tasks={this.state.tasks} onEditTask={this.openEditDialog} onDeleteTask={this.openDeleteDialog} onChangeStatus={this.onChangeTaskStatus} />
+                    <TaskList tasks={tasks} onEditTask={this.openEditDialog} onDeleteTask={this.openDeleteDialog} onChangeStatus={this.onChangeTaskStatus} />
 
                     <ListGroupItem className="d-flex justify-content-center">
                         <PaginationComponent currentPage={activePage} countPerPage={itemsCountPerPage} totalCount={totalItemsCount} onSelected={this.onSelectPage} />

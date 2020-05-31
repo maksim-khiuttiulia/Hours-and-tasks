@@ -40,7 +40,7 @@ export default class TaskAddDialog extends Component {
 
             this.setState({isOpen : isOpen})
 
-            if (isOpen === true){
+            if (isOpen){
                 if (task) {
                     this.setStateEditMode(task)
                 } else {
@@ -51,8 +51,10 @@ export default class TaskAddDialog extends Component {
     }
 
     setStateEditMode = async (task) =>{
+        
             let labelsToChoose = await getLabelsInProject(task.project.projectId)
             let deadlineTime = getHHMM(task.deadline)
+            console.log(deadlineTime)
             this.setState({
                 taskId : task.id,
                 name : task.name,
@@ -131,6 +133,7 @@ export default class TaskAddDialog extends Component {
     onCancel = (e) => {
         e.preventDefault();
         this.setState({
+            isOpen: false,
             serverError : '',
             userError : ''
         })

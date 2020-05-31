@@ -18,7 +18,7 @@ export default class SortBy extends Component {
     componentDidUpdate(props) {
         if (this.props !== props) {
             this.setState({
-                params: props.params,
+                params: Array.isArray(this.props.params) ? this.props.params : [],
                 selected: props.selected,
             })
         }

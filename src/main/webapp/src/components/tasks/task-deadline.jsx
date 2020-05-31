@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { Badge } from 'reactstrap';
 import { formatedDate } from '../../utils/date-time'
 

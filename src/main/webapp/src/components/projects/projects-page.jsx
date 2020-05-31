@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import ServerError from '../error/server-error'
 import ProjectList from './project-list'
-import { Row, Container, Alert } from 'reactstrap';
+import { Row, Container, Alert, Button } from 'reactstrap';
 import { getAllProjects } from '../../services/project-service'
 import { Spinner } from 'reactstrap';
 import PaginationComponent from '../pagination/pagination-component';
+import ProjectAddDialog from '../forms/project-add-form';
 
 
 
@@ -17,6 +18,7 @@ export default class ProjectsPage extends Component {
             projects: [],
 
             serverError: '',
+            addProjectDialogOpen : false,
 
             activePage: 1,
             totalPages: null,
@@ -65,8 +67,20 @@ export default class ProjectsPage extends Component {
         })
     }
 
+    onAddDialogOpen = () => {
+        this.setState({addProjectDialogOpen : true})
+    }
+
+    onAddDialogClose = (project, needRefresh) => {
+        if (needRefresh === true){
+            const {pageNumber} = this.state
+            this.readProjects(pageNumber);
+        }
+        this.setState({addProjectDialogOpen : false})
+    }
+
     render() {
-        const { loading, serverError, totalItemsCount, projects } = this.state
+        const { loading, serverError, totalItemsCount, projects, addProjectDialogOpen } = this.state
         if (loading) {
             return (<Container className="m-auto text-center">
                 <Spinner />
@@ -83,8 +97,9 @@ export default class ProjectsPage extends Component {
         return (
             <Container>
                 <ServerError error={serverError} />
-                <Row className="mt-4">
-                    
+                <ProjectAddDialog isOpen={addProjectDialogOpen} callback={this.onAddDialogClose}/>
+                <Row className="mt-4 d-flex justify-content-end" >
+                    <Button color="success" onClick={this.onAddDialogOpen}>Add project</Button>
                 </Row>
                 <Row className="mt-4">
                     <ProjectList projects={projects}/>
