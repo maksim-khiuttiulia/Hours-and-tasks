@@ -65,6 +65,7 @@ public class TaskLabelService {
     public TaskLabel convert(TaskLabelDto taskLabelDto){
         TaskLabel taskLabel = new TaskLabel();
         taskLabel.setLabelId(taskLabelDto.getId());
+        taskLabel.setName(taskLabelDto.getName());
         TaskLabelColor taskLabelColor = labelColorRepository.findByHex(taskLabelDto.getColor());
         taskLabel.setColor(taskLabelColor);
         if (taskLabelDto.getProjectDto() != null){

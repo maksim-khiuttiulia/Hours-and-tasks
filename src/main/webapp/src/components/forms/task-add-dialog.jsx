@@ -69,6 +69,7 @@ export default class TaskAddDialog extends Component {
     setStateNewMode = async () =>{
         const { projectId } = this.props
         let labelsToChoose = await getLabelsInProject(projectId)
+        console.log(labelsToChoose)
         this.setState(prevState => ({
             projectId: projectId,
             labelsToChoose: labelsToChoose,

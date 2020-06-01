@@ -6,6 +6,7 @@ import { getProject } from '../../services/project-service';
 import TaskAddDialog from '../forms/task-add-dialog'
 import ProjectAddDialog from '../forms/project-add-form';
 import ProjectDeleteDialog from '../forms/project-delete-dialog'
+import AddLabelForm from '../forms/label-form';
 
 class ProjectFullPage extends Component {
 
@@ -26,6 +27,7 @@ class ProjectFullPage extends Component {
             addTaskDialogOpen: false,
             editProjectDialogOpen: false,
             deleteProjectDialogOpen : false,
+            addLabelDialogOpen : false,
 
             serverError: '',
             clientError: '',
@@ -100,6 +102,14 @@ class ProjectFullPage extends Component {
         }
     }
 
+    onLabelAddOpen = () =>{
+        this.setState({addLabelDialogOpen : true})
+    }
+
+    onLabelAddCallback = (label, added) =>{
+        this.setState({addLabelDialogOpen : false})
+    }
+
     onTaskListChanged = () => {
         this.readProject()
     }
@@ -114,12 +124,13 @@ class ProjectFullPage extends Component {
 
     render() {
         const { projectId, name, description, labels, tasksCount, todoTasksCount, doneTasksCount } = this.state.project
-        const { refreshTaskList, addTaskDialogOpen, editProjectDialogOpen, deleteProjectDialogOpen, project } = this.state
+        const { refreshTaskList, addTaskDialogOpen, editProjectDialogOpen, deleteProjectDialogOpen, addLabelDialogOpen, project } = this.state
         return (
             <Card>
                 <TaskAddDialog projectId={projectId} isOpen={addTaskDialogOpen} callback={this.onAddTaskCallback} labelsToChoose={labels} />
                 <ProjectAddDialog project={project} isOpen={editProjectDialogOpen} callback={this.onEditProjectDialogCallback} />
                 <ProjectDeleteDialog project={project} isOpen={deleteProjectDialogOpen} callback={this.onDeleteProjectDialogCallback}/>
+                <AddLabelForm isOpen={addLabelDialogOpen} projectId={projectId} callback={this.onLabelAddCallback}></AddLabelForm>
                 <CardHeader className="bg-danger text-white">
                     <h3 className="pb-5" style={{ fontWeight: 300 }}>{name}</h3>
                     <p>{description}</p>
@@ -146,6 +157,9 @@ class ProjectFullPage extends Component {
                                 </ListGroupItem>
                                 <ListGroupItem>
                                     <Button color="success" className="w-100" onClick={this.onDeleteProjectDialogOpen}>Delete project</Button>
+                                </ListGroupItem>
+                                <ListGroupItem>
+                                    <Button color="success" className="w-100" onClick={this.onLabelAddOpen}>Add label</Button>
                                 </ListGroupItem>
                             </ListGroup>
                         </Col>
